@@ -2,13 +2,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <style>
 body{margin:0;background:#F8FAFD;font-family:Geist,sans-serif}
-#popPlan{position:relative;width:413px;height:420px;background:#EAF3FF;overflow:hidden;margin:20px;font-family:Geist,sans-serif}
+#popPlan{position:relative;width:413px;height:620px;background:#EAF3FF;overflow:hidden;margin:20px;font-family:Geist,sans-serif}
 #popArt{position:absolute;inset:0;width:100%;height:100%}
 .t{position:relative;z-index:1;padding:34px 44px}
-h3{margin:0;font-weight:500;font-size:24px} .p{font-size:62px;font-weight:500;letter-spacing:-.04em;margin-top:18px}.p span{font-size:19px;color:#586174;letter-spacing:0}
-.c{color:#0A5FD8;font-size:17px;margin-top:8px}.g{font-size:19px;margin-top:22px}
+h3{margin:0;font-weight:500;font-size:24px} .price{font-size:62px;font-weight:500;letter-spacing:-.04em;margin-top:18px}.price span{font-size:19px;color:#586174;letter-spacing:0}
+.credits{color:#0A5FD8;font-size:17px;margin-top:8px}.tag{font-size:19px;margin-top:22px}
 </style></head><body>
-<div id="popPlan"><canvas id="popArt"></canvas><div class="t"><h3>Fully-Autonomous</h3><div class="p">$30 <span>/ month</span></div><div class="c">600 credits per billing cycle</div><div class="g">It works even when you don't.</div></div></div>
+<div id="popPlan"><canvas id="popArt"></canvas><div class="t"><h3>Fully-Autonomous</h3><div class="price">$30 <span>/ month</span></div><div class="credits">600 credits per billing cycle</div><div class="tag">It works even when you don't.</div></div></div>
 <script>
 const $=id=>document.getElementById(id), MONO='"Geist Mono", ui-monospace, monospace', reduce=false;
 const C={accent:'#2486FF',accent2:'#64C9FF',accentInk:'#0A5FD8',fg:'#141821'};
@@ -17,5 +17,5 @@ function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1
 const onResize=(el,fn)=>new ResizeObserver(()=>fn()).observe(el);
 function animate(el,fn){let l=performance.now();const f=t=>{fn(Math.min(.05,(t-l)/1000));l=t;requestAnimationFrame(f)};requestAnimationFrame(f)}
 </script>
-<script src="blackhole.js"></script>
+<script src="../src/snowfall.js"></script>
 </body></html>
