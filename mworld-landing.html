@@ -1798,14 +1798,12 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
 
 
   // ================= POPULAR PLAN: ASCII snow drifting through the card =================
-  // Three depths of snow: fine dust far back, small star flakes in the middle, and a few large six-armed crystals up front.
-  // Each crystal is traced onto its own character grid (six arms, two pairs of branches on each, a heart and bright tips),
-  // and every stroke picks the glyph that follows it (- \ | /), so the crystals read as drawn, not stamped.
+  // Fine dust far back and small star flakes nearer, each depth falling and swaying at its own pace.
   // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake;
   // a tap on the card throws up a puff of snow.
   (function snowfall() {
     const card = $('popPlan'), cv = $('popArt'); if (!card || !cv) return;
-    let S = null, st = 0, holes = [], dust = [], crystals = [], puffs = [];
+    let S = null, st = 0, holes = [], dust = [], puffs = [];
     const ptr = { x: -1e4, y: -1e4, vx: 0, on: false };
     let gust = 0;
     // where the card's words sit: snow behind them is dimmed so the text always reads
@@ -1827,51 +1825,9 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
       f.ch = z > .78 ? (Math.random() > .45 ? '*' : '+') : z > .4 ? (Math.random() > .5 ? '*' : '·') : (Math.random() > .3 ? '.' : '·');
       return f;
     }
-    function newCrystal(c, top) {
-      const { W, H } = S, R = rnd(30, Math.min(54, W * .13));
-      c.R = R; c.x = rnd(W * .42, W - R * .6); c.y = top ? -R - rnd(0, H * .4) : rnd(R, H - R);
-      c.vx = 0; c.vy = 0; c.a = rnd(0, 1.05); c.spin = rnd(.12, .3) * (Math.random() > .5 ? 1 : -1);
-      c.fall = 7 + 14 * (R / 54); c.ph = rnd(0, 6.28);
-      // each crystal grows its own branches
-      c.br = [[rnd(.32, .42), rnd(.26, .36)], [rnd(.6, .7), rnd(.16, .24)]];
-      c.tip = Math.random() > .5;
-      return c;
-    }
     function seed() {
       const { W, H } = S, n = Math.min(150, Math.round(W * H / 2400));
       dust = Array.from({ length: n }, () => newFlake({}, false));
-      crystals = Array.from({ length: W < 360 ? 2 : 3 }, () => newCrystal({}, false));
-    }
-
-    // the glyph that follows a stroke: screen y runs down, so 45° is down-right
-    function stroke(a) {
-      const t = ((a % Math.PI) + Math.PI) % Math.PI, k = Math.round(t / (Math.PI / 4)) % 4;
-      return '-\\|/'[k];
-    }
-    // trace a crystal onto its own character grid: six arms, two pairs of branches on each, a heart and bright tips
-    const S60 = Math.PI / 3;
-    function trace(c, cw, chh) {
-      const cells = new Map();
-      const put = (x, y, ch, w) => {
-        const ix = Math.round(x / cw), iy = Math.round(y / chh), k = ix + ',' + iy, o = cells.get(k);
-        if (!o || w > o.w) cells.set(k, { ix, iy, ch, w });
-      };
-      const line = (x0, y0, ang, len, w) => {
-        const dx = Math.cos(ang), dy = Math.sin(ang), ch = stroke(ang), n = Math.ceil(len / (Math.min(cw, chh) * .45));
-        for (let i = 1; i <= n; i++) put(x0 + dx * len * i / n, y0 + dy * len * i / n, ch, w);
-        return [x0 + dx * len, y0 + dy * len];
-      };
-      for (let k = 0; k < 6; k++) {
-        const arm = c.a + k * S60, ax = Math.cos(arm), ay = Math.sin(arm);
-        const [tx, ty] = line(0, 0, arm, c.R * .9, 2);
-        for (const [at, len] of c.br) {
-          const bx = ax * c.R * at, by = ay * c.R * at;
-          line(bx, by, arm + S60 * .85, c.R * len, 1); line(bx, by, arm - S60 * .85, c.R * len, 1);
-        }
-        put(tx + ax * cw * .6, ty + ay * chh * .6, c.tip ? 'o' : '*', 3);
-      }
-      put(0, 0, '*', 4);
-      return cells.values();
     }
 
     function stepSnow(dt) {
@@ -1889,14 +1845,6 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
         f.x += (breeze * (.4 + f.z) + Math.sin(st * f.sw + f.ph) * (5 + f.z * 9) + f.vx) * dt;
         f.y += (f.fall + f.vy) * dt;
         if (f.y > H - bankAt(f.x) + 2 || f.x < -30 || f.x > W + 30) newFlake(f, true);
-      }
-      for (const c of crystals) {
-        push(c, 2.4);
-        c.vx *= Math.pow(.3, dt); c.vy *= Math.pow(.3, dt);
-        c.x += (breeze * .5 + Math.sin(st * .4 + c.ph) * 7 + c.vx) * dt;
-        c.y += (c.fall + c.vy) * dt;
-        c.a += (c.spin + c.vx * .004) * dt;
-        if (c.y - c.R > H || c.x < -c.R * 2 || c.x > W + c.R * 2) newCrystal(c, true);
       }
       for (let i = puffs.length - 1; i >= 0; i--) {
         const p = puffs[i]; p.t += dt; p.vx *= Math.pow(.15, dt); p.vy = p.vy * Math.pow(.15, dt) + 30 * dt;
@@ -1917,18 +1865,6 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
         ctx.fillStyle = f.z > .78 ? C.accent : C.accent2;
         ctx.globalAlpha = (.28 + f.z * .5) * tw * dim;
         ctx.fillText(f.ch, f.x, f.y);
-      }
-      // the crystals, each on its own grid so they glide instead of stepping
-      const fs = 9, cw = fs * .6, chh = fs * .95, sparkle = Math.floor(st * 1.5);
-      ctx.font = `600 ${fs}px ${MONO}`;
-      for (const c of crystals) {
-        for (const o of trace(c, cw, chh)) {
-          const x = c.x + o.ix * cw, y = c.y + o.iy * chh; if (x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
-          const dim = behindText(x, y) ? .22 : 1, glint = o.w < 3 && hash(o.ix + sparkle * 7, o.iy - sparkle * 3, c.ph * 10) > .95;
-          ctx.fillStyle = glint ? C.accent2 : o.w >= 3 ? C.accentInk : o.w === 2 ? C.accent : C.accent2;
-          ctx.globalAlpha = (glint ? 1 : o.w >= 3 ? .95 : o.w === 2 ? .8 : .75) * dim;
-          ctx.fillText(glint ? '+' : o.ch, x, y);
-        }
       }
       // a puff of snow where the card was tapped
       for (const p of puffs) {

@@ -16,7 +16,7 @@ Open `index.html` in a browser. It is self-contained: one HTML file with inline 
 - **Who does the work**: prompt → AO globe → dashboard, then three isometric SVG miniatures: the tower (AI departments), the handoff (people in the loop), the district (businesses trading with each other).
 - **Departments**: the blue field with an ASCII org chart and department tabs.
 - **What is an Autonomous Organisation**: comparison table and the intro video link.
-- **Pricing**: Starter, Semi-Autonomous ($10), Fully-Autonomous ($30) with ASCII snow drifting through the popular plan: six-armed crystals, star flakes and a snowbank; the pointer blows the snow about and a tap throws up a puff.
+- **Pricing**: Starter, Semi-Autonomous ($10), Fully-Autonomous ($30) with ASCII snow drifting through the popular plan: star flakes, fine dust and a snowbank; the pointer blows the snow about and a tap throws up a puff.
 - **Micro-interactions**: a ripple from the point of every press, springy hover and press states, pop-ins for chips, toggles and tabs, a settle-in for changed text, scroll reveals, a nav that underlines the section being read, a shaking field for form errors, and the pinwheel logo turning on hover. All of it turns off under reduced motion.
 - **FAQ, closing sunrise, contact, footer** with the "paint the word" ASCII wordmark (stroke the letters to paint them blue; finish the word and it resets).
 
