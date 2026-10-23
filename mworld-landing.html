@@ -115,7 +115,10 @@ p { text-wrap: pretty; }
 .nav .cell { height: 64px; display: flex; align-items: center; gap: 28px; padding: 0 var(--pad); }
 .nav .cell::before, .nav .cell::after { display: none; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 600 20px/1 var(--font-sans); letter-spacing: -0.02em; }
-.mark { width: 26px; height: 26px; border-radius: 7px; background: var(--fg); color: var(--on-block); display: grid; place-items: center; font: 600 14px/1 var(--font-mono); box-shadow: inset -2px 2px 3px 0 var(--accent), inset 2px -2px 3px 0 var(--accent-2); }
+.mark { width: 28px; height: 28px; border-radius: 8px; background: var(--fg); display: grid; place-items: center; box-shadow: inset -2px 2px 3px 0 var(--accent), inset 2px -2px 3px 0 var(--accent-2); }
+.mark .logo { width: 17px; height: 17px; display: block; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+.brand:hover .mark .logo { transform: rotate(90deg); }
+.brand:active .mark .logo { transform: rotate(180deg) scale(.9); }
 .nav ul { display: flex; gap: 4px; list-style: none; margin: 0 auto; padding: 0; }
 .nav ul a { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 15px; color: var(--ink-2); }
 .nav ul a:hover { background: var(--sunk); }
@@ -428,6 +431,91 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .legal .cell { padding: 18px var(--pad); display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; font-size: 15px; color: var(--muted); }
 .end { border-top: 1px solid var(--line); height: 40px; }
 
+/* ---------- micro-interactions: quick, springy, every control answers the hand ---------- */
+:root { --spring: cubic-bezier(.34, 1.56, .64, 1); --out: cubic-bezier(.22, 1, .36, 1); }
+.btn, .chip, .seg button, .dtabs button, .copy, .go, .attach, .faq summary { position: relative; overflow: hidden; isolation: isolate; -webkit-tap-highlight-color: transparent; }
+.rip { position: absolute; border-radius: 50%; pointer-events: none; background: currentColor; opacity: .28; transform: scale(0); z-index: -1; animation: rip .65s var(--out) forwards; }
+@keyframes rip { to { transform: scale(1); opacity: 0; } }
+.btn { transition: transform .3s var(--spring), background .2s, box-shadow .3s var(--out); }
+.btn:hover { transform: translateY(-2px); }
+.btn-primary:hover { box-shadow: inset -4px 4px 4px 0 var(--accent), inset 4px -4px 4px 0 var(--accent-2), 0 8px 20px -8px var(--glow); }
+.btn:active, .btn-primary:active, .btn-white:active { transform: translateY(0) scale(.96); transition-duration: .08s; }
+@keyframes pop { 0% { transform: scale(.9); } 55% { transform: scale(1.07); } 100% { transform: scale(1); } }
+.chip { transition: background .2s, color .2s, transform .3s var(--spring); }
+.chip:hover { transform: translateY(-1px); }
+.chip:active { transform: scale(.93); transition-duration: .08s; }
+.chip[aria-pressed="true"] { animation: pop .4s var(--spring); }
+.seg button { transition: background .2s, color .2s, box-shadow .2s, transform .3s var(--spring); }
+.seg button:active { transform: scale(.94); }
+.seg button[aria-pressed="true"] { animation: pop .4s var(--spring); }
+.seg button i { transition: background .2s, transform .35s var(--spring); }
+.seg button[aria-pressed="true"] i { transform: scale(1.35); box-shadow: 0 0 0 3px var(--accent-soft); }
+.dtabs button { transition: background .2s, color .2s, transform .3s var(--spring); }
+.dtabs button:active { transform: scale(.94); }
+.dtabs button[aria-selected="true"] { animation: pop .4s var(--spring); }
+.swap { animation: swapIn .45s var(--out); }
+@keyframes swapIn { from { opacity: 0; transform: translateY(8px); filter: blur(3px); } }
+.go { transition: background .2s, transform .3s var(--spring); }
+.go svg { transition: transform .3s var(--spring); }
+.go:hover svg { transform: translateX(3px); }
+.go:active { transform: scale(.9); }
+.attach { transition: background .2s, color .2s, transform .3s var(--spring); }
+.attach:hover { transform: translateY(-1px) rotate(-4deg); }
+.attach:active { transform: scale(.9); }
+.files.swap { animation-name: fileIn; }
+@keyframes fileIn { from { opacity: 0; transform: translateX(-6px) scale(.96); } }
+.prompt { transition: box-shadow .3s var(--out); }
+.prompt .glyph { transition: transform .3s var(--spring), color .2s; }
+.prompt .glyph.tick { transform: translateX(2px) scale(1.12); }
+.nav ul a { position: relative; transition: background .2s, color .2s; }
+.nav ul a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 3px; height: 1.5px; border-radius: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s var(--out); }
+.nav ul a:hover::after, .nav ul a.cur::after { transform: scaleX(1); }
+.nav ul a.cur { color: var(--accent-ink); }
+.nav .right .txt { transition: color .2s; }
+.nav .right .txt:hover { color: var(--accent-ink); }
+.more span { display: inline-block; transition: transform .3s var(--spring); }
+.more:hover span { transform: translate(2px, -2px); }
+.foot nav a { transition: color .2s, transform .3s var(--spring); display: inline-block; }
+.foot nav a:hover { transform: translateY(-2px); }
+.faq summary { transition: background .2s, padding-left .35s var(--out), color .2s; }
+.faq summary:hover { padding-left: calc(var(--pad) + 6px); }
+.faq details[open] summary { color: var(--accent-ink); }
+.faq summary::after { transition: transform .4s var(--spring), border-color .2s; }
+.faq details[open] .a { animation: swapIn .45s var(--out); }
+.copy { transition: background .2s, color .2s, transform .3s var(--spring); }
+.copy:active { transform: scale(.92); }
+.copy.ok { background: var(--accent-soft); color: var(--accent-ink); animation: pop .4s var(--spring); }
+.email a { transition: letter-spacing .3s var(--out); }
+.field input, .field select, .field textarea { transition: box-shadow .25s var(--out); }
+.field label { transition: color .2s; }
+.field:focus-within label { color: var(--accent-ink); }
+.shake { animation: shake .42s cubic-bezier(.36, .07, .19, .97); }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.plan { transition: background .3s; }
+.plan:not(.pop):hover { background: var(--panel); }
+.plan .price b { display: inline-block; transition: transform .4s var(--spring); }
+.plan:hover .price b { transform: translateY(-3px); }
+.plan li svg { transition: transform .3s var(--spring); }
+.plan:hover li svg { animation: tickIn .5s var(--spring) both; }
+.plan li:nth-child(2) svg { animation-delay: 40ms; } .plan li:nth-child(3) svg { animation-delay: 80ms; } .plan li:nth-child(4) svg { animation-delay: 120ms; }
+.plan li:nth-child(5) svg { animation-delay: 160ms; } .plan li:nth-child(6) svg { animation-delay: 200ms; }
+@keyframes tickIn { 0% { transform: scale(.4) rotate(-20deg); opacity: .3; } 100% { transform: none; opacity: 1; } }
+.badge { display: inline-block; transition: transform .35s var(--spring); }
+.plan.pop:hover .badge { transform: translateY(-1px) rotate(-3deg); }
+.tcard { transition: transform .35s var(--spring), box-shadow .3s; }
+.tcard:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--accent), 0 12px 28px -14px var(--shadow-2); }
+svg.iso { transition: transform .5s var(--spring); }
+.actor .cell > div:hover svg.iso { transform: translateY(-5px) scale(1.025); }
+.actor h3::before { transition: transform .45s var(--spring); }
+.actor .cell > div:hover h3::before { transform: rotate(45deg) scale(1.15); }
+.cmp tbody tr { transition: background .2s; }
+.cmp tbody tr:hover { background: var(--accent-soft); }
+.video .play { transition: transform .35s var(--spring); }
+.video:hover .play { transform: scale(1.1); }
+.video:active .play { transform: scale(.94); }
+html.rv-on .rv { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--out), transform .8s var(--out), background .3s; transition-delay: var(--d, 0ms), var(--d, 0ms), 0ms; }
+html.rv-on .rv.in { opacity: 1; transform: none; }
+
 /* phone overrides, kept last so they win the cascade */
 @media (max-width: 480px) {
   .video { aspect-ratio: 4 / 3.4; }
@@ -441,13 +529,30 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   html { scroll-behavior: auto; }
   .live i { animation: none; }
   .btn, .chip, .book .steps3 span, .org .bx, .org .ln { transition: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .rip { display: none; }
 }
 </style>
+
+<!-- the M-World pinwheel: four blades turning around one centre -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="mwGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#CFE9FF"/><stop offset="1" stop-color="#64C9FF"/></linearGradient>
+    <symbol id="mwLogo" viewBox="0 0 176 170">
+      <g fill="url(#mwGrad)">
+        <path d="M105.411 66.5934L160.445 21L176 45.8116C176 45.8116 123.741 73.6047 113.289 79.162C104.869 83.6399 97.4639 83.4798 91.7645 73.8499C89.4175 67.4217 90.0889 26.9691 90.0889 26.9691H111.208L105.411 66.5934Z"/>
+        <path d="M69.769 103.659L15.3746 150L0 124.781C0 124.781 51.6521 96.5329 61.9819 90.8845C70.3048 86.3332 77.6234 86.496 83.2551 96.2836C85.5747 102.817 84.9126 143.932 84.9126 143.932H64.0374L69.769 103.659Z"/>
+        <path d="M69.1589 68.1592L53.7265 0.00299983L85 0C85 0 85 56.7999 85 68.1592C85 77.3107 81.126 83.2641 69.1589 82.991C61.9028 81.6193 24 60.4033 24 60.4033L34.6176 43.1874L69.1589 68.1592Z"/>
+        <path d="M106.581 102.661L121.76 169.997L91 170C91 170 91 113.883 91 102.661C91 93.6195 94.8105 87.7377 106.581 88.009C113.719 89.3627 151 110.323 151 110.323L140.556 127.333L106.581 102.661Z"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
 
 <!-- NAV -->
 <header class="row nav">
   <div class="cell">
-    <a class="brand" href="#top" aria-label="M-World home"><span class="mark" aria-hidden="true">M</span>M-World</a>
+    <a class="brand" href="#top" aria-label="M-World home"><span class="mark" aria-hidden="true"><svg class="logo" viewBox="0 0 176 170" aria-hidden="true"><use href="#mwLogo"/></svg></span>M-World</a>
     <ul>
       <li><a href="#how">How it works</a></li>
       <li><a href="#departments">Departments</a></li>
@@ -717,7 +822,7 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 <footer>
   <div class="row foot">
     <div class="cell">
-      <a class="brand" href="#top"><span class="mark" aria-hidden="true">M</span>M-World</a>
+      <a class="brand" href="#top"><span class="mark" aria-hidden="true"><svg class="logo" viewBox="0 0 176 170" aria-hidden="true"><use href="#mwLogo"/></svg></span>M-World</a>
       <nav aria-label="Footer">
         <a href="#how">How it works</a><a href="#departments">Departments</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
         <a href="https://www.youtube.com/channel/UCgQyXOTC7vYz6nUd-jNzB9Q" target="_blank" rel="noopener">YouTube</a>
@@ -764,6 +869,8 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     return { ctx, W: r.width, H: r.height };
   }
   const onResize = (el, fn) => { new ResizeObserver(() => fn()).observe(el); };
+  // restart a one-shot CSS animation, so a change of content lands with a small settle
+  const replay = (el, cls = 'swap') => { if (!el || reduce) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
   const clear = c => c + '00';
 
   // ---------- the ASCII sphere ----------
@@ -1132,7 +1239,9 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     for (const n of nodes) { if (n.tag !== n.tagWas) { n.tagWas = n.tag; n.tagT = time; } if (n.tag && (!last || n.tagT > last.tagT)) last = n; }
     if (last) tag(last);
   }
-  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; });
+  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; nudgeGlyph(); });
+  let glyphT = 0; const glyph = document.querySelector('.prompt .glyph');
+  function nudgeGlyph() { glyph.classList.add('tick'); clearTimeout(glyphT); glyphT = setTimeout(() => glyph.classList.remove('tick'), 140); }
   const settle = () => { for (let i = 0; i < 300; i++) step(1 / 30); draw(); updateOrg(); };
   document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
     userTyped = false; typing = null; loadSprint(+c.dataset.i, true);
@@ -1141,7 +1250,7 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   const setMode = full => { fullAuto = full; $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full)); $('orgMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous'; };
   $('modeFull').addEventListener('click', () => setMode(true));
   $('modeSemi').addEventListener('click', () => setMode(false));
-  const showFiles = () => { const f = [...$('fileMedia').files, ...$('fileDocs').files]; $('fileNames').textContent = f.length ? (f.length === 1 ? f[0].name : f.length + ' files') : ''; };
+  const showFiles = () => { const f = [...$('fileMedia').files, ...$('fileDocs').files]; $('fileNames').textContent = f.length ? (f.length === 1 ? f[0].name : f.length + ' files') : ''; replay($('fileNames')); };
   $('fileMedia').addEventListener('change', showFiles); $('fileDocs').addEventListener('change', showFiles);
   loadSprint(0);
   onResize(wrap, resize);
@@ -1522,7 +1631,7 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     activeDept = i;
     tabEls.forEach((el, k) => { el.setAttribute('aria-selected', String(k === i)); el.tabIndex = k === i ? 0 : -1; });
     $('dpanel').setAttribute('aria-labelledby', 'dt' + i);
-    $('dRole').textContent = DINFO[i][2]; $('dOut').textContent = DINFO[i][3];
+    $('dRole').textContent = DINFO[i][2]; $('dOut').textContent = DINFO[i][3]; replay($('dRole')); replay($('dOut'));
     document.querySelectorAll('.org .bx').forEach(el => el.classList.toggle('on', +el.dataset.d === i));
     document.querySelectorAll('.org .ln').forEach(el => { const p = el.dataset.p; el.classList.toggle('on', p === '*' || p.split(',').includes(String(i))); });
   }
@@ -1688,120 +1797,239 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   animate(wm, dt => { wt += dt; wmStep(dt); drawWM(); });
 
 
-  // ================= POPULAR PLAN: an ASCII black hole beside the price =================
-  // Drawn the way the classic ASCII renderings are: the hole itself is empty space, defined only by what surrounds it.
-  // A lensed ring of light wraps the void (thick and bright over the top, thin beneath), a thin accretion disk
-  // cuts straight across the middle and passes in front of the void, brighter on its approaching (left) side.
-  // Density comes from a ten-step ramp; colour deepens with density. One steady speed, no interaction.
-  (function blackHole() {
+  // ================= POPULAR PLAN: ASCII snow drifting through the card =================
+  // Three depths of snow: fine dust far back, small star flakes in the middle, and a few large six-armed crystals up front.
+  // Each crystal is traced onto its own character grid (six arms, two pairs of branches on each, a heart and bright tips),
+  // and every stroke picks the glyph that follows it (- \ | /), so the crystals read as drawn, not stamped.
+  // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake;
+  // a tap on the card throws up a puff of snow.
+  (function snowfall() {
     const card = $('popPlan'), cv = $('popArt'); if (!card || !cv) return;
-    const BR = ' .:-=+*#%@';
-    let BH = null, bt = 0, holes = [];
-    // where the card's words actually sit: characters behind them are dimmed so the text always reads
+    let S = null, st = 0, holes = [], dust = [], crystals = [], puffs = [];
+    const ptr = { x: -1e4, y: -1e4, vx: 0, on: false };
+    let gust = 0;
+    // where the card's words sit: snow behind them is dimmed so the text always reads
     function measureText() {
       const o = card.getBoundingClientRect(); holes = [];
-      card.querySelectorAll('h3, .price, .credits, .tag, .badge, .btn, li, .p, .c, .g').forEach(el => {
+      card.querySelectorAll('h3, .price, .credits, .tag, .badge, .btn, li').forEach(el => {
         const rg = document.createRange(); rg.selectNodeContents(el);
         for (const r of rg.getClientRects()) holes.push([r.left - o.left - 6, r.top - o.top - 3, r.right - o.left + 6, r.bottom - o.top + 3]);
       });
     }
     const behindText = (x, y) => { for (const h of holes) if (x > h[0] && x < h[2] && y > h[1] && y < h[3]) return true; return false; };
-    function geo() {
-      const { W } = BH, rs = Math.max(48, Math.min(W * .172, 74));
-      return { rs, cx: W - rs * 1.45, cy: 158, cw: Math.max(4.6, rs * .092), ch: Math.max(7.4, rs * .152) };
+    const rnd = (a, b) => a + Math.random() * (b - a);
+
+    function newFlake(f, top) {
+      const { W, H } = S, z = Math.random();
+      f.z = z; f.x = rnd(-10, W + 10); f.y = top ? rnd(-30, -6) : rnd(0, H);
+      f.vx = 0; f.vy = 0; f.ph = rnd(0, 6.28); f.sw = rnd(.5, 1.2);
+      f.fall = 10 + z * 26; f.size = 7 + z * 7;
+      f.ch = z > .78 ? (Math.random() > .45 ? '*' : '+') : z > .4 ? (Math.random() > .5 ? '*' : '·') : (Math.random() > .3 ? '.' : '·');
+      return f;
     }
-    const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-    // brightness of the scene at (u, v), in units of the shadow radius; v grows downwards
-    function field(u, v, t) {
-      const d = Math.hypot(u, v), th = Math.atan2(v, u);
-      let I = 0;
-      // the accretion disk, seen almost edge on
-      const K = .14, r = Math.hypot(u, v / K);
-      const inDisk = r > 1.32 && r < 3.7 && Math.abs(v) < K * 3.7;
-      let disk = 0;
-      if (inDisk) {
-        const prof = sm(1.32, 1.55, r) * Math.pow(1.45 / r, 1.35) * (1 - sm(2.9, 3.7, r));
-        const ph = Math.atan2(v / K, u), w = .9 * Math.pow(1.4 / r, 1.5);
-        const swirl = .62 + .24 * Math.sin(ph * 4 - t * w * 2.2 + r * 6.5) + .14 * Math.sin(ph * 9 + t * w * 1.3 - r * 11);
-        const dop = 1 + .55 * (-u / r);
-        disk = prof * swirl * dop * 1.55;
-      }
-      const front = v > 0;
-      // the void: nothing comes through except the near side of the disk
-      if (d < 1) return front ? disk : 0;
-      // photon ring hugging the shadow, then the lensed image of the disk's far side
-      const top = v < 0;
-      const ring = Math.exp(-Math.pow((d - 1.05) / .06, 2)) * .9;
-      const wl = top ? .34 : .16, cl = top ? 1.36 : 1.2;
-      const lens = Math.exp(-Math.pow((d - cl) / wl, 2)) * (top ? 1 : .6);
-      const lensTex = .78 + .22 * Math.sin(th * 7 - t * .9 + d * 9) ;
-      const side = 1 + .35 * (-u / d);
-      I = (ring + lens * lensTex) * side + disk;
-      return I;
+    function newCrystal(c, top) {
+      const { W, H } = S, R = rnd(30, Math.min(54, W * .13));
+      c.R = R; c.x = rnd(W * .42, W - R * .6); c.y = top ? -R - rnd(0, H * .4) : rnd(R, H - R);
+      c.vx = 0; c.vy = 0; c.a = rnd(0, 1.05); c.spin = rnd(.12, .3) * (Math.random() > .5 ? 1 : -1);
+      c.fall = 7 + 14 * (R / 54); c.ph = rnd(0, 6.28);
+      // each crystal grows its own branches
+      c.br = [[rnd(.32, .42), rnd(.26, .36)], [rnd(.6, .7), rnd(.16, .24)]];
+      c.tip = Math.random() > .5;
+      return c;
     }
-    let stars = [];
     function seed() {
-      const { W, H } = BH, g = geo(); stars = [];
-      for (let i = 0; i < 40; i++) {
-        const x = g.cx + (hash(i, 2, 7) - .5) * g.rs * 7, y = g.cy + (hash(i, 9, 3) - .5) * g.rs * 4.4;
-        const u = (x - g.cx) / g.rs, v = (y - g.cy) / g.rs;
-        if (x < W * .55 || x > W - 4 || y < 18 || y > H - 8) continue;
-        if (Math.hypot(u, v) < 2.1 || (Math.abs(v) < .55 && Math.abs(u) < 4)) continue;
-        stars.push({ x, y, ph: hash(i, 4, 4) * 6.28, big: hash(i, 6, 1) > .82 });
+      const { W, H } = S, n = Math.min(150, Math.round(W * H / 2400));
+      dust = Array.from({ length: n }, () => newFlake({}, false));
+      crystals = Array.from({ length: W < 360 ? 2 : 3 }, () => newCrystal({}, false));
+    }
+
+    // the glyph that follows a stroke: screen y runs down, so 45° is down-right
+    function stroke(a) {
+      const t = ((a % Math.PI) + Math.PI) % Math.PI, k = Math.round(t / (Math.PI / 4)) % 4;
+      return '-\\|/'[k];
+    }
+    // trace a crystal onto its own character grid: six arms, two pairs of branches on each, a heart and bright tips
+    const S60 = Math.PI / 3;
+    function trace(c, cw, chh) {
+      const cells = new Map();
+      const put = (x, y, ch, w) => {
+        const ix = Math.round(x / cw), iy = Math.round(y / chh), k = ix + ',' + iy, o = cells.get(k);
+        if (!o || w > o.w) cells.set(k, { ix, iy, ch, w });
+      };
+      const line = (x0, y0, ang, len, w) => {
+        const dx = Math.cos(ang), dy = Math.sin(ang), ch = stroke(ang), n = Math.ceil(len / (Math.min(cw, chh) * .45));
+        for (let i = 1; i <= n; i++) put(x0 + dx * len * i / n, y0 + dy * len * i / n, ch, w);
+        return [x0 + dx * len, y0 + dy * len];
+      };
+      for (let k = 0; k < 6; k++) {
+        const arm = c.a + k * S60, ax = Math.cos(arm), ay = Math.sin(arm);
+        const [tx, ty] = line(0, 0, arm, c.R * .9, 2);
+        for (const [at, len] of c.br) {
+          const bx = ax * c.R * at, by = ay * c.R * at;
+          line(bx, by, arm + S60 * .85, c.R * len, 1); line(bx, by, arm - S60 * .85, c.R * len, 1);
+        }
+        put(tx + ax * cw * .6, ty + ay * chh * .6, c.tip ? 'o' : '*', 3);
+      }
+      put(0, 0, '*', 4);
+      return cells.values();
+    }
+
+    function stepSnow(dt) {
+      const { W, H } = S;
+      gust *= Math.pow(.25, dt); ptr.vx *= Math.pow(.1, dt);
+      const breeze = Math.sin(st * .23) * 6 + gust;
+      const push = (o, mass) => {
+        if (!ptr.on) return;
+        const dx = o.x - ptr.x, dy = o.y - ptr.y, d = Math.hypot(dx, dy), R = 110;
+        if (d < R && d > .01) { const f = (1 - d / R) * (1 - d / R) * 900 / mass; o.vx += (dx / d * f + ptr.vx * .9 * (1 - d / R)) * dt; o.vy += dy / d * f * .5 * dt; }
+      };
+      for (const f of dust) {
+        push(f, .6 + f.z);
+        f.vx *= Math.pow(.2, dt); f.vy *= Math.pow(.2, dt);
+        f.x += (breeze * (.4 + f.z) + Math.sin(st * f.sw + f.ph) * (5 + f.z * 9) + f.vx) * dt;
+        f.y += (f.fall + f.vy) * dt;
+        if (f.y > H - bankAt(f.x) + 2 || f.x < -30 || f.x > W + 30) newFlake(f, true);
+      }
+      for (const c of crystals) {
+        push(c, 2.4);
+        c.vx *= Math.pow(.3, dt); c.vy *= Math.pow(.3, dt);
+        c.x += (breeze * .5 + Math.sin(st * .4 + c.ph) * 7 + c.vx) * dt;
+        c.y += (c.fall + c.vy) * dt;
+        c.a += (c.spin + c.vx * .004) * dt;
+        if (c.y - c.R > H || c.x < -c.R * 2 || c.x > W + c.R * 2) newCrystal(c, true);
+      }
+      for (let i = puffs.length - 1; i >= 0; i--) {
+        const p = puffs[i]; p.t += dt; p.vx *= Math.pow(.15, dt); p.vy = p.vy * Math.pow(.15, dt) + 30 * dt;
+        p.x += p.vx * dt; p.y += p.vy * dt; if (p.t > p.life) puffs.splice(i, 1);
       }
     }
+    // height of the snowbank along the bottom edge
+    const bankAt = x => 9 + 4 * Math.sin(x * .031 + 1.3) + 3 * Math.sin(x * .077 + .4) + 2 * Math.sin(x * .19);
+
     const draw = () => {
-      if (!BH) return; const { ctx, W, H } = BH, { rs, cx, cy, cw, ch } = geo(), t = bt;
+      if (!S) return; const { ctx, W, H } = S;
       ctx.clearRect(0, 0, W, H);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `500 ${(ch * 1.05).toFixed(1)}px ${MONO}`;
-      ctx.fillStyle = C.accent;
-      for (const s of stars) { ctx.globalAlpha = .22 + .28 * (.5 + .5 * Math.sin(t * .6 + s.ph)); ctx.fillText(s.big ? '+' : '.', s.x, s.y); }
-      const nx = Math.ceil(rs * 4.1 / cw), ny = Math.ceil(rs * 2.05 / ch);
-      // three passes so each colour is set once: faint, mid, dense
-      const cells = [];
-      for (let j = -ny; j <= ny; j++) for (let i = -nx; i <= nx; i++) {
-        const x = cx + i * cw, y = cy + j * ch; if (x < 2 || x > W - 2) continue;
-        // two samples per cell, averaged, for a smoother edge
-        const u = (x - cx) / rs, v = (y - cy) / rs, du = cw / rs * .25, dv = ch / rs * .25;
-        const I = (field(u - du, v - dv, t) + field(u + du, v + dv, t)) / 2;
-        // fade toward the left so the art never crowds the price
-        const fade = .35 + .65 * sm(cx - rs * 3.4, cx - rs * 1.9, x);
-        const q = Math.pow(Math.min(1, I * fade), .8);
-        if (q < .06) continue;
-        cells.push(x, y, behindText(x, y) ? -q : q);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      // dust and star flakes, far to near
+      for (const f of dust) {
+        const dim = behindText(f.x, f.y) ? .25 : 1, tw = .75 + .25 * Math.sin(st * 2 + f.ph * 3);
+        ctx.font = `500 ${f.size.toFixed(1)}px ${MONO}`;
+        ctx.fillStyle = f.z > .78 ? C.accent : C.accent2;
+        ctx.globalAlpha = (.28 + f.z * .5) * tw * dim;
+        ctx.fillText(f.ch, f.x, f.y);
       }
-      // coloured like the ASCII globes across the page: ink for the dense structure, brand blue in the mid-tones,
-      // light blue for the faint glow, and a few blue sparkles that drift through the ink
-      const tk = Math.floor(t * 1.4);
-      for (let pass = 0; pass < 4; pass++) {
-        ctx.fillStyle = pass === 0 ? C.accent2 : pass === 1 ? C.accent2 : pass === 2 ? C.accent : C.accentInk;
-        for (let k = 0; k < cells.length; k += 3) {
-          const qs = cells[k + 2], dim = qs < 0, q = Math.abs(qs), sp = !dim && q > .45 && hash(Math.round(cells[k] / cw) + tk * 7, Math.round(cells[k + 1] / ch) - tk * 3, 5) > .955;
-          const p = sp ? 3 : q < .3 ? 0 : q < .58 ? 1 : 2; if (p !== pass) continue;
-          ctx.globalAlpha = (pass === 0 ? .3 + q * .5 : pass === 1 ? .55 + q * .35 : pass === 2 ? .5 + q * .35 : .8) * (dim ? .22 : 1);
-          ctx.fillText(BR[Math.max(1, Math.min(9, Math.round(q * 9)))], cells[k], cells[k + 1]);
+      // the crystals, each on its own grid so they glide instead of stepping
+      const fs = 9, cw = fs * .6, chh = fs * .95, sparkle = Math.floor(st * 1.5);
+      ctx.font = `600 ${fs}px ${MONO}`;
+      for (const c of crystals) {
+        for (const o of trace(c, cw, chh)) {
+          const x = c.x + o.ix * cw, y = c.y + o.iy * chh; if (x < -4 || x > W + 4 || y < -4 || y > H + 4) continue;
+          const dim = behindText(x, y) ? .22 : 1, glint = o.w < 3 && hash(o.ix + sparkle * 7, o.iy - sparkle * 3, c.ph * 10) > .95;
+          ctx.fillStyle = glint ? C.accent2 : o.w >= 3 ? C.accentInk : o.w === 2 ? C.accent : C.accent2;
+          ctx.globalAlpha = (glint ? 1 : o.w >= 3 ? .95 : o.w === 2 ? .8 : .75) * dim;
+          ctx.fillText(glint ? '+' : o.ch, x, y);
+        }
+      }
+      // a puff of snow where the card was tapped
+      for (const p of puffs) {
+        ctx.font = `500 ${p.size}px ${MONO}`; ctx.fillStyle = p.col;
+        ctx.globalAlpha = Math.max(0, 1 - p.t / p.life) * .9; ctx.fillText(p.ch, p.x, p.y);
+      }
+      // the snowbank: denser toward the floor, with a slow shimmer along its crest
+      ctx.font = `500 8px ${MONO}`;
+      const bw = 5, bh = 6;
+      for (let x = bw / 2; x < W; x += bw) {
+        const top = H - bankAt(x);
+        for (let y = H - bh / 2; y > top; y -= bh) {
+          const depth = (H - y) / (H - top), crest = depth > .7;
+          const g = hash(Math.round(x / bw), Math.round(y / bh), 2);
+          const shim = crest && hash(Math.round(x / bw) + Math.floor(st * 1.2) * 5, 1, 9) > .9;
+          ctx.fillStyle = shim ? C.accent : C.accent2;
+          ctx.globalAlpha = shim ? .9 : (crest ? .4 : .3 + depth * .25) + g * .15;
+          ctx.fillText(shim ? '*' : crest ? (g > .5 ? '.' : '·') : g > .55 ? ':' : g > .2 ? '·' : '*', x, y);
         }
       }
       ctx.globalAlpha = 1;
     };
-    onResize(cv, () => { BH = fit(cv); measureText(); seed(); draw(); });
+
+    // the breeze and the puff
+    let lastX = 0, lastT = 0;
+    card.addEventListener('pointermove', e => {
+      const o = card.getBoundingClientRect(), x = e.clientX - o.left, now = performance.now();
+      if (ptr.on && now > lastT) ptr.vx = Math.max(-500, Math.min(500, (x - lastX) / Math.max(.008, (now - lastT) / 1000)));
+      ptr.x = x; ptr.y = e.clientY - o.top; ptr.on = true; lastX = x; lastT = now;
+    });
+    card.addEventListener('pointerleave', () => { ptr.on = false; gust += ptr.vx * .05; });
+    card.addEventListener('pointerdown', e => {
+      if (reduce) return;
+      const o = card.getBoundingClientRect(), x = e.clientX - o.left, y = e.clientY - o.top;
+      for (let i = 0; i < 18; i++) {
+        const a = rnd(0, 6.28), sp = rnd(40, 150);
+        puffs.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, t: 0, life: rnd(.6, 1.2), size: rnd(7, 12),
+          ch: '*+·.'[Math.floor(rnd(0, 4))], col: Math.random() > .5 ? C.accent : C.accent2 });
+      }
+    });
+
+    onResize(cv, () => { S = fit(cv); measureText(); seed(); draw(); });
     if (document.fonts) document.fonts.ready.then(() => { measureText(); draw(); });
-    animate(card, dt => { bt += dt; draw(); });
+    animate(card, dt => { if (!S) return; st += dt; stepSnow(dt); draw(); });
   })();
+
+  // ================= MICRO-INTERACTIONS =================
+  // A ripple from the exact point of every press, sections that settle in as they arrive, and the nav following the reader.
+  if (!reduce) {
+    document.addEventListener('pointerdown', e => {
+      const el = e.target.closest('.btn, .chip, .seg button, .dtabs button, .copy, .go, .attach, .faq summary'); if (!el) return;
+      const r = el.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      const d = 2 * Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y));
+      const rip = document.createElement('span'); rip.className = 'rip';
+      rip.style.cssText = `width:${d}px;height:${d}px;left:${x - d / 2}px;top:${y - d / 2}px`;
+      el.appendChild(rip); rip.addEventListener('animationend', () => rip.remove());
+    });
+    // keyboard presses get the same ripple, from the centre
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const el = document.activeElement && document.activeElement.closest && document.activeElement.closest('.btn, .chip, .seg button, .dtabs button, .copy, .go, .faq summary'); if (!el) return;
+      const r = el.getBoundingClientRect(), d = Math.hypot(r.width, r.height);
+      const rip = document.createElement('span'); rip.className = 'rip';
+      rip.style.cssText = `width:${d}px;height:${d}px;left:${r.width / 2 - d / 2}px;top:${r.height / 2 - d / 2}px`;
+      el.appendChild(rip); rip.addEventListener('animationend', () => rip.remove());
+    });
+    // sections settle in once, a beat apart within each group
+    if ('IntersectionObserver' in window) {
+      const groups = ['.head .cell', '.actor .cell', '#pricing .grid', '.faq-r', '.contact .cell', '.closing .cta', '.ao .cell'];
+      const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
+      groups.forEach(g => document.querySelectorAll(g).forEach(box => [...box.children].forEach((el, i) => {
+        if (el.tagName === 'CANVAS' || el.matches('.btn')) return;
+        el.classList.add('rv'); el.style.setProperty('--d', Math.min(i, 6) * 70 + 'ms'); io.observe(el);
+      })));
+      document.documentElement.classList.add('rv-on');
+    }
+  }
+  // the nav underlines the section being read
+  {
+    const links = [...document.querySelectorAll('.nav ul a')], byId = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+    const io = new IntersectionObserver(es => es.forEach(en => {
+      if (en.isIntersecting) links.forEach(a => a.classList.toggle('cur', a === byId.get(en.target.id)));
+    }), { rootMargin: '-45% 0px -50% 0px' });
+    byId.forEach((a, id) => { const sec = document.getElementById(id); if (sec) io.observe(sec); });
+  }
 
   // ================= CONTACT =================
   $('copyEmail').addEventListener('click', async () => {
     const btn = $('copyEmail');
-    try { await navigator.clipboard.writeText('hq@mworld.tech'); btn.textContent = 'Copied'; }
+    try { await navigator.clipboard.writeText('hq@mworld.tech'); btn.textContent = '✓ Copied'; }
     catch { const r = document.createRange(); r.selectNodeContents($('emailText')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected'; }
-    setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+    replay(btn, 'ok');
+    clearTimeout(btn._t); btn._t = setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1600);
   });
   $('contactForm').addEventListener('submit', e => {
     e.preventDefault();
-    const note = $('formNote'); note.hidden = false;
+    const note = $('formNote'); note.hidden = false; replay(note);
+    const shake = id => replay($(id).closest('.field'), 'shake');
     const missing = ['fFirst', 'fEmail', 'fMsg'].filter(id => !$(id).value.trim());
-    if (missing.length) { note.textContent = 'Add your first name, email and a message, then send.'; $(missing[0]).focus(); return; }
-    if (!$('fEmail').checkValidity()) { note.textContent = 'That email address looks incomplete. Check it and send again.'; $('fEmail').focus(); return; }
+    if (missing.length) { note.textContent = 'Add your first name, email and a message, then send.'; missing.forEach(shake); $(missing[0]).focus(); return; }
+    if (!$('fEmail').checkValidity()) { note.textContent = 'That email address looks incomplete. Check it and send again.'; shake('fEmail'); $('fEmail').focus(); return; }
     note.textContent = 'Preview only: this form is not connected yet. On mworld.tech it will deliver to hq@mworld.tech.';
   });
 })();
