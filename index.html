@@ -110,10 +110,14 @@ p { text-wrap: pretty; }
 /* buttons: the brand pill */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 22px; border-radius: 999px; font: 500 15px/1 var(--font-sans); text-decoration: none; white-space: nowrap; border: 0; cursor: pointer; transition: transform .15s ease, background .2s; }
 .btn:active { transform: scale(.98); }
-.btn-primary { background: var(--fg); color: var(--on-block); box-shadow: inset -4px 4px 4px 0 var(--accent), inset 4px -4px 4px 0 var(--accent-2); }
-.btn-primary:hover { transform: translateY(-1px); }
-.btn-soft { background: var(--sunk); color: var(--fg); }
-.btn-soft:hover { background: var(--line); }
+/* primary: the brand blue the logo and the department field are drawn in, a hairline of light along the top edge,
+   and an arrow that leans forward on hover. soft: a white pill on a blueprint hairline that turns blue under the hand. */
+.btn-primary { background: var(--block); color: var(--on-block); box-shadow: inset 0 1px 0 0 var(--on-block-soft), 0 1px 2px 0 var(--shadow), 0 6px 16px -10px var(--glow); }
+.btn-primary:hover { background: var(--accent-ink); }
+.btn-soft { background: var(--panel); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
+.btn-soft:hover { color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent); }
+.btn-primary::after, .btn-soft::after, .btn-white::after { content: "\2192"; font-weight: 400; margin-right: -2px; transition: transform .35s var(--spring, ease); }
+.btn:hover::after { transform: translateX(3px); }
 .btn-sm { height: 38px; padding: 0 16px; font-size: 15px; }
 .more { display: inline-flex; gap: 6px; align-items: center; color: var(--accent-ink); text-decoration: none; font-weight: 500; font-size: 17px; }
 .more:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -372,7 +376,6 @@ svg.iso { width: 100%; height: 280px; max-width: 420px; display: block; overflow
 .price span { color: var(--muted); font-size: 17px; }
 .credits { font-size: 15px; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; margin-top: -10px; }
 .plan .btn { width: 100%; }
-.plan.pop .btn-soft { background: var(--panel); }
 .plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .plan li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; font-size: 15px; color: var(--ink-2); }
 .plan li svg { width: 14px; height: 14px; margin-top: 4px; color: var(--accent); }
@@ -446,7 +449,7 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 @keyframes rip { to { transform: scale(1); opacity: 0; } }
 .btn { transition: transform .3s var(--spring), background .2s, box-shadow .3s var(--out); }
 .btn:hover { transform: translateY(-2px); }
-.btn-primary:hover { box-shadow: inset -4px 4px 4px 0 var(--accent), inset 4px -4px 4px 0 var(--accent-2), 0 8px 20px -8px var(--glow); }
+.btn-primary:hover { box-shadow: inset 0 1px 0 0 var(--on-block-soft), 0 1px 2px 0 var(--shadow), 0 10px 22px -10px var(--glow); }
 .btn:active, .btn-primary:active, .btn-white:active { transform: translateY(0) scale(.96); transition-duration: .08s; }
 @keyframes pop { 0% { transform: scale(.9); } 55% { transform: scale(1.07); } 100% { transform: scale(1); } }
 .chip { transition: background .2s, color .2s, transform .3s var(--spring); }
