@@ -115,8 +115,8 @@ p { text-wrap: pretty; }
 .nav .cell { height: 64px; display: flex; align-items: center; gap: 28px; padding: 0 var(--pad); }
 .nav .cell::before, .nav .cell::after { display: none; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 600 20px/1 var(--font-sans); letter-spacing: -0.02em; }
-.mark { width: 28px; height: 28px; border-radius: 8px; background: var(--fg); display: grid; place-items: center; box-shadow: inset -2px 2px 3px 0 var(--accent), inset 2px -2px 3px 0 var(--accent-2); }
-.mark .logo { width: 17px; height: 17px; display: block; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
+.mark { display: grid; place-items: center; }
+.mark .logo { width: 30px; height: 29px; display: block; transition: transform .7s cubic-bezier(.34, 1.56, .64, 1); }
 .brand:hover .mark .logo { transform: rotate(90deg); }
 .brand:active .mark .logo { transform: rotate(180deg) scale(.9); }
 .nav ul { display: flex; gap: 4px; list-style: none; margin: 0 auto; padding: 0; }
@@ -500,8 +500,6 @@ form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .plan li:nth-child(2) svg { animation-delay: 40ms; } .plan li:nth-child(3) svg { animation-delay: 80ms; } .plan li:nth-child(4) svg { animation-delay: 120ms; }
 .plan li:nth-child(5) svg { animation-delay: 160ms; } .plan li:nth-child(6) svg { animation-delay: 200ms; }
 @keyframes tickIn { 0% { transform: scale(.4) rotate(-20deg); opacity: .3; } 100% { transform: none; opacity: 1; } }
-.badge { display: inline-block; transition: transform .35s var(--spring); }
-.plan.pop:hover .badge { transform: translateY(-1px) rotate(-3deg); }
 .tcard { transition: transform .35s var(--spring), box-shadow .3s; }
 .tcard:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--accent), 0 12px 28px -14px var(--shadow-2); }
 svg.iso { transition: transform .5s var(--spring); }
@@ -537,7 +535,7 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
 <!-- the M-World pinwheel: four blades turning around one centre -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
-    <linearGradient id="mwGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#CFE9FF"/><stop offset="1" stop-color="#64C9FF"/></linearGradient>
+    <linearGradient id="mwGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3FA9FF"/><stop offset=".5" stop-color="#2486FF"/><stop offset="1" stop-color="#0A5FD8"/></linearGradient>
     <symbol id="mwLogo" viewBox="0 0 176 170">
       <g fill="url(#mwGrad)">
         <path d="M105.411 66.5934L160.445 21L176 45.8116C176 45.8116 123.741 73.6047 113.289 79.162C104.869 83.6399 97.4639 83.4798 91.7645 73.8499C89.4175 67.4217 90.0889 26.9691 90.0889 26.9691H111.208L105.411 66.5934Z"/>
@@ -1799,11 +1797,10 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
 
   // ================= POPULAR PLAN: ASCII snow drifting through the card =================
   // Fine dust far back and small star flakes nearer, each depth falling and swaying at its own pace.
-  // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake;
-  // a tap on the card throws up a puff of snow.
+  // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake.
   (function snowfall() {
     const card = $('popPlan'), cv = $('popArt'); if (!card || !cv) return;
-    let S = null, st = 0, holes = [], dust = [], puffs = [];
+    let S = null, st = 0, holes = [], dust = [];
     const ptr = { x: -1e4, y: -1e4, vx: 0, on: false };
     let gust = 0;
     // where the card's words sit: snow behind them is dimmed so the text always reads
@@ -1846,10 +1843,6 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
         f.y += (f.fall + f.vy) * dt;
         if (f.y > H - bankAt(f.x) + 2 || f.x < -30 || f.x > W + 30) newFlake(f, true);
       }
-      for (let i = puffs.length - 1; i >= 0; i--) {
-        const p = puffs[i]; p.t += dt; p.vx *= Math.pow(.15, dt); p.vy = p.vy * Math.pow(.15, dt) + 30 * dt;
-        p.x += p.vx * dt; p.y += p.vy * dt; if (p.t > p.life) puffs.splice(i, 1);
-      }
     }
     // height of the snowbank along the bottom edge
     const bankAt = x => 9 + 4 * Math.sin(x * .031 + 1.3) + 3 * Math.sin(x * .077 + .4) + 2 * Math.sin(x * .19);
@@ -1865,11 +1858,6 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
         ctx.fillStyle = f.z > .78 ? C.accent : C.accent2;
         ctx.globalAlpha = (.28 + f.z * .5) * tw * dim;
         ctx.fillText(f.ch, f.x, f.y);
-      }
-      // a puff of snow where the card was tapped
-      for (const p of puffs) {
-        ctx.font = `500 ${p.size}px ${MONO}`; ctx.fillStyle = p.col;
-        ctx.globalAlpha = Math.max(0, 1 - p.t / p.life) * .9; ctx.fillText(p.ch, p.x, p.y);
       }
       // the snowbank: denser toward the floor, with a slow shimmer along its crest
       ctx.font = `500 8px ${MONO}`;
@@ -1888,7 +1876,7 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
       ctx.globalAlpha = 1;
     };
 
-    // the breeze and the puff
+    // the breeze
     let lastX = 0, lastT = 0;
     card.addEventListener('pointermove', e => {
       const o = card.getBoundingClientRect(), x = e.clientX - o.left, now = performance.now();
@@ -1896,16 +1884,6 @@ html.rv-on .rv.in { opacity: 1; transform: none; }
       ptr.x = x; ptr.y = e.clientY - o.top; ptr.on = true; lastX = x; lastT = now;
     });
     card.addEventListener('pointerleave', () => { ptr.on = false; gust += ptr.vx * .05; });
-    card.addEventListener('pointerdown', e => {
-      if (reduce) return;
-      const o = card.getBoundingClientRect(), x = e.clientX - o.left, y = e.clientY - o.top;
-      for (let i = 0; i < 18; i++) {
-        const a = rnd(0, 6.28), sp = rnd(40, 150);
-        puffs.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, t: 0, life: rnd(.6, 1.2), size: rnd(7, 12),
-          ch: '*+·.'[Math.floor(rnd(0, 4))], col: Math.random() > .5 ? C.accent : C.accent2 });
-      }
-    });
-
     onResize(cv, () => { S = fit(cv); measureText(); seed(); draw(); });
     if (document.fonts) document.fonts.ready.then(() => { measureText(); draw(); });
     animate(card, dt => { if (!S) return; st += dt; stepSnow(dt); draw(); });

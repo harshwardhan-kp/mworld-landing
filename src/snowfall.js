@@ -1,10 +1,9 @@
   // ================= POPULAR PLAN: ASCII snow drifting through the card =================
   // Fine dust far back and small star flakes nearer, each depth falling and swaying at its own pace.
-  // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake;
-  // a tap on the card throws up a puff of snow.
+  // A soft bank of snow gathers along the bottom edge. The pointer is a breeze: flakes lean away and swirl in its wake.
   (function snowfall() {
     const card = $('popPlan'), cv = $('popArt'); if (!card || !cv) return;
-    let S = null, st = 0, holes = [], dust = [], puffs = [];
+    let S = null, st = 0, holes = [], dust = [];
     const ptr = { x: -1e4, y: -1e4, vx: 0, on: false };
     let gust = 0;
     // where the card's words sit: snow behind them is dimmed so the text always reads
@@ -47,10 +46,6 @@
         f.y += (f.fall + f.vy) * dt;
         if (f.y > H - bankAt(f.x) + 2 || f.x < -30 || f.x > W + 30) newFlake(f, true);
       }
-      for (let i = puffs.length - 1; i >= 0; i--) {
-        const p = puffs[i]; p.t += dt; p.vx *= Math.pow(.15, dt); p.vy = p.vy * Math.pow(.15, dt) + 30 * dt;
-        p.x += p.vx * dt; p.y += p.vy * dt; if (p.t > p.life) puffs.splice(i, 1);
-      }
     }
     // height of the snowbank along the bottom edge
     const bankAt = x => 9 + 4 * Math.sin(x * .031 + 1.3) + 3 * Math.sin(x * .077 + .4) + 2 * Math.sin(x * .19);
@@ -66,11 +61,6 @@
         ctx.fillStyle = f.z > .78 ? C.accent : C.accent2;
         ctx.globalAlpha = (.28 + f.z * .5) * tw * dim;
         ctx.fillText(f.ch, f.x, f.y);
-      }
-      // a puff of snow where the card was tapped
-      for (const p of puffs) {
-        ctx.font = `500 ${p.size}px ${MONO}`; ctx.fillStyle = p.col;
-        ctx.globalAlpha = Math.max(0, 1 - p.t / p.life) * .9; ctx.fillText(p.ch, p.x, p.y);
       }
       // the snowbank: denser toward the floor, with a slow shimmer along its crest
       ctx.font = `500 8px ${MONO}`;
@@ -89,7 +79,7 @@
       ctx.globalAlpha = 1;
     };
 
-    // the breeze and the puff
+    // the breeze
     let lastX = 0, lastT = 0;
     card.addEventListener('pointermove', e => {
       const o = card.getBoundingClientRect(), x = e.clientX - o.left, now = performance.now();
@@ -97,17 +87,8 @@
       ptr.x = x; ptr.y = e.clientY - o.top; ptr.on = true; lastX = x; lastT = now;
     });
     card.addEventListener('pointerleave', () => { ptr.on = false; gust += ptr.vx * .05; });
-    card.addEventListener('pointerdown', e => {
-      if (reduce) return;
-      const o = card.getBoundingClientRect(), x = e.clientX - o.left, y = e.clientY - o.top;
-      for (let i = 0; i < 18; i++) {
-        const a = rnd(0, 6.28), sp = rnd(40, 150);
-        puffs.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 30, t: 0, life: rnd(.6, 1.2), size: rnd(7, 12),
-          ch: '*+·.'[Math.floor(rnd(0, 4))], col: Math.random() > .5 ? C.accent : C.accent2 });
-      }
-    });
-
     onResize(cv, () => { S = fit(cv); measureText(); seed(); draw(); });
     if (document.fonts) document.fonts.ready.then(() => { measureText(); draw(); });
     animate(card, dt => { if (!S) return; st += dt; stepSnow(dt); draw(); });
   })();
+
