@@ -1,0 +1,1736 @@
+<title>M-World</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a blueprint. One 1112px column between two rails, full-bleed hairlines, crosshairs where they meet,
+   every section a stack of ruled rows. Three actors, three colours: AI departments (blue), people (amber), businesses (ink).
+   ASCII only where it carries meaning: the core, the org chart, the blue block's edges, the sunrise, the wordmark. */
+:root {
+  --bg: #F8FAFD;
+  --panel: #FFFFFF;
+  --sunk: #F1F4F9;
+  --fg: #141821;
+  --ink-2: #2A3140;
+  --muted: #687083;
+  --faint: #A3ABBA;
+  --line: #E3E8F0;
+  --line-2: #CDD5E2;
+  --accent: #2486FF;
+  --accent-2: #64C9FF;
+  --accent-soft: #EAF3FF;
+  --human: #E0820B;
+  --human-soft: #FFF2DF;
+  --block: #1566E0;
+  --night: #0A1222;
+  --night-2: #13213C;
+  --shadow: rgba(20, 40, 80, .08);
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --rail: 1112px;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 500; text-wrap: balance; }
+p { text-wrap: pretty; }
+.blue { color: var(--accent); }
+.amber { color: var(--human); }
+
+/* ---------- the frame ---------- */
+.row { position: relative; border-top: 1px solid var(--line); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.cell { position: relative; max-width: var(--rail); margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+.cell::before, .cell::after {
+  content: ""; position: absolute; top: -5px; width: 9px; height: 9px; z-index: 3; pointer-events: none;
+  background: linear-gradient(var(--line-2), var(--line-2)) center / 1px 9px no-repeat, linear-gradient(var(--line-2), var(--line-2)) center / 9px 1px no-repeat;
+}
+.cell::before { left: -5px; }
+.cell::after { right: -5px; }
+.spacer .cell { height: clamp(40px, 6vw, 88px); }
+.grid { display: grid; }
+.grid > * { min-width: 0; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid.ruled > * + * { border-left: 1px solid var(--line); }
+@media (max-width: 860px) {
+  .g2, .g3 { grid-template-columns: 1fr; }
+  .grid.ruled.g2 > * + *, .grid.ruled.g3 > * + * { border-left: 0; border-top: 1px solid var(--line); }
+  .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid.ruled.g4 > :nth-child(3) { border-left: 0; }
+  .grid.ruled.g4 > :nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+
+/* section label row */
+.sec .cell { height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 24px; }
+.sec .cell > span:first-child::before { content: ""; position: absolute; left: -1px; top: 22px; width: 2px; height: 16px; background: var(--accent); }
+.sec .lbl { font: 500 11.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; gap: 12px; align-items: center; }
+.sec .lbl b { color: var(--accent); font-weight: 500; }
+.sec .prog { font: 500 11px/1 var(--font-mono); color: var(--faint); letter-spacing: .14em; white-space: nowrap; }
+.sec .prog i { font-style: normal; color: var(--accent); }
+
+/* type */
+.eyebrow { display: inline-flex; align-items: center; gap: 8px; font: 500 12px/1 var(--font-mono); color: var(--muted); letter-spacing: .02em; }
+.eyebrow .sl { color: var(--faint); }
+.eyebrow svg { width: 14px; height: 14px; color: var(--accent); }
+.h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.02; letter-spacing: -0.042em; }
+.h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.06; letter-spacing: -0.036em; }
+.sub { color: var(--muted); font-size: 17px; line-height: 1.5; max-width: 56ch; }
+.lead { font-size: 18px; line-height: 1.45; color: var(--muted); letter-spacing: -0.01em; }
+.lead b { color: var(--fg); font-weight: 500; }
+.center { text-align: center; display: grid; justify-items: center; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 42px; padding: 0 20px; border-radius: 999px; font: 500 14.5px/1 var(--font-sans); text-decoration: none; white-space: nowrap; border: 0; cursor: pointer; transition: transform .15s ease, box-shadow .2s ease, background .2s; }
+.btn-primary { background: var(--fg); color: #fff; box-shadow: inset -4px 4px 4px 0 var(--accent), inset 4px -4px 4px 0 var(--accent-2), 0 6px 18px -8px rgba(36, 134, 255, .55); }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-soft { background: var(--sunk); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+.btn-soft:hover { background: var(--panel); }
+.btn-sm { height: 34px; padding: 0 14px; font-size: 13.5px; }
+.arr { font-family: var(--font-mono); font-size: 12.5px; }
+.more { display: inline-flex; gap: 6px; align-items: center; color: var(--accent); text-decoration: none; font-weight: 500; font-size: 14.5px; }
+.more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px) saturate(1.4); backdrop-filter: blur(10px) saturate(1.4); border-top: 0; border-bottom: 1px solid var(--line); }
+.nav .cell { height: 64px; display: flex; align-items: center; gap: 28px; padding: 0 20px; }
+.nav .cell::before, .nav .cell::after { display: none; }
+.brand { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font: 600 17px/1 var(--font-sans); letter-spacing: -0.02em; }
+.mark { width: 24px; height: 24px; border-radius: 6px; background: var(--fg); color: #fff; display: grid; place-items: center; font: 600 13px/1 var(--font-mono); box-shadow: inset -2px 2px 3px 0 var(--accent), inset 2px -2px 3px 0 var(--accent-2); }
+.nav ul { display: flex; gap: 2px; list-style: none; margin: 0 auto; padding: 0; }
+.nav ul a { display: block; padding: 8px 11px; border-radius: 8px; text-decoration: none; font-size: 14px; color: var(--ink-2); }
+.nav ul a:hover { background: var(--sunk); }
+.nav .right { display: flex; align-items: center; gap: 8px; }
+.nav .right .txt { font-size: 14px; color: var(--ink-2); text-decoration: none; padding: 8px 10px; }
+@media (max-width: 960px) { .nav ul, .nav .right .txt { display: none; } .nav .cell { justify-content: space-between; } }
+
+/* ---------- hero ---------- */
+.hero .cell { padding: clamp(56px, 7vw, 88px) 24px 40px; overflow: hidden; }
+.hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: calc(100% / 12) 92px; background-position: -1px -1px;
+  -webkit-mask-image: radial-gradient(ellipse 44% 62% at 50% 46%, transparent 55%, #000 80%);
+  mask-image: radial-gradient(ellipse 44% 62% at 50% 46%, transparent 55%, #000 80%);
+}
+.corner { position: absolute; font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; color: var(--faint); pointer-events: none; }
+.corner.tl { left: 20px; top: 18px; } .corner.tr { right: 20px; top: 18px; }
+.corner.bl { left: 20px; bottom: 18px; } .corner.br { right: 20px; bottom: 18px; }
+.spark { position: absolute; width: 18px; height: 18px; color: var(--accent); transform: translate(-50%, -50%); pointer-events: none; }
+.hero-in { position: relative; display: grid; justify-items: center; text-align: center; gap: 22px; }
+.pill { display: inline-flex; align-items: center; gap: 10px; padding: 4px 12px 4px 4px; border-radius: 999px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px var(--shadow); font-size: 13px; color: var(--ink-2); text-decoration: none; }
+.pill .tag { font: 500 10.5px/1 var(--font-mono); letter-spacing: .08em; color: var(--accent); background: var(--accent-soft); padding: 6px 8px; border-radius: 999px; }
+.pill .arr { color: var(--muted); }
+.hero h1 { max-width: 15ch; }
+.hero .sub { margin-top: -4px; }
+.prompt-zone { position: relative; width: 100%; display: grid; justify-items: center; margin-top: 18px; }
+.prompt-zone canvas { position: absolute; top: 50%; height: 150px; width: calc(50% - 350px); transform: translateY(-50%); pointer-events: none; }
+.prompt-zone canvas.l { left: -24px; } .prompt-zone canvas.r { right: -24px; }
+@media (max-width: 900px) { .prompt-zone canvas { display: none; } }
+.prompt { position: relative; width: min(640px, 100%); text-align: left; background: var(--panel); border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px var(--shadow), 0 18px 40px -18px rgba(20, 40, 80, .22); }
+.prompt:focus-within { box-shadow: inset 0 0 0 1px var(--accent-2), 0 0 0 4px var(--accent-soft), 0 18px 40px -18px rgba(20, 40, 80, .22); }
+.prompt .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.prompt textarea { display: block; width: 100%; border: 0; outline: 0; resize: none; background: transparent; padding: 16px 18px 6px 44px; font: 400 16px/1.5 var(--font-sans); color: var(--fg); min-height: 64px; }
+.prompt .glyph { position: absolute; left: 17px; top: 19px; width: 16px; height: 16px; color: var(--faint); }
+.prompt textarea::placeholder { color: var(--faint); }
+.pbar { display: flex; align-items: center; gap: 6px; padding: 8px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.seg { display: inline-flex; padding: 3px; background: var(--sunk); border-radius: 9px; gap: 2px; }
+.seg button { appearance: none; border: 0; background: transparent; cursor: pointer; padding: 7px 10px; border-radius: 7px; font: 500 12.5px/1 var(--font-sans); color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: 0 1px 2px rgba(20, 40, 80, .12), inset 0 0 0 1px var(--line); }
+.seg button i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+.seg button[aria-pressed="true"] i { background: var(--accent); }
+.attach { position: relative; display: inline-grid; place-items: center; width: 34px; height: 32px; border-radius: 8px; color: var(--muted); cursor: pointer; }
+.attach:hover { background: var(--sunk); color: var(--fg); }
+.attach:focus-within { outline: 2px solid var(--accent); }
+.attach input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.attach svg { width: 16px; height: 16px; }
+.files { font: 500 11px/1 var(--font-mono); color: var(--accent); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.go { margin-left: auto; display: inline-grid; place-items: center; width: 40px; height: 32px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; box-shadow: inset 0 -6px 12px rgba(0, 40, 140, .25), 0 2px 6px rgba(36, 134, 255, .35); }
+.go:hover { background: #1677F0; }
+.go svg { width: 16px; height: 16px; }
+.tries { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; align-items: center; margin-top: 14px; }
+.tries .k { font: 500 11px/1 var(--font-mono); color: var(--faint); letter-spacing: .1em; margin-right: 4px; }
+.chip { appearance: none; cursor: pointer; font: 500 12.5px/1 var(--font-sans); color: var(--ink-2); background: transparent; border: 1px dashed var(--line-2); border-radius: 999px; padding: 7px 11px; }
+.chip:hover { border-style: solid; }
+.chip[aria-pressed="true"] { border: 1px solid var(--accent-2); background: var(--accent-soft); color: var(--fg); }
+
+/* ---------- orbit stage ---------- */
+.stage .cell { height: clamp(600px, 62vw, 780px); overflow: hidden; }
+.orbit-wrap { position: absolute; inset: 0; }
+.orbit-wrap::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--line-2) 1px, transparent 1.2px); background-size: 18px 18px; background-position: center; -webkit-mask-image: radial-gradient(ellipse 52% 60% at 50% 50%, #000 40%, transparent 100%); mask-image: radial-gradient(ellipse 52% 60% at 50% 50%, #000 40%, transparent 100%); opacity: .7; }
+.orbit-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.glass { background: color-mix(in srgb, var(--panel) 90%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px var(--shadow), 0 16px 36px -18px rgba(20, 40, 80, .25); }
+.card-h { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line); font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.card-h .live { display: inline-flex; gap: 8px; align-items: center; color: var(--fg); }
+.card-h .live::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); animation: beat 1.4s ease-in-out infinite; }
+.feed { position: absolute; left: 20px; bottom: 20px; width: 360px; z-index: 2; }
+.feed ol { list-style: none; margin: 0; padding: 8px 6px; display: grid; gap: 1px; min-height: 160px; align-content: start; font: 400 11.5px/1.4 var(--font-mono); }
+.feed li { display: grid; grid-template-columns: 38px 30px minmax(0, 1fr) auto; gap: 6px; padding: 4px 8px; border-radius: 6px; color: var(--muted); animation: rowIn .35s ease both; }
+.feed li.run { background: var(--accent-soft); }
+.feed li.run.ppl { background: var(--human-soft); }
+.feed li .tm { color: var(--faint); font-variant-numeric: tabular-nums; }
+.feed li .cd { color: var(--accent); font-weight: 500; }
+.feed li.ppl .cd { color: var(--human); }
+.feed li.biz .cd { color: var(--fg); }
+.feed li .tx { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.feed li .st { text-align: right; font-size: 10px; letter-spacing: .04em; }
+.feed li.done .st { color: var(--fg); }
+.feed li.run .st { color: var(--accent); }
+.feed li.run.ppl .st { color: var(--human); }
+.org-card { position: absolute; right: 20px; top: 20px; width: 272px; z-index: 2; }
+.org-card ul { list-style: none; margin: 0; padding: 8px 6px; display: grid; gap: 1px; }
+.org-card li { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 8px; border-radius: 6px; font-size: 13px; color: var(--ink-2); }
+.org-card li .ic { width: 14px; height: 14px; display: grid; place-items: center; }
+.org-card li .ic i { display: block; width: 10px; height: 10px; }
+.org-card li.ai .ic i { border-radius: 3px; background: var(--accent); }
+.org-card li.ppl .ic i { border-radius: 50%; background: var(--human); }
+.org-card li.biz .ic i { border-radius: 2px; background: var(--fg); }
+.org-card li span:last-child { font: 500 10.5px/1 var(--font-mono); color: var(--faint); font-variant-numeric: tabular-nums; }
+.org-card li.on.ai { background: var(--accent-soft); } .org-card li.on.ai span:last-child { color: var(--accent); }
+.org-card li.on.ppl { background: var(--human-soft); } .org-card li.on.ppl span:last-child { color: var(--human); }
+.org-card li.on.biz { background: var(--sunk); } .org-card li.on.biz span:last-child { color: var(--fg); }
+.org-foot { padding: 10px 14px 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+.org-foot .mode { font: 500 11px/1.3 var(--font-mono); color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.org-foot .mode b { color: var(--fg); font-weight: 500; }
+.bar { height: 3px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .5s ease; }
+.legend { position: absolute; left: 20px; top: 20px; z-index: 2; display: grid; gap: 8px; font: 500 10.5px/1 var(--font-mono); letter-spacing: .08em; color: var(--muted); }
+.legend span { display: flex; align-items: center; gap: 8px; }
+.legend i { width: 9px; height: 9px; }
+.legend .a i { background: var(--accent); border-radius: 2px; }
+.legend .p i { background: var(--human); border-radius: 50%; }
+.legend .b i { background: var(--fg); border-radius: 1px; }
+@keyframes rowIn { from { opacity: 0; transform: translateY(4px); } }
+@keyframes beat { 50% { transform: scale(.6); opacity: .6; } }
+@media (max-width: 860px) {
+  .stage .cell { height: auto; display: grid; }
+  .orbit-wrap { position: relative; height: 360px; }
+  .legend { display: flex; gap: 12px; }
+  .legend { top: 14px; left: 14px; }
+  .feed, .org-card { position: static; width: auto; margin: 0 12px 12px; }
+  .feed ol { min-height: 0; }
+}
+
+/* ships strip */
+.ships .cell { display: grid; grid-template-columns: 240px repeat(6, minmax(0, 1fr)); }
+.ships .cell > * + * { border-left: 1px solid var(--line); }
+.ships .intro { padding: 22px 20px; display: grid; gap: 4px; align-content: center; font-size: 14px; color: var(--muted); }
+.ships .intro b { color: var(--fg); font-weight: 500; font-size: 15px; }
+.ship { padding: 18px 12px 16px; display: grid; gap: 10px; justify-items: center; align-content: center; text-align: center; position: relative; transition: background .2s; }
+.ship::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--accent); transform: scaleX(0); transition: transform .25s ease; }
+.ship:hover { background: var(--panel); }
+.ship:hover::after, .ship.on::after { transform: scaleX(1); }
+.ship pre { margin: 0; font: 500 10px/1.15 var(--font-mono); color: var(--ink-2); }
+.ship.on pre { color: var(--accent); }
+.ship span { font-size: 13px; color: var(--ink-2); }
+.ship em { font: normal 500 10px/1 var(--font-mono); color: var(--faint); letter-spacing: .08em; }
+@media (max-width: 1000px) {
+  .ships .cell { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ships .intro { grid-column: 1 / -1; }
+  .ships .cell > * + * { border-left: 0; }
+  .ships .ship { border-top: 1px solid var(--line); }
+  .ships .ship:not(:nth-child(3n+2)) { border-left: 1px solid var(--line); }
+}
+
+/* ---------- section heads ---------- */
+.head-c .cell { padding: clamp(64px, 8vw, 104px) 24px; overflow: hidden; }
+.head-c .center { position: relative; gap: 18px; }
+.texture { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.head-s .cell { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 24px 48px; padding: clamp(56px, 7vw, 88px) 40px; align-items: start; }
+.head-s .cell > div { display: grid; gap: 16px; }
+@media (max-width: 860px) { .head-s .cell { grid-template-columns: 1fr; padding-inline: 24px; } }
+
+/* bento */
+.bento > div { display: grid; grid-template-rows: auto 1fr; }
+.bento .ill { height: 240px; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; display: grid; place-items: center; }
+.bento .txt { padding: 28px 32px 36px; display: grid; gap: 14px; align-content: start; }
+.bento .txt .eyebrow { color: var(--ink-2); }
+.bento .txt .eyebrow.ppl svg { color: var(--human); }
+.bento .txt .eyebrow.biz svg { color: var(--fg); }
+.seats { display: grid; grid-template-columns: repeat(3, 92px); gap: 8px; }
+.seat { height: 58px; border-radius: 10px; border: 1px dashed var(--line-2); display: grid; place-items: center; align-content: center; gap: 4px; font: 500 10.5px/1 var(--font-mono); color: var(--faint); transition: all .35s ease; }
+.seat b { font-weight: 500; font-size: 12px; color: var(--muted); }
+.seat.on { border: 1px solid var(--line); background: var(--panel); box-shadow: 0 1px 2px var(--shadow); color: var(--accent); }
+.seat.on b { color: var(--fg); }
+.ill svg.diag { width: 100%; height: 100%; }
+.track { width: 84%; display: grid; gap: 14px; }
+.track .line { position: relative; height: 2px; background: var(--line); border-radius: 2px; }
+.track .line i { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: var(--accent); border-radius: 2px; transition: width .4s ease; }
+.track .stops { display: flex; justify-content: space-between; }
+.track .stop { display: grid; justify-items: center; gap: 8px; font: 500 10.5px/1 var(--font-mono); color: var(--faint); letter-spacing: .04em; }
+.track .stop i { width: 11px; height: 11px; border-radius: 50%; background: var(--panel); border: 1.5px solid var(--line-2); margin-top: -22px; transition: all .3s; }
+.track .stop.on { color: var(--fg); }
+.track .stop.on i { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.track .cap { display: flex; justify-content: space-between; font: 500 10.5px/1 var(--font-mono); color: var(--faint); }
+
+/* network illustrations */
+.ailog { width: 82%; border-radius: 10px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line), 0 12px 28px -18px rgba(20, 40, 80, .25); font: 400 11.5px/1.4 var(--font-mono); overflow: hidden; }
+.ailog .h { padding: 8px 12px; border-bottom: 1px solid var(--line); color: var(--faint); font-size: 10px; letter-spacing: .1em; display: flex; justify-content: space-between; }
+.ailog div.l { display: grid; grid-template-columns: 30px minmax(0, 1fr) 14px; gap: 6px; padding: 6px 12px; color: var(--ink-2); }
+.ailog div.l b { color: var(--accent); font-weight: 500; }
+.ailog div.l span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ailog div.l.on { background: var(--accent-soft); }
+.book { width: 84%; border-radius: 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line), 0 12px 28px -18px rgba(20, 40, 80, .25); overflow: hidden; }
+.book .h { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--line); font: 500 10px/1 var(--font-mono); letter-spacing: .1em; color: var(--human); background: var(--human-soft); }
+.book .b { padding: 12px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 10px; align-items: center; }
+.book .av { width: 36px; height: 36px; border-radius: 50%; background: var(--human-soft); box-shadow: inset 0 0 0 1.5px var(--human); display: grid; place-items: center; color: var(--human); }
+.book .av svg { width: 18px; height: 18px; }
+.book .who b { display: block; font-weight: 500; font-size: 14px; }
+.book .who span { font-size: 12.5px; color: var(--muted); }
+.book .steps3 { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
+.book .steps3 span { padding: 9px 6px; text-align: center; font: 500 10px/1 var(--font-mono); letter-spacing: .06em; color: var(--faint); transition: all .3s; }
+.book .steps3 span + span { border-left: 1px solid var(--line); }
+.book .steps3 span.on { color: var(--human); background: var(--human-soft); }
+.book .steps3 span.done { color: var(--fg); }
+
+/* how: flow diagram */
+.flow .cell { padding: 48px 24px; display: grid; grid-template-columns: 1fr 70px 1fr 70px 1fr; align-items: center; justify-items: center; background-image: linear-gradient(to right, var(--line) 1px, transparent 1px); background-size: calc(100% / 6) 100%; background-position: -1px 0; }
+.node { display: grid; justify-items: center; gap: 12px; }
+.node .box { background: var(--panel); border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px var(--shadow), 0 14px 30px -16px rgba(20, 40, 80, .2); padding: 14px; display: grid; place-items: center; min-height: 120px; }
+.node .tagl { font: 500 10.5px/1 var(--font-mono); letter-spacing: .12em; color: var(--muted); padding: 6px 10px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); background: var(--bg); }
+.node.you .box { width: 200px; font-size: 13px; color: var(--ink-2); align-content: center; justify-items: start; gap: 8px; text-align: left; }
+.node.you .box .mini { font: 500 10px/1 var(--font-mono); color: var(--faint); letter-spacing: .1em; }
+.node.core .box { width: 150px; height: 150px; padding: 0; }
+.node.core canvas { width: 150px; height: 150px; display: block; }
+.crew { width: 236px; gap: 12px; justify-items: stretch !important; }
+.crow { display: grid; gap: 7px; }
+.crow .k { font: 500 10px/1 var(--font-mono); letter-spacing: .1em; color: var(--muted); display: flex; justify-content: space-between; }
+.crow .d { display: flex; gap: 5px; }
+.crow .d i { flex: 1; height: 16px; border-radius: 4px; background: var(--sunk); box-shadow: inset 0 0 0 1px var(--line); transition: all .3s; }
+.crow.p .d i { flex: none; width: 16px; border-radius: 50%; }
+.crow.b .d i { border-radius: 2px; }
+.crow.a .d i.on { background: var(--accent); box-shadow: none; }
+.crow.p .d i.on { background: var(--human); box-shadow: 0 0 0 3px var(--human-soft); }
+.crow.b .d i.on { background: var(--fg); box-shadow: none; }
+.wire { position: relative; width: 100%; height: 2px; background-image: linear-gradient(to right, var(--line-2) 50%, transparent 50%); background-size: 6px 2px; }
+.wire i { position: absolute; top: -3px; left: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); animation: travel 2.4s linear infinite; }
+.wire.b i { animation-delay: 1.2s; }
+@keyframes travel { from { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: calc(100% - 8px); opacity: 0; } }
+@keyframes travelY { from { top: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { top: calc(100% - 8px); opacity: 0; } }
+@media (max-width: 860px) {
+  .flow .cell { grid-template-columns: 1fr; gap: 0; background-image: none; }
+  .wire { width: 2px; height: 40px; background-image: linear-gradient(to bottom, var(--line-2) 50%, transparent 50%); background-size: 2px 6px; }
+  .wire i { animation-name: travelY; left: -3px; }
+}
+
+.steps > li { padding: 32px; display: grid; gap: 14px; align-content: start; }
+.step-n { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--accent); }
+.steps h3 { font-size: 20px; letter-spacing: -0.02em; }
+.steps p { color: var(--muted); }
+.mock { margin-top: 8px; border-radius: 10px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; font-size: 13px; }
+.mock-h { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--line); font: 500 10.5px/1 var(--font-mono); color: var(--faint); letter-spacing: .08em; }
+.mock-h .dots { display: flex; gap: 5px; }
+.mock-h .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.mock-b { padding: 12px; display: grid; gap: 10px; min-height: 150px; align-content: start; }
+.mock-prompt { color: var(--ink-2); line-height: 1.45; }
+.cur { display: inline-block; width: 7px; height: 15px; background: var(--accent); vertical-align: -2px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.mock-files { display: flex; gap: 6px; flex-wrap: wrap; }
+.mock-files span { font: 500 10.5px/1 var(--font-mono); padding: 6px 8px; border-radius: 6px; background: var(--sunk); color: var(--muted); }
+.drow { display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 12.5px; }
+.drow i { width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+.drow i.p { border-radius: 50%; background: var(--human); }
+.drow i.b { background: var(--fg); border-radius: 1px; }
+.drow .t { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drow .s { font: 500 10px/1 var(--font-mono); color: var(--faint); letter-spacing: .06em; }
+.dmeta { display: flex; justify-content: space-between; font: 500 10.5px/1 var(--font-mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.asm { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.asm span { font: 500 10.5px/1 var(--font-mono); padding: 9px 4px; text-align: center; border-radius: 7px; border: 1px dashed var(--line-2); color: var(--faint); transition: all .3s; }
+.asm span.on { border: 1px solid var(--accent-2); background: var(--accent-soft); color: var(--accent); }
+@media (max-width: 860px) { .steps > li { padding: 28px 24px; } }
+
+/* ---------- the blue block ---------- */
+.block .cell { background: radial-gradient(ellipse 70% 90% at 50% 40%, #2A80F6, var(--block) 70%); color: #fff; overflow: hidden; padding: clamp(64px, 8vw, 96px) 24px clamp(40px, 5vw, 56px); border-color: var(--block); }
+.block canvas.edge { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.block .center { position: relative; gap: 18px; }
+.pill-w { display: inline-flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 999px; background: rgba(255, 255, 255, .12); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .25); font: 500 12px/1 var(--font-mono); }
+.block .h2 span { color: rgba(255, 255, 255, .62); }
+.block .sub { color: rgba(255, 255, 255, .85); }
+.block .acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.btn-white { background: #fff; color: var(--block); }
+.btn-white:hover { transform: translateY(-1px); }
+.btn-line { background: transparent; color: #fff; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .45); }
+.btn-line:hover { background: rgba(255, 255, 255, .1); }
+.org { position: relative; margin-top: 36px; max-width: 100%; overflow-x: auto; display: grid; justify-items: center; }
+.org pre { margin: 0; font: 500 12.5px/1.35 var(--font-mono); color: rgba(255, 255, 255, .5); text-align: left; }
+.org .rt { color: #fff; }
+.org .ln { color: rgba(255, 255, 255, .35); transition: color .25s; }
+.org .ln.on { color: #fff; }
+.org .bx { color: rgba(255, 255, 255, .7); transition: color .25s, background .25s; }
+.org .bx.on { color: #fff; }
+.org .bx.on.nm { background: rgba(255, 255, 255, .2); }
+.org .narrow { display: none; }
+@media (max-width: 760px) { .org .wide { display: none; } .org .narrow { display: block; } .org { justify-items: start; } }
+.stats > div { padding: 26px 24px; display: grid; gap: 6px; }
+.stats b { font: 500 clamp(34px, 4vw, 44px)/1 var(--font-sans); letter-spacing: -0.04em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stats span { font-weight: 500; font-size: 14.5px; }
+.stats small { color: var(--muted); font-size: 13px; }
+.depts { list-style: none; margin: 0 auto; padding: 0; }
+.dept { padding: 28px 28px 32px; display: grid; gap: 10px; align-content: start; position: relative; cursor: default; outline-offset: -2px; }
+.dept::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .35s ease; }
+.dept.on::before { transform: scaleX(1); }
+.dept .cd { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; color: var(--faint); display: flex; justify-content: space-between; }
+.dept.on .cd { color: var(--accent); }
+.dept h3 { font-size: 20px; letter-spacing: -0.02em; }
+.dept p { color: var(--muted); }
+.dept ul { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.dept li { font: 500 11px/1 var(--font-mono); padding: 6px 8px; border-radius: 6px; background: var(--sunk); color: var(--ink-2); }
+.depts.g3 > :nth-child(n+4) { border-top: 1px solid var(--line); }
+.depts.g3 > :nth-child(4) { border-left: 0; }
+
+/* ---------- AO explainer ---------- */
+.ao > div { padding: 40px; display: grid; gap: 22px; align-content: center; }
+.cmp { border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); background: var(--panel); overflow: hidden; font-size: 14px; }
+.cmp > div { display: grid; grid-template-columns: 110px minmax(0, 1fr) minmax(0, 1fr); }
+.cmp > div + div { border-top: 1px solid var(--line); }
+.cmp > div > * { padding: 11px 14px; min-width: 0; }
+.cmp > div > * + * { border-left: 1px solid var(--line); }
+.cmp .k { font: 500 10.5px/1.4 var(--font-mono); color: var(--faint); letter-spacing: .06em; text-transform: uppercase; }
+.cmp .hd { font: 500 10.5px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: var(--sunk); }
+.cmp .hd.us { color: var(--accent); background: var(--accent-soft); }
+.cmp .us { color: var(--fg); }
+.cmp .no { color: var(--muted); }
+.video { position: relative; display: block; aspect-ratio: 16 / 10; max-width: 100%; border-radius: 14px; overflow: hidden; background: radial-gradient(ellipse 70% 80% at 50% 50%, var(--night-2), var(--night) 72%); color: #fff; text-decoration: none; box-shadow: 0 30px 60px -32px rgba(10, 18, 34, .6); }
+.video canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.video .play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 68px; height: 68px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--night); box-shadow: 0 0 0 10px rgba(255, 255, 255, .12), 0 10px 30px rgba(0, 0, 0, .35); transition: transform .2s; }
+.video:hover .play { transform: scale(1.06); }
+.video .play svg { width: 22px; height: 22px; margin-left: 3px; }
+.video .vt { position: absolute; left: 18px; top: 16px; right: 18px; display: flex; justify-content: space-between; font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; color: rgba(255, 255, 255, .6); }
+.video .vb { position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+.video .vb b { font: 500 18px/1.2 var(--font-sans); letter-spacing: -0.01em; }
+.video .vb span { font: 500 11px/1 var(--font-mono); color: rgba(255, 255, 255, .65); }
+@media (max-width: 860px) { .ao > div { padding: 28px 24px; } .cmp > div { grid-template-columns: 84px minmax(0, 1fr) minmax(0, 1fr); } }
+
+/* ---------- pricing ---------- */
+.plan { padding: 32px 28px; display: grid; gap: 20px; align-content: start; position: relative; }
+.plan.pop { background: linear-gradient(var(--accent-soft), transparent 220px); }
+.plan.pop::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--accent); }
+.plan .ph { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.plan h3 { font-size: 18px; letter-spacing: -0.015em; }
+.badge { font: 500 10px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: #fff; background: var(--accent); padding: 6px 8px; border-radius: 999px; }
+.plan .tag { color: var(--muted); margin-top: -12px; }
+.price { display: flex; align-items: baseline; gap: 6px; }
+.price b { font: 500 46px/1 var(--font-sans); letter-spacing: -0.045em; }
+.price span { color: var(--muted); }
+.credits { display: flex; justify-content: space-between; gap: 8px; font: 500 11.5px/1.3 var(--font-mono); padding: 10px 12px; border-radius: 8px; background: var(--sunk); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.plan.pop .credits { background: var(--panel); box-shadow: inset 0 0 0 1px var(--accent-2); }
+.credits em { font-style: normal; color: var(--faint); }
+.plan .btn { width: 100%; }
+.plan ul { list-style: none; margin: 0; padding: 20px 0 0; border-top: 1px dashed var(--line-2); display: grid; gap: 11px; }
+.plan li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; font-size: 14px; color: var(--ink-2); }
+.plan li svg { width: 14px; height: 14px; margin-top: 3px; color: var(--accent); }
+.plan .ideal { font-size: 13px; color: var(--muted); }
+.plan .ideal b { color: var(--fg); font-weight: 500; }
+.note .cell { padding: 18px 24px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; font-size: 14px; color: var(--muted); }
+
+/* ---------- FAQ ---------- */
+.faq-row .cell { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); }
+.faq-row .cell > * + * { border-left: 1px solid var(--line); }
+.faq-row .cat { padding: 26px 40px; font: 500 20px/1.2 var(--font-sans); letter-spacing: -0.02em; display: grid; gap: 6px; align-content: start; }
+.faq-row .cat small { font: 500 11px/1 var(--font-mono); color: var(--faint); letter-spacing: .08em; }
+.faq-row details + details { border-top: 1px solid var(--line); }
+.faq-row summary { list-style: none; cursor: pointer; padding: 16px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 16px; align-items: center; font-weight: 500; font-size: 15px; }
+.faq-row summary::-webkit-details-marker { display: none; }
+.faq-row summary::after { content: ""; width: 8px; height: 8px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translate(-2px, -2px); transition: transform .2s; }
+.faq-row details[open] summary::after { transform: rotate(-135deg) translate(-2px, -2px); border-color: var(--accent); }
+.faq-row summary:hover { background: var(--panel); }
+.faq-row .a { padding: 0 72px 20px 40px; color: var(--muted); max-width: 70ch; }
+@media (max-width: 860px) {
+  .faq-row .cell { grid-template-columns: 1fr; }
+  .faq-row .cell > * + * { border-left: 0; border-top: 1px solid var(--line); }
+  .faq-row .cat { padding: 22px 24px; }
+  .faq-row summary { padding: 16px 24px; }
+  .faq-row .a { padding: 0 24px 20px; }
+}
+
+/* ---------- closing ---------- */
+.closing .cell { overflow: hidden; padding: clamp(80px, 10vw, 120px) 24px clamp(230px, 26vw, 300px); }
+.closing canvas { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 62%; pointer-events: none; -webkit-mask-image: linear-gradient(transparent, #000 40%); mask-image: linear-gradient(transparent, #000 40%); }
+.closing .center { position: relative; z-index: 1; gap: 18px; }
+.closing .acts { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.closing .small { font-size: 13.5px; color: var(--muted); }
+
+/* ---------- contact ---------- */
+.contact > div { padding: 40px; display: grid; gap: 24px; align-content: start; }
+.facts { display: grid; border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); background: var(--panel); }
+.fact { display: grid; gap: 6px; padding: 16px 18px; }
+.fact + .fact { border-top: 1px solid var(--line); }
+.fact .k { font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.fact .v { color: var(--ink-2); font-size: 14.5px; }
+.fact .big { font: 500 30px/1 var(--font-sans); letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+.fact .big small { font-size: 14px; color: var(--muted); letter-spacing: 0; margin-left: 4px; }
+.email { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.email a { font-weight: 500; font-size: 17px; text-decoration: none; }
+.copy { appearance: none; cursor: pointer; border: 0; box-shadow: inset 0 0 0 1px var(--line); background: var(--sunk); border-radius: 6px; font: 500 10.5px/1 var(--font-mono); padding: 6px 8px; color: var(--muted); }
+.copy:hover { color: var(--fg); }
+form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: grid; gap: 7px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea { font: 400 15px/1.4 var(--font-sans); color: var(--fg); background: var(--panel); border: 0; box-shadow: inset 0 0 0 1px var(--line); border-radius: 10px; padding: 11px 12px; width: 100%; }
+.field textarea { min-height: 120px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 0; box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px var(--accent-soft); }
+.form-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.form-foot p { font-size: 13px; color: var(--muted); max-width: 40ch; }
+.form-note { grid-column: 1 / -1; font: 500 12px/1.4 var(--font-mono); color: var(--accent); }
+@media (max-width: 860px) { .contact > div { padding: 28px 24px; } }
+@media (max-width: 520px) { form.msg { grid-template-columns: 1fr; } }
+
+/* ---------- footer ---------- */
+.foot .cell { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)); }
+.foot .cell > * { padding: 32px 24px; display: grid; gap: 10px; align-content: start; }
+.foot .cell > * + * { border-left: 1px solid var(--line); }
+.foot h4 { margin: 0 0 4px; font: 500 10.5px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.foot a { text-decoration: none; color: var(--ink-2); font-size: 14px; }
+.foot a:hover { color: var(--accent); }
+.foot .tagline { color: var(--muted); font-size: 14px; max-width: 30ch; }
+@media (max-width: 760px) {
+  .foot .cell { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .foot .cell > :first-child { grid-column: 1 / -1; }
+  .foot .cell > * + * { border-left: 0; border-top: 1px solid var(--line); }
+  .foot .cell > :nth-child(n+3) { border-left: 1px solid var(--line); }
+}
+.wordmark .cell { height: clamp(120px, 17vw, 210px); overflow: hidden; }
+.wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.legal .cell { padding: 16px 24px; display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; font: 500 11px/1.5 var(--font-mono); color: var(--faint); letter-spacing: .04em; }
+.end { border-top: 1px solid var(--line); height: 40px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .card-h .live::before, .cur, .wire i, .feed li { animation: none; }
+  .btn, .seat, .asm span, .dept::before, .ship::after, .track .line i { transition: none; }
+}
+</style>
+
+<!-- NAV -->
+<header class="row nav">
+  <div class="cell">
+    <a class="brand" href="#top" aria-label="M-World home"><span class="mark" aria-hidden="true">M</span>M-World</a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#network">Network</a></li>
+      <li><a href="#departments">Departments</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="right">
+      <a class="txt" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Log in</a>
+      <a class="btn btn-primary btn-sm" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Start building</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="row hero" aria-labelledby="hero-title" style="border-top:0">
+  <div class="cell">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <span class="corner tl" aria-hidden="true">[ PROMPT ]</span>
+    <span class="corner tr" aria-hidden="true">[ ORGANISATION ]</span>
+    <span class="corner bl" aria-hidden="true">[ PEOPLE ]</span>
+    <span class="corner br" aria-hidden="true">[ BUSINESSES ]</span>
+    <svg class="spark" style="left:calc(100%/6);top:92px" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0v18M0 9h18" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="9" r="2.4" fill="currentColor"/></svg>
+    <svg class="spark" style="left:calc(100%*5/6);top:92px" viewBox="0 0 18 18" aria-hidden="true"><path d="M9 0v18M0 9h18" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="9" r="2.4" fill="currentColor"/></svg>
+    <div class="hero-in">
+      <a class="pill" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pill" target="_blank" rel="noopener"><span class="tag">FREE</span>Build your first mobile app on us<span class="arr">→</span></a>
+      <h1 class="h1" id="hero-title">Describe a business. <span class="blue">Get the company that runs it.</span></h1>
+      <p class="sub">One prompt becomes an Autonomous Organisation. AI departments do the work, people step in where hands or judgment are needed, and businesses on the network supply the rest.</p>
+      <div class="prompt-zone">
+        <canvas class="l" id="waveL" aria-hidden="true"></canvas>
+        <canvas class="r" id="waveR" aria-hidden="true"></canvas>
+        <div class="prompt">
+          <label class="sr" for="promptInput">Describe the business you want to build</label>
+          <svg class="glyph" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3 4.5l3.5 3.5L3 11.5M8.5 12H13"/></svg>
+          <textarea id="promptInput" rows="2" placeholder="Describe the business you want to build"></textarea>
+          <div class="pbar">
+            <div class="seg" role="group" aria-label="How autonomous should it be">
+              <button type="button" id="modeFull" aria-pressed="true"><i></i>Fully-Autonomous</button>
+              <button type="button" id="modeSemi" aria-pressed="false"><i></i>Semi</button>
+            </div>
+            <label class="attach" title="Add photos and media"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2"/><circle cx="6" cy="7" r="1.3"/><path d="M14 11l-3.5-3.5L4 13"/></svg><input id="fileMedia" type="file" accept="image/*,video/*" multiple aria-label="Add photos and media"></label>
+            <label class="attach" title="Add documents"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 1.8h5.5L12.5 5v9.2H4z"/><path d="M9.3 2v3.2h3"/></svg><input id="fileDocs" type="file" accept=".pdf,.doc,.docx,.txt,.md,.ppt,.pptx,.xls,.xlsx,.csv" multiple aria-label="Add documents"></label>
+            <span class="files" id="fileNames"></span>
+            <a class="go" id="buildBtn" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=hero" target="_blank" rel="noopener" aria-label="Build my organisation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+          </div>
+        </div>
+      </div>
+      <div class="tries" role="group" aria-label="Example prompts">
+        <span class="k">TRY</span>
+        <button class="chip" type="button" data-i="0" aria-pressed="true">Pet products</button>
+        <button class="chip" type="button" data-i="1" aria-pressed="false">Coffee subscription</button>
+        <button class="chip" type="button" data-i="2" aria-pressed="false">Tutoring app</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORBIT -->
+<section class="row stage" aria-label="Your organisation at work">
+  <div class="cell">
+    <div class="orbit-wrap" id="orbitWrap">
+      <canvas id="orbit" role="img" aria-label="An ASCII sphere, your organisation's core, sits at the center of three orbits: six AI departments, people it books for real-world work, and businesses it buys from. Tasks travel out from the core and results come back. Businesses also pass work between each other, and a person lights up amber while being booked."></canvas>
+      <div class="legend" aria-hidden="true"><span class="a"><i></i>AI DEPARTMENTS</span><span class="p"><i></i>PEOPLE</span><span class="b"><i></i>BUSINESSES</span></div>
+    </div>
+    <div class="org-card glass">
+      <div class="card-h"><span>Organisation</span><span id="orgName">Pet products</span></div>
+      <ul>
+        <li class="ai" id="oAI"><span class="ic"><i></i></span><span>AI departments</span><span>idle</span></li>
+        <li class="ppl" id="oPPL"><span class="ic"><i></i></span><span>People</span><span>0 booked</span></li>
+        <li class="biz" id="oBIZ"><span class="ic"><i></i></span><span>Businesses</span><span>0 engaged</span></li>
+      </ul>
+      <div class="org-foot">
+        <div class="mode"><span>Mode</span><b id="orgMode">Fully-Autonomous</b></div>
+        <div class="mode"><span>Sprint progress</span><b id="feedCount">0 / 7</b></div>
+        <div class="bar"><i id="orgBar"></i></div>
+      </div>
+    </div>
+    <div class="feed glass">
+      <div class="card-h"><span class="live">Live sprint</span><span>who · task</span></div>
+      <ol id="feedList"></ol>
+    </div>
+  </div>
+</section>
+
+<!-- SHIPS -->
+<section class="row ships" aria-label="What sprint one ships">
+  <div class="cell">
+    <div class="intro"><b>Sprint one ships</b>Real work from all six departments, not a to-do list.</div>
+    <div class="ship" data-d="0"><pre aria-hidden="true">┌──────┐
+│ ≡≡≡≡ │
+│ ≡≡   │
+└──────┘</pre><span>Business plan</span><em>STR</em></div>
+    <div class="ship" data-d="4"><pre aria-hidden="true">┌─┬─┬─┬─┐
+│█│▓│▒│░│
+└─┴─┴─┴─┘
+  Aa  Aa </pre><span>Brand kit</span><em>MKT</em></div>
+    <div class="ship" data-d="2"><pre aria-hidden="true">┌───────┐
+│ ● ● ● │
+├───────┤
+│ ▀▀ ▄▄ │
+└───────┘</pre><span>Website or app</span><em>TEC</em></div>
+    <div class="ship" data-d="3"><pre aria-hidden="true">      ▄█
+   ▄█ ██
+▄▄ ██ ██
+└───────</pre><span>Financial model</span><em>FIN</em></div>
+    <div class="ship" data-d="1"><pre aria-hidden="true">■■■■□□□
+■■□□□□□
+■■■■■■□
+└ sprint</pre><span>Sprint plan</span><em>MGT</em></div>
+    <div class="ship" data-d="5"><pre aria-hidden="true">○ ──────
+○ ────
+● ───────
+○ ───</pre><span>Lead list</span><em>SAL</em></div>
+  </div>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 01 WHY -->
+<div class="row sec"><div class="cell"><span class="lbl"><b>01</b>/ Why M-World</span><span class="prog" aria-hidden="true"><i>■</i>□□□□□□□</span></div></div>
+<section class="row head-c" aria-labelledby="why-title">
+  <div class="cell">
+    <canvas class="texture" id="tex1" aria-hidden="true"></canvas>
+    <div class="center">
+      <span class="eyebrow"><span class="sl">//</span>Start with a sentence<span class="sl">//</span></span>
+      <h2 class="h2" id="why-title">You don't need a team to start.<br><span class="blue">You need a prompt.</span></h2>
+      <p class="sub">Every business on M-World starts the same way. Someone describes what they want to build, and an Autonomous Organisation takes it from there.</p>
+    </div>
+  </div>
+</section>
+<section class="row" aria-label="What you skip">
+  <div class="cell grid g3 ruled bento">
+    <div>
+      <div class="ill" aria-hidden="true">
+        <div class="seats" id="seats">
+          <div class="seat"><b>Strategy</b>STR</div><div class="seat"><b>Management</b>MGT</div><div class="seat"><b>Technology</b>TEC</div>
+          <div class="seat"><b>Finance</b>FIN</div><div class="seat"><b>Marketing</b>MKT</div><div class="seat"><b>Sales</b>SAL</div>
+        </div>
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c.6-2.8 2.6-4.3 5-4.3s4.4 1.5 5 4.3"/></svg>No hiring rounds</span>
+        <p class="lead"><b>Fully staffed on day one.</b> Six departments fill the moment you hit build. No job posts, no interviews, no co-founder search.</p>
+      </div>
+    </div>
+    <div>
+      <div class="ill" aria-hidden="true">
+        <svg class="diag" viewBox="0 0 360 240" fill="none">
+          <g font-family="Geist Mono, ui-monospace, monospace" font-size="10" fill="#687083">
+            <rect x="28" y="30" width="92" height="24" rx="6" fill="#fff" stroke="#E3E8F0"/><text x="40" y="46">docs</text>
+            <rect x="28" y="66" width="92" height="24" rx="6" fill="#fff" stroke="#E3E8F0"/><text x="40" y="82">spreadsheets</text>
+            <rect x="28" y="102" width="92" height="24" rx="6" fill="#fff" stroke="#E3E8F0"/><text x="40" y="118">site builder</text>
+            <rect x="28" y="138" width="92" height="24" rx="6" fill="#fff" stroke="#E3E8F0"/><text x="40" y="154">email tool</text>
+            <rect x="28" y="174" width="92" height="24" rx="6" fill="#fff" stroke="#E3E8F0"/><text x="40" y="190">crm</text>
+          </g>
+          <g stroke="#CDD5E2" stroke-dasharray="3 4">
+            <path d="M120 42 C 190 42, 190 118, 244 118"/><path d="M120 78 C 190 78, 190 118, 244 118"/><path d="M120 114 L 244 118"/>
+            <path d="M120 150 C 190 150, 190 118, 244 118"/><path d="M120 186 C 190 186, 190 118, 244 118"/>
+          </g>
+          <rect x="244" y="94" width="92" height="48" rx="10" fill="#141821"/>
+          <rect x="244" y="94" width="92" height="48" rx="10" fill="none" stroke="#2486FF" stroke-opacity=".6"/>
+          <text x="290" y="114" text-anchor="middle" font-family="Geist, sans-serif" font-size="12" font-weight="500" fill="#fff">M-World</text>
+          <text x="290" y="130" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" fill="#64C9FF">one place</text>
+          <circle r="3" fill="#2486FF"><animateMotion dur="2.4s" repeatCount="indefinite" path="M120 42 C 190 42, 190 118, 244 118"/></circle>
+          <circle r="3" fill="#2486FF"><animateMotion dur="2.4s" begin=".8s" repeatCount="indefinite" path="M120 150 C 190 150, 190 118, 244 118"/></circle>
+          <circle r="3" fill="#2486FF"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M120 114 L 244 118"/></circle>
+        </svg>
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/><path d="M7 4.5h2.5V9"/></svg>No tool stitching</span>
+        <p class="lead"><b>One place for the whole business.</b> Strategy, product, marketing and sales share one plan, so nothing gets lost between tools.</p>
+      </div>
+    </div>
+    <div>
+      <div class="ill" aria-hidden="true">
+        <div class="track" id="track">
+          <div class="cap"><span>PROMPT</span><span>FIRST CUSTOMER</span></div>
+          <div class="line"><i id="trackFill"></i></div>
+          <div class="stops">
+            <div class="stop"><i></i>PLAN</div><div class="stop"><i></i>BRAND</div><div class="stop"><i></i>PRODUCT</div><div class="stop"><i></i>CAMPAIGN</div><div class="stop"><i></i>OUTREACH</div>
+          </div>
+        </div>
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8l2.5 1.5"/></svg>No waiting weeks</span>
+        <p class="lead"><b>Minutes, not months.</b> See a real plan, a working product and a running campaign while you'd still be writing the job description.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 02 HOW -->
+<div class="row sec" id="how"><div class="cell"><span class="lbl"><b>02</b>/ How it works</span><span class="prog" aria-hidden="true"><i>■■</i>□□□□□□</span></div></div>
+<section class="row head-s" aria-labelledby="how-title">
+  <div class="cell">
+    <div><span class="eyebrow"><span class="sl">//</span>Three steps<span class="sl">//</span></span></div>
+    <div>
+      <h2 class="h2" id="how-title">From idea to operating organisation. <span class="blue">In three steps.</span></h2>
+      <p class="sub">You bring the idea. M-World assembles the agents, the people and the partner businesses to run it, then gives you a dashboard to watch it work.</p>
+    </div>
+  </div>
+</section>
+<section class="row flow" aria-label="How a prompt becomes an organisation">
+  <div class="cell">
+    <div class="node you">
+      <div class="box"><span class="mini">YOUR PROMPT</span>"A coffee subscription for home brewers in India."</div>
+      <span class="tagl">YOU</span>
+    </div>
+    <div class="wire" aria-hidden="true"><i></i></div>
+    <div class="node core">
+      <div class="box"><canvas id="miniCore" width="150" height="150" aria-hidden="true"></canvas></div>
+      <span class="tagl">M-WORLD</span>
+    </div>
+    <div class="wire b" aria-hidden="true"><i></i></div>
+    <div class="node">
+      <div class="box crew" id="crew">
+        <div class="crow a"><span class="k"><span>AI DEPARTMENTS</span><span>6</span></span><span class="d"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <div class="crow p"><span class="k"><span>PEOPLE</span><span>as needed</span></span><span class="d"><i></i><i></i><i></i><i></i><i></i></span></div>
+        <div class="crow b"><span class="k"><span>BUSINESSES</span><span>on the network</span></span><span class="d"><i></i><i></i><i></i><i></i><i></i></span></div>
+      </div>
+      <span class="tagl">WHO DOES THE WORK</span>
+    </div>
+  </div>
+</section>
+<section class="row" aria-label="The three steps">
+  <ol class="cell grid g3 ruled steps" style="list-style:none;margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0">
+    <li>
+      <span class="step-n">STEP 01</span>
+      <h3>Describe your idea</h3>
+      <p>Tell M-World what you want to build: the product, the market, the goal. Photos and documents add context.</p>
+      <div class="mock" aria-hidden="true">
+        <div class="mock-h"><span class="dots"><i></i><i></i><i></i></span><span>NEW ORGANISATION</span></div>
+        <div class="mock-b">
+          <div class="mock-prompt">A monthly box of single-origin coffee for home brewers in India<span class="cur"></span></div>
+          <div class="mock-files"><span>moodboard.png</span><span>suppliers.pdf</span></div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">STEP 02</span>
+      <h3>It assembles your organisation</h3>
+      <p>AI agents set up all six departments and give each one its part of the plan.</p>
+      <div class="mock" aria-hidden="true">
+        <div class="mock-h"><span class="dots"><i></i><i></i><i></i></span><span id="asmCount">ASSEMBLING 0/6</span></div>
+        <div class="mock-b">
+          <div class="asm" id="asm"><span>STRATEGY</span><span>MGMT</span><span>TECH</span><span>FINANCE</span><span>MARKETING</span><span>SALES</span></div>
+          <div class="dmeta"><span>departments online</span><span id="asmOn">0</span></div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <span class="step-n">STEP 03</span>
+      <h3>Run it from one dashboard</h3>
+      <p>Track every task, booking, order and credit while it works. Set the goals, step in when you want.</p>
+      <div class="mock" aria-hidden="true">
+        <div class="mock-h"><span class="dots"><i></i><i></i><i></i></span><span>SPRINT 2 · EXAMPLE</span></div>
+        <div class="mock-b">
+          <div class="drow"><i></i><span class="t">Landing page and checkout</span><span class="s">SHIPPED</span></div>
+          <div class="drow"><i class="p"></i><span class="t">Photographer booked for launch</span><span class="s">CONFIRMED</span></div>
+          <div class="drow"><i class="b"></i><span class="t">Beans ordered from roaster</span><span class="s">IN TRANSIT</span></div>
+          <div class="bar"><i style="width:62%"></i></div>
+          <div class="dmeta"><span>credits used</span><span>142 / 600</span></div>
+        </div>
+      </div>
+    </li>
+  </ol>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 03 NETWORK -->
+<div class="row sec" id="network"><div class="cell"><span class="lbl"><b>03</b>/ The network</span><span class="prog" aria-hidden="true"><i>■■■</i>□□□□□</span></div></div>
+<section class="row head-s" aria-labelledby="net-title">
+  <div class="cell">
+    <div><span class="eyebrow"><span class="sl">//</span>Beyond software<span class="sl">//</span></span></div>
+    <div>
+      <h2 class="h2" id="net-title">AI where it can. <span class="blue">People and businesses where it can't.</span></h2>
+      <p class="sub">Some work needs real hands, a signature or a delivery. Your organisation knows when, brings in the right person or business, and keeps the whole job moving.</p>
+    </div>
+  </div>
+</section>
+<section class="row" aria-label="Who does the work">
+  <div class="cell grid g3 ruled bento">
+    <div>
+      <div class="ill" aria-hidden="true">
+        <div class="ailog" id="ailog">
+          <div class="h"><span>AI DEPARTMENTS</span><span>RUNNING</span></div>
+          <div class="l"><b>STR</b><span>Size the pet-treat market</span><span>✓</span></div>
+          <div class="l"><b>TEC</b><span>Build storefront and checkout</span><span>✓</span></div>
+          <div class="l"><b>MKT</b><span>Write the launch emails</span><span>✓</span></div>
+          <div class="l"><b>FIN</b><span>Model margins per product</span><span>✓</span></div>
+          <div class="l"><b>SAL</b><span>Find 40 local boutiques</span><span>✓</span></div>
+        </div>
+      </div>
+      <div class="txt">
+        <span class="eyebrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2" width="12" height="12" rx="3"/><path d="M5.5 10.5l1.8-5 1.8 5M6.1 9h2.4M11 5.5v5"/></svg>AI departments</span>
+        <p class="lead"><b>Screen work happens on its own.</b> Research, code, design, writing, numbers and outreach run on AI, around the clock.</p>
+      </div>
+    </div>
+    <div>
+      <div class="ill" aria-hidden="true">
+        <div class="book">
+          <div class="h"><span>● BOOKING A PERSON</span><span>PPL</span></div>
+          <div class="b">
+            <span class="av"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="6" r="3"/><path d="M3.5 16c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/></svg></span>
+            <span class="who"><b>Photographer</b><span>Product shots for launch day · Mon 10:00</span></span>
+          </div>
+          <div class="steps3" id="bookSteps"><span>REQUESTED</span><span>CONFIRMED</span><span>DELIVERED</span></div>
+        </div>
+      </div>
+      <div class="txt">
+        <span class="eyebrow ppl"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="8" cy="5.5" r="2.5"/><path d="M3 14c.6-2.8 2.6-4.3 5-4.3s4.4 1.5 5 4.3"/></svg>People in the loop</span>
+        <p class="lead"><b>People step in where hands or judgment are needed.</b> When a task needs a real person, like a photographer, an accountant or a lawyer, your organisation briefs them, books them, tracks the work and brings the result back into the plan.</p>
+      </div>
+    </div>
+    <div>
+      <div class="ill" aria-hidden="true">
+        <svg class="diag" viewBox="0 0 360 240" fill="none" font-family="Geist Mono, ui-monospace, monospace" font-size="9.5">
+          <g stroke="#CDD5E2" stroke-dasharray="3 4">
+            <path id="c1" d="M86 120 C 120 120, 120 60, 150 60"/>
+            <path id="c2" d="M210 60 C 240 60, 240 120, 262 120"/>
+            <path id="c3" d="M180 74 L 180 166"/>
+            <path id="c4" d="M210 180 C 240 180, 240 132, 262 126"/>
+            <path d="M86 128 C 120 128, 120 180, 150 180"/>
+          </g>
+          <rect x="16" y="102" width="70" height="40" rx="9" fill="#141821"/><text x="51" y="118" text-anchor="middle" fill="#fff">YOUR</text><text x="51" y="131" text-anchor="middle" fill="#64C9FF">ORG</text>
+          <rect x="150" y="46" width="60" height="28" rx="5" fill="#fff" stroke="#CDD5E2"/><text x="180" y="64" text-anchor="middle" fill="#2A3140">supplier</text>
+          <rect x="150" y="166" width="60" height="28" rx="5" fill="#fff" stroke="#CDD5E2"/><text x="180" y="184" text-anchor="middle" fill="#2A3140">packaging</text>
+          <rect x="262" y="108" width="72" height="28" rx="5" fill="#fff" stroke="#CDD5E2"/><text x="298" y="126" text-anchor="middle" fill="#2A3140">courier</text>
+          <rect x="262" y="24" width="72" height="34" rx="9" fill="#fff" stroke="#2486FF" stroke-dasharray="3 3"/><text x="298" y="38" text-anchor="middle" fill="#2486FF">another</text><text x="298" y="50" text-anchor="middle" fill="#2486FF">org</text>
+          <path d="M262 42 C 236 42, 228 54, 210 56" stroke="#2486FF" stroke-dasharray="3 3"/>
+          <text x="180" y="218" text-anchor="middle" fill="#A3ABBA" font-size="9">BUSINESSES HAND WORK TO EACH OTHER</text>
+          <circle r="3" fill="#141821"><animateMotion dur="2.6s" repeatCount="indefinite" path="M86 120 C 120 120, 120 60, 150 60"/></circle>
+          <circle r="3" fill="#141821"><animateMotion dur="2.6s" begin=".9s" repeatCount="indefinite" path="M180 74 L 180 166"/></circle>
+          <circle r="3" fill="#141821"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite" path="M210 180 C 240 180, 240 132, 262 126"/></circle>
+          <circle r="3" fill="#2486FF"><animateMotion dur="3.2s" begin=".4s" repeatCount="indefinite" path="M262 42 C 236 42, 228 54, 210 56"/></circle>
+        </svg>
+      </div>
+      <div class="txt">
+        <span class="eyebrow biz"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 6.5V14h11V6.5M2 3h12v2.2a1.8 1.8 0 01-3.6 0 1.8 1.8 0 01-3.6 0 1.8 1.8 0 01-3.6 0 1.8 1.8 0 01-1.2-.1z"/></svg>Business to business</span>
+        <p class="lead"><b>Businesses trade with each other.</b> Your organisation orders from suppliers, payment providers and couriers, and they hand work on to one another. Other organisations on M-World can become your suppliers, or your customers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 04 DEPARTMENTS -->
+<div class="row sec" id="departments"><div class="cell"><span class="lbl"><b>04</b>/ Departments</span><span class="prog" aria-hidden="true"><i>■■■■</i>□□□□</span></div></div>
+<section class="row block" aria-labelledby="dept-title">
+  <div class="cell">
+    <canvas class="edge" id="edge" aria-hidden="true"></canvas>
+    <div class="center">
+      <span class="pill-w">6 departments · 1 organisation</span>
+      <h2 class="h2" id="dept-title">A full company, staffed by AI.<br><span>Working every hour you're not.</span></h2>
+      <p class="sub">Every Autonomous Organisation comes with the same six departments. Each owns its part of the business, hands work to the others, and brings in people or partner businesses when the job needs them.</p>
+      <div class="acts">
+        <a class="btn btn-white" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=departments" target="_blank" rel="noopener">Start building <span class="arr">→</span></a>
+        <a class="btn btn-line" href="#pricing">Compare plans</a>
+      </div>
+      <div class="org" aria-hidden="true"><pre class="wide" id="orgWide"></pre><pre class="narrow" id="orgNarrow"></pre></div>
+    </div>
+  </div>
+</section>
+<section class="row" aria-label="At a glance">
+  <div class="cell grid g4 ruled stats">
+    <div><b>6</b><span>Departments</span><small>Strategy to sales, staffed by AI</small></div>
+    <div><b>24/7</b><span>Always on</span><small>On the Fully-Autonomous plan</small></div>
+    <div><b>1</b><span>Dashboard</span><small>Tasks, bookings, orders, credits</small></div>
+    <div><b>$0</b><span>To start</span><small>No credit card required</small></div>
+  </div>
+</section>
+<section class="row" aria-label="The six departments">
+  <ul class="cell grid g3 ruled depts" id="depts">
+    <li class="dept" data-d="0" tabindex="0"><span class="cd"><span>STR</span><span>01</span></span><h3>Strategy</h3><p>Turns your prompt into a plan: who the customer is, what to sell, how to position it and what to do first.</p><ul><li>Market research</li><li>Business plan</li><li>Positioning</li></ul></li>
+    <li class="dept" data-d="1" tabindex="0"><span class="cd"><span>MGT</span><span>02</span></span><h3>Management</h3><p>Breaks the plan into sprints, assigns the work, and books people or partner businesses when a task needs them.</p><ul><li>Sprint plans</li><li>Bookings</li><li>Progress reports</li></ul></li>
+    <li class="dept" data-d="2" tabindex="0"><span class="cd"><span>TEC</span><span>03</span></span><h3>Technology</h3><p>Builds and ships the product itself: a production-ready website, web app or mobile app.</p><ul><li>Website</li><li>Mobile app</li><li>Integrations</li></ul></li>
+    <li class="dept" data-d="3" tabindex="0"><span class="cd"><span>FIN</span><span>04</span></span><h3>Finance</h3><p>Models costs, pricing and runway, and keeps track of what you spend with suppliers and people.</p><ul><li>Financial model</li><li>Pricing</li><li>Budget tracking</li></ul></li>
+    <li class="dept" data-d="4" tabindex="0"><span class="cd"><span>MKT</span><span>05</span></span><h3>Marketing</h3><p>Creates the brand and runs the campaigns: copy, content, social posts and email.</p><ul><li>Brand kit</li><li>Campaigns</li><li>Content calendar</li></ul></li>
+    <li class="dept" data-d="5" tabindex="0"><span class="cd"><span>SAL</span><span>06</span></span><h3>Sales</h3><p>Finds the people and businesses most likely to buy, reaches out and follows up until they become customers.</p><ul><li>Lead lists</li><li>Outreach</li><li>Pipeline</li></ul></li>
+  </ul>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 05 AO -->
+<div class="row sec"><div class="cell"><span class="lbl"><b>05</b>/ The idea</span><span class="prog" aria-hidden="true"><i>■■■■■</i>□□□</span></div></div>
+<section class="row" aria-labelledby="ao-title">
+  <div class="cell grid g2 ruled ao">
+    <div>
+      <span class="eyebrow"><span class="sl">//</span>Know more about us<span class="sl">//</span></span>
+      <h2 class="h2" id="ao-title">What is an Autonomous Organisation?</h2>
+      <p class="lead"><b>A company run by coordinated AI agents.</b> You set the goals. Its departments plan, build, market and sell, bring in people and businesses when needed, and report back in one dashboard.</p>
+      <div class="cmp">
+        <div><span class="k"></span><span class="hd">AI agent</span><span class="hd us">Autonomous Org</span></div>
+        <div><span class="k">Scope</span><span class="no">One task</span><span class="us">The whole business</span></div>
+        <div><span class="k">Directed by</span><span class="no">A prompt each time</span><span class="us">Goals you set</span></div>
+        <div><span class="k">Real world</span><span class="no">Stays on screen</span><span class="us">Books people, orders from businesses</span></div>
+        <div><span class="k">Works</span><span class="no">When you ask</span><span class="us">In sprints, around the clock</span></div>
+      </div>
+      <a class="more" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=aboutUs" target="_blank" rel="noopener">Explore M-World <span class="arr">↗</span></a>
+    </div>
+    <div>
+      <a class="video" href="https://www.youtube.com/watch?v=b7bmx9AORWU" target="_blank" rel="noopener" aria-label="Watch Introducing M-World on YouTube, one minute">
+        <canvas id="vidSphere" aria-hidden="true"></canvas>
+        <span class="vt" aria-hidden="true"><span>WATCH IT, DON'T JUST READ IT</span><span>1:00</span></span>
+        <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+        <span class="vb"><b>Introducing M-World</b><span>YOUTUBE ↗</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 06 PRICING -->
+<div class="row sec" id="pricing"><div class="cell"><span class="lbl"><b>06</b>/ Pricing</span><span class="prog" aria-hidden="true"><i>■■■■■■</i>□□</span></div></div>
+<section class="row head-c" aria-labelledby="pricing-title">
+  <div class="cell">
+    <div class="center">
+      <span class="eyebrow"><span class="sl">//</span>Simple plans<span class="sl">//</span></span>
+      <h2 class="h2" id="pricing-title">Choose how much it does<br><span class="blue">without you.</span></h2>
+      <p class="sub">Every plan gives you an Autonomous Organisation. The difference is who decides when it works.</p>
+    </div>
+  </div>
+</section>
+<section class="row" aria-label="Plans">
+  <div class="cell grid g3 ruled">
+    <article class="plan">
+      <div class="ph"><h3>Starter</h3></div>
+      <p class="tag">See how it works. No card, no commitment.</p>
+      <div class="price"><b>$0</b><span>forever</span></div>
+      <div class="credits"><span>Production-ready app or site</span></div>
+      <a class="btn btn-soft" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingStarter" target="_blank" rel="noopener">Get started free</a>
+      <ul>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Your organisation's full dashboard</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Explore every department</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Build your first mobile app, free</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Community support</li>
+      </ul>
+      <p class="ideal"><b>For</b> anyone who wants to try an Autonomous Organisation before paying.</p>
+    </article>
+    <article class="plan">
+      <div class="ph"><h3>Semi-Autonomous</h3></div>
+      <p class="tag">You decide when it works.</p>
+      <div class="price"><b>$10</b><span>/ month</span></div>
+      <div class="credits"><span>200 credits</span><em>per billing cycle</em></div>
+      <a class="btn btn-soft" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingCustom" target="_blank" rel="noopener">Try it myself</a>
+      <ul>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Everything in Starter</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Deploy any department, any time</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Higher-priority AI execution</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Advanced analytics and insights</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Higher automation limits</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Priority support, early access</li>
+      </ul>
+      <p class="ideal"><b>For</b> founders who want AI departments but prefer to choose what runs, and when.</p>
+    </article>
+    <article class="plan pop">
+      <div class="ph"><h3>Fully-Autonomous</h3><span class="badge">Most popular</span></div>
+      <p class="tag">It works even when you don't.</p>
+      <div class="price"><b>$30</b><span>/ month</span></div>
+      <div class="credits"><span>600 credits</span><em>per billing cycle</em></div>
+      <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingAutonomous" target="_blank" rel="noopener">Get started now</a>
+      <ul>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Runs continuously in sprints</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>All six departments in sync, around the clock</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Save, reuse and optimise workflows</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Usage analytics and performance insights</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Faster AI processing than Starter</li>
+        <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.5 7.5l3 3 6-7"/></svg>Priority email support</li>
+      </ul>
+      <p class="ideal"><b>For</b> founders who want it to plan and execute with minimal hands-on time.</p>
+    </article>
+  </div>
+</section>
+<div class="row note"><div class="cell"><span>Prices in USD. Credits pay for the work your departments do.</span><a class="more" href="#contact">Questions about plans? Talk to us <span class="arr">→</span></a></div></div>
+
+<div class="row spacer"><div class="cell"></div></div>
+
+<!-- 07 FAQ -->
+<div class="row sec" id="faq"><div class="cell"><span class="lbl"><b>07</b>/ FAQ</span><span class="prog" aria-hidden="true"><i>■■■■■■■</i>□</span></div></div>
+<section class="row head-s" aria-labelledby="faq-title">
+  <div class="cell">
+    <div><span class="eyebrow"><span class="sl">//</span>FAQ<span class="sl">//</span></span></div>
+    <div><h2 class="h2" id="faq-title">Frequently asked <span class="blue">questions.</span></h2><p class="sub">Everything you need to know about M-World and Autonomous Organisations.</p></div>
+  </div>
+</section>
+<div id="faqRows"></div>
+
+<!-- CLOSING -->
+<section class="row closing" aria-labelledby="close-title">
+  <div class="cell">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <span class="corner tl" aria-hidden="true">[ AI ]</span>
+    <span class="corner tr" aria-hidden="true">[ PEOPLE ]</span>
+    <span class="corner bl" aria-hidden="true">[ BUSINESSES ]</span>
+    <span class="corner br" aria-hidden="true">[ YOU ]</span>
+    <canvas id="sunrise" aria-hidden="true"></canvas>
+    <div class="center">
+      <span class="eyebrow"><span class="sl">//</span>Get started<span class="sl">//</span></span>
+      <h2 class="h2" id="close-title">The co-founder<br><span class="blue">you never got to hire.</span></h2>
+      <p class="sub">M-World isn't here to replace you. It's the team every founder needed and never had. You own the vision. Your organisation runs the execution.</p>
+      <div class="acts">
+        <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=finalCTA" target="_blank" rel="noopener">Create your organisation</a>
+        <a class="btn btn-soft" href="#pricing">See plans</a>
+      </div>
+      <p class="small">Free to start. No credit card needed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08 CONTACT -->
+<div class="row sec" id="contact"><div class="cell"><span class="lbl"><b>08</b>/ Contact</span><span class="prog" aria-hidden="true"><i>■■■■■■■■</i></span></div></div>
+<section class="row" aria-labelledby="contact-title">
+  <div class="cell grid g2 ruled contact">
+    <div>
+      <span class="eyebrow"><span class="sl">//</span>Contact us<span class="sl">//</span></span>
+      <h2 class="h2" id="contact-title">Talk to a human.</h2>
+      <p class="lead"><b>We're here to help.</b> Questions about the platform, subscriptions, billing or partnerships.</p>
+      <div class="facts">
+        <div class="fact"><span class="k">Average response time</span><span class="big">13.0<small>hrs</small></span></div>
+        <div class="fact"><span class="k">Email</span><span class="email"><a href="mailto:hq@mworld.tech" id="emailText">hq@mworld.tech</a><button class="copy" type="button" id="copyEmail">COPY</button></span><span class="v" style="color:var(--muted);font-size:13.5px">We aim to reply within 24–48 business hours, worldwide.</span></div>
+        <div class="fact"><span class="k">Registered office</span><span class="v">LAFLABS Technology Private Limited<br>Office No. 1003, Silver Tower, Sector-18, Noida, Gautam Buddha Nagar, Uttar Pradesh 201301, India</span></div>
+      </div>
+    </div>
+    <div>
+      <form class="msg" id="contactForm" novalidate>
+        <div class="field"><label for="fFirst">First name</label><input id="fFirst" name="first" autocomplete="given-name" required></div>
+        <div class="field"><label for="fLast">Last name</label><input id="fLast" name="last" autocomplete="family-name"></div>
+        <div class="field"><label for="fEmail">Email</label><input id="fEmail" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="fSubject">Subject</label><select id="fSubject" name="subject"><option>Sales</option><option>Support</option><option>Billing</option><option>Partnerships</option></select></div>
+        <div class="field full"><label for="fMsg">Message</label><textarea id="fMsg" name="message" required placeholder="Tell us what you're building or what you need help with."></textarea></div>
+        <div class="form-foot"><p>For privacy or data concerns, see our Privacy Policy or email us directly.</p><button class="btn btn-primary" type="submit">Send message</button></div>
+        <p class="form-note" id="formNote" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="row foot">
+    <div class="cell">
+      <div><a class="brand" href="#top"><span class="mark" aria-hidden="true">M</span>M-World</a><p class="tagline">The Autonomous Organisation. Describe a business and get the company that runs it.</p></div>
+      <div><h4>Product</h4><a href="#how">How it works</a><a href="#network">Network</a><a href="#departments">Departments</a><a href="#pricing">Pricing</a></div>
+      <div><h4>Learn</h4><a href="#faq">FAQ</a><a href="https://www.youtube.com/watch?v=b7bmx9AORWU" target="_blank" rel="noopener">Intro video</a><a href="https://www.youtube.com/channel/UCgQyXOTC7vYz6nUd-jNzB9Q" target="_blank" rel="noopener">YouTube</a></div>
+      <div><h4>Company</h4><a href="#contact">Contact</a><a href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=footer" target="_blank" rel="noopener">Builder</a><a href="https://mworld.tech" target="_blank" rel="noopener">Privacy Policy</a><a href="https://mworld.tech" target="_blank" rel="noopener">Terms</a></div>
+    </div>
+  </div>
+  <div class="row wordmark"><div class="cell"><canvas id="wordmark" aria-hidden="true"></canvas></div></div>
+  <div class="row legal"><div class="cell"><span>© 2026 LAFLABS TECHNOLOGY PRIVATE LIMITED</span><span>NOIDA · INDIA</span></div></div>
+  <div class="end"></div>
+</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MONO = '"Geist Mono", ui-monospace, Menlo, monospace';
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+    C = { fg: g('--fg'), muted: g('--muted'), faint: g('--faint'), line: g('--line'), line2: g('--line-2'), panel: g('--panel'), accent: g('--accent'),
+          accent2: g('--accent-2'), accentSoft: g('--accent-soft'), human: g('--human'), humanSoft: g('--human-soft'), bg: g('--bg'), shadow: g('--shadow'), sunk: g('--sunk') };
+  }
+  readColors();
+
+  // ---------- one RAF loop for every visible canvas ----------
+  const loops = new Set(); let raf = 0, lastTs = 0;
+  function tick(ts) { const dt = Math.min(.05, (ts - lastTs) / 1000 || 0); lastTs = ts; for (const f of loops) f(dt); raf = loops.size ? requestAnimationFrame(tick) : 0; }
+  function animate(el, fn) {
+    if (reduce) return;
+    new IntersectionObserver(es => {
+      es[0].isIntersecting ? loops.add(fn) : loops.delete(fn);
+      if (loops.size && !raf) { lastTs = performance.now(); raf = requestAnimationFrame(tick); }
+    }, { rootMargin: '80px' }).observe(el);
+  }
+  function fit(cvs) {
+    const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    cvs.width = Math.max(1, Math.round(r.width * dpr)); cvs.height = Math.max(1, Math.round(r.height * dpr));
+    const ctx = cvs.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!ctx.roundRect) ctx.roundRect = function (x, y, w, h, rr) { this.moveTo(x + rr, y); this.arcTo(x + w, y, x + w, y + h, rr); this.arcTo(x + w, y + h, x, y + h, rr); this.arcTo(x, y + h, x, y, rr); this.arcTo(x, y, x + w, y, rr); this.closePath(); };
+    return { ctx, W: r.width, H: r.height };
+  }
+  const onResize = (el, fn) => { new ResizeObserver(() => fn()).observe(el); };
+
+  // ---------- the ASCII sphere ----------
+  const RAMP = ' .·:;-=+*#';
+  function hash(a, b, c) { const n = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453; return n - Math.floor(n); }
+  function sphere(ctx, cx, cy, r, t, o) {
+    o = o || {};
+    const P = o.pal || { base: C.fg, shade: C.accent2, s1: C.accent2, s2: C.accent, flare: C.accent };
+    const cell = Math.max(o.cellMin || 5, r / (o.res || 10.5)), cw = cell * .74;
+    const flares = o.flares || [], glow = o.glow || 0, clipH = o.clipH == null ? Infinity : o.clipH, clipW = o.clipW == null ? Infinity : o.clipW, A = o.alpha == null ? 1 : o.alpha;
+    ctx.font = `500 ${cell * 1.08}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const la = t * .28, lx = Math.cos(la) * .55 - .25, ly = -.5, lz = .7, ln = Math.hypot(lx, ly, lz), spin = t * .4;
+    for (let y = -r; y <= r + .1; y += cell) {
+      if (cy + y > clipH + cell || cy + y < -cell) continue;
+      for (let x = -r; x <= r + .1; x += cw) {
+        if (cx + x < -cw || cx + x > clipW + cw) continue;
+        const nx = x / r, ny = y / r, d2 = nx * nx + ny * ny;
+        if (d2 > 1) continue;
+        const nz = Math.sqrt(1 - d2), diff = Math.max(0, (nx * lx + ny * ly + nz * lz) / ln);
+        const lon = Math.atan2(nx, nz) + spin, lat = Math.asin(Math.max(-1, Math.min(1, ny * .96 + nx * .08)));
+        const meridian = Math.pow(Math.abs(Math.cos(lon * 3)), 18), parallel = Math.pow(Math.abs(Math.cos(lat * 5)), 22);
+        const rim = Math.pow(1 - nz, 3) * .35;
+        let v = .12 + diff * .66 + (meridian + parallel) * .22 * (.4 + diff) + rim + glow * .18;
+        let flare = 0, fcol = null;
+        if (d2 > .4 && flares.length) {
+          const ang = Math.atan2(y, x);
+          for (const f of flares) {
+            let da = Math.abs(ang - f.ang); if (da > Math.PI) da = Math.PI * 2 - da;
+            const k = Math.max(0, 1 - da / .45) * (1 - (t - f.t0)) * Math.min(1, (d2 - .4) * 3);
+            if (k > flare) { flare = k; fcol = f.col; }
+          }
+        }
+        v = Math.min(1, v + flare * .6);
+        let ci = Math.max(1, Math.round(v * (RAMP.length - 1))), col = P.base, alpha = .16 + .84 * v;
+        const shade = (1 - diff) * Math.max(0, d2 - .45) / .55;
+        if (shade > .32) { col = P.shade; alpha = .35 + .55 * shade; ci = Math.max(ci, 3); }
+        const ix = Math.round(x / cw), iy = Math.round(y / cell), tk = Math.floor(t * 1.6 + hash(ix, iy, 7) * 10), h = hash(ix + tk * 13, iy - tk * 7, 3);
+        if (h > .955 && d2 < .85) { col = h > .985 ? P.s2 : P.s1; ci = RAMP.length - 2; alpha = .95; }
+        if (flare > .35) col = fcol || P.flare;
+        ctx.globalAlpha = alpha * A; ctx.fillStyle = col;
+        ctx.fillText(RAMP[ci], cx + x, cy + y);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ================= HERO WAVES (ASCII flanks) =================
+  (function waves() {
+    const L = $('waveL'), R = $('waveR'), WCH = ' .:-=+*#';
+    let a, b, t = 0;
+    function side(o, mirror) {
+      const { ctx, W, H } = o; ctx.clearRect(0, 0, W, H);
+      const cw = 7, ch = 11; ctx.font = `500 10px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const cols = Math.floor(W / cw), rows = Math.floor(H / ch);
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const u = mirror ? i / cols : 1 - i / cols, yy = (j - rows / 2) / (rows / 2);
+        const wv = Math.sin(u * 9 + t * 1.1 + j * .55) * .5 + Math.sin(u * 3.3 - t * .6 + j * .2) * .5;
+        const d = (wv * .5 + .5) * (1 - Math.abs(yy) * .9) * Math.min(1, u * 5) * Math.min(1, (1 - u) * 2.2);
+        if (d < .28) continue;
+        ctx.globalAlpha = .25 + d * .6; ctx.fillStyle = d > .72 ? C.accent : C.accent2;
+        ctx.fillText(WCH[Math.min(WCH.length - 1, Math.floor(d * WCH.length))], i * cw + cw / 2, j * ch + ch / 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+    const draw = () => { if (a && b) { side(a, false); side(b, true); } };
+    onResize(L, () => { a = fit(L); b = fit(R); draw(); });
+    animate(L, dt => { t += dt; draw(); });
+  })();
+
+  // ================= ORBIT CENTERPIECE: AI, people, businesses =================
+  const DEPTS = [{ key: 'STR', name: 'Strategy' }, { key: 'MGT', name: 'Management' }, { key: 'TEC', name: 'Technology' }, { key: 'FIN', name: 'Finance' }, { key: 'MKT', name: 'Marketing' }, { key: 'SAL', name: 'Sales' }];
+  const PEOPLE = ['photographer', 'designer', 'accountant', 'tutor', 'lawyer', 'driver', 'recruiter'];
+  const BIZ = ['supplier', 'packaging', 'courier', 'warehouse', 'payments', 'roaster', 'print shop', 'ad studio', 'legal firm'];
+  const LINKS = [['supplier', 'packaging'], ['packaging', 'courier'], ['warehouse', 'courier'], ['roaster', 'packaging'], ['print shop', 'ad studio'], ['payments', 'legal firm'], ['supplier', 'warehouse']];
+  const RINGS = [
+    { type: 'ai', label: 'AI DEPARTMENTS', speed: .055, items: DEPTS },
+    { type: 'ppl', label: 'PEOPLE', speed: -.036, items: PEOPLE.map(n => ({ key: n, name: n })) },
+    { type: 'biz', label: 'BUSINESSES', speed: .022, items: BIZ.map(n => ({ key: n, name: n })) }
+  ];
+  // kinds: ai = department does it; ppl = book a person; biz = order from one business; chain = business hands work to another
+  const SPRINTS = [
+    { name: 'Pet products', prompt: 'Build me a premium pet-products business.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Size the premium pet-treat market' },
+      { k: 'ai', w: 'TEC', t: 'Build the storefront and checkout' },
+      { k: 'chain', w: ['supplier', 'packaging'], t: 'Order treats and branded packaging' },
+      { k: 'ppl', w: 'photographer', t: 'Book a photographer for product shots' },
+      { k: 'biz', w: 'payments', t: 'Set up card payments' },
+      { k: 'ai', w: 'MKT', t: 'Write the launch email sequence' },
+      { k: 'chain', w: ['warehouse', 'courier'], t: 'Store stock and ship first orders' } ] },
+    { name: 'Coffee subscription', prompt: 'Start a monthly single-origin coffee subscription.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Pick a niche: home pour-over brewers' },
+      { k: 'chain', w: ['roaster', 'packaging'], t: 'Source beans from a partner roaster' },
+      { k: 'ai', w: 'TEC', t: 'Build the subscription signup flow' },
+      { k: 'ppl', w: 'designer', t: 'Brief a designer for the bag labels' },
+      { k: 'biz', w: 'payments', t: 'Set up recurring billing' },
+      { k: 'ppl', w: 'accountant', t: 'Have an accountant check the tax setup' },
+      { k: 'ai', w: 'SAL', t: 'Draft outreach to coffee creators' } ] },
+    { name: 'Tutoring app', prompt: 'Launch a maths tutoring app for high-school students.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Map the syllabus and competitors' },
+      { k: 'ai', w: 'TEC', t: 'Ship the mobile app beta' },
+      { k: 'ppl', w: 'tutor', t: 'Recruit five maths tutors' },
+      { k: 'ppl', w: 'lawyer', t: 'Have a lawyer review the parent terms' },
+      { k: 'chain', w: ['print shop', 'ad studio'], t: 'Print flyers and plan school ads' },
+      { k: 'ai', w: 'MKT', t: 'Write the app-store listing' } ] }
+  ];
+  const wrap = $('orbitWrap'), cvs = $('orbit');
+  let ctx, W = 0, H = 0, cx = 0, cy = 0, tilt = .42, R = [0, 0, 0], coreR = 0, S = 1, narrow = false;
+  const nodes = [], byKey = {};
+  RINGS.forEach((rg, ri) => rg.items.forEach((it, i) => {
+    const n = { ...it, ri, type: rg.type, base: i / rg.items.length * Math.PI * 2 + ri * .55, ping: 0, x: 0, y: 0, z: 0, work: null, req: 0, tag: '' };
+    nodes.push(n); byKey[it.key] = n;
+  }));
+  const links = LINKS.map(([a, b]) => [byKey[a], byKey[b]]);
+  function resize() {
+    ({ ctx, W, H } = fit(cvs));
+    narrow = W < 640; tilt = narrow ? .62 : .42;
+    cx = W / 2; cy = narrow ? H * .54 : H * .44;
+    const R3 = Math.min(W / 2 - (narrow ? 18 : 110), (Math.min(cy, H - cy) - (narrow ? 30 : 40)) / tilt);
+    R = [R3 * .46, R3 * .73, R3]; coreR = R3 * (narrow ? .22 : .235); S = Math.max(.78, Math.min(1, R3 / 440));
+    readColors(); draw();
+  }
+  function place() { for (const n of nodes) { const a = n.base + RINGS[n.ri].speed * time, r = R[n.ri]; n.x = cx + r * Math.cos(a); n.y = cy + r * Math.sin(a) * tilt; n.z = Math.sin(a); } }
+  let time = 0, glow = 0;
+  const pulses = [], timers = [], flares = [];
+  const CORE = { core: true, get x() { return cx; }, get y() { return cy; } };
+  const later = (s, fn) => timers.push({ at: time + s, fn });
+  function pulse(from, to, dur, col, ret, cb) {
+    pulses.push({ from, to, t0: time, dur, col, ret, sign: Math.random() < .5 ? -1 : 1, cb });
+    if (from.core) { glow = 1; flares.push({ ang: Math.atan2(to.y - cy, to.x - cx), t0: time, col }); }
+  }
+  const feedList = $('feedList'), promptEl = $('promptInput');
+  let sIdx = 0, sprint, nextIdx = 0, active = 0, done = 0, nextStart = 0, finishedAt = null, gen = 0, sprintT0 = 0, userTyped = false, typing = null;
+  let booked = 0, engaged = new Set();
+  const clock = () => { const s = Math.floor(time - sprintT0); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  function setChips(i) { document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i))); }
+  const isWorking = n => n.work && time - n.work.t0 < n.work.dur;
+  function updateOrg() {
+    const aiW = nodes.filter(n => n.type === 'ai' && (isWorking(n) || n.pending)).length;
+    const pplW = nodes.some(n => n.type === 'ppl' && (n.req > 0 || isWorking(n) || n.pending));
+    const bizW = nodes.some(n => n.type === 'biz' && (isWorking(n) || n.pending));
+    const set = (id, on, text) => { const el = $(id); el.classList.toggle('on', on); el.lastElementChild.textContent = text; };
+    set('oAI', aiW > 0, aiW ? aiW + ' working' : 'idle');
+    set('oPPL', pplW, pplW ? 'booking…' : booked + ' booked');
+    set('oBIZ', bizW, bizW ? 'ordering…' : engaged.size + ' engaged');
+    $('feedCount').textContent = done + ' / ' + sprint.tasks.length;
+    $('orgBar').style.width = (done / sprint.tasks.length * 100) + '%';
+  }
+  function loadSprint(i, instant) {
+    gen++; sIdx = i % SPRINTS.length; sprint = SPRINTS[sIdx];
+    nextIdx = 0; active = 0; done = 0; finishedAt = null; sprintT0 = time; booked = 0; engaged = new Set();
+    pulses.length = 0; timers.length = 0;
+    for (const n of nodes) { n.work = null; n.tag = ''; n.req = 0; n.pending = false; }
+    feedList.replaceChildren();
+    $('orgName').textContent = sprint.name;
+    setChips(sIdx);
+    let delay = .8;
+    if (!userTyped) {
+      if (instant || reduce) promptEl.value = sprint.prompt;
+      else { typing = { text: sprint.prompt, t0: time, cps: 34 }; promptEl.value = ''; delay = sprint.prompt.length / 34 + .5; }
+    }
+    nextStart = time + delay;
+    updateOrg();
+  }
+  function addRow(tk) {
+    const li = document.createElement('li');
+    const kind = tk.k === 'ai' ? 'ai' : tk.k === 'ppl' ? 'ppl' : 'biz';
+    li.className = 'run ' + kind;
+    li.innerHTML = '<span class="tm"></span><span class="cd"></span><span class="tx"></span><span class="st"></span>';
+    li.children[0].textContent = clock();
+    li.children[1].textContent = tk.k === 'ai' ? tk.w : tk.k === 'ppl' ? 'PPL' : 'BIZ';
+    li.children[2].textContent = tk.t;
+    li.children[3].textContent = tk.k === 'ppl' ? 'BOOKING' : tk.k === 'ai' ? 'WORKING' : 'ORDERING';
+    feedList.appendChild(li);
+    while (feedList.children.length > (narrow ? 4 : 6)) feedList.firstChild.remove();
+    return li;
+  }
+  function startTask(i) {
+    const tk = sprint.tasks[i], g = gen, row = addRow(tk);
+    active++;
+    const finish = () => { if (g !== gen) return; active--; done++; row.className = 'done ' + row.className.split(' ')[1]; row.querySelector('.st').textContent = '✓ DONE'; };
+    const work = (n, d) => { n.ping = 1; n.work = { t0: time, dur: d }; n.pending = false; };
+    if (tk.k === 'ai') {
+      const n = byKey[tk.w]; n.pending = true;
+      pulse(CORE, n, 1.1, C.fg, false, () => { if (g !== gen) return; work(n, 1.7); n.tag = tk.t; later(1.7, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.0, C.accent, true, finish); }); });
+    } else if (tk.k === 'ppl') {
+      const n = byKey[tk.w]; n.pending = true;
+      pulse(CORE, n, 1.3, C.human, false, () => {
+        if (g !== gen) return;
+        n.pending = false; n.ping = 1; n.req = 2.4; n.tag = 'Booking a person · ' + tk.w;
+        later(2.4, () => {
+          if (g !== gen) return;
+          booked++; n.tag = tk.w + ' confirmed · on the job';
+          row.querySelector('.st').textContent = 'ON JOB';
+          work(n, 1.6);
+          later(1.6, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.3, C.human, true, finish); });
+        });
+      });
+    } else if (tk.k === 'biz') {
+      const n = byKey[tk.w]; n.pending = true; engaged.add(tk.w);
+      pulse(CORE, n, 1.3, C.fg, false, () => { if (g !== gen) return; work(n, 1.4); n.tag = 'Order · ' + tk.w; later(1.4, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.2, C.fg, true, finish); }); });
+    } else {
+      const a = byKey[tk.w[0]], b = byKey[tk.w[1]]; a.pending = true; engaged.add(tk.w[0]); engaged.add(tk.w[1]);
+      pulse(CORE, a, 1.3, C.fg, false, () => {
+        if (g !== gen) return; work(a, 1); a.tag = tk.w[0] + ' → ' + tk.w[1];
+        later(1, () => {
+          if (g !== gen) return; a.tag = ''; b.pending = true;
+          pulse(a, b, 1.1, C.fg, false, () => {
+            if (g !== gen) return; work(b, 1); b.tag = tk.w[1] + ' → your org';
+            later(1, () => { if (g !== gen) return; b.tag = ''; pulse(b, CORE, 1.3, C.fg, true, finish); });
+          });
+        });
+      });
+    }
+  }
+  function schedule() {
+    const n = sprint.tasks.length;
+    if (finishedAt === null) {
+      if (active < 2 && nextIdx < n && time >= nextStart) { startTask(nextIdx++); nextStart = time + 1.4; }
+      if (done === n) finishedAt = time;
+    } else if (time - finishedAt > 3) loadSprint(sIdx + 1);
+  }
+  let orgTick = 0;
+  function step(dt) {
+    time += dt; glow *= Math.pow(.15, dt);
+    for (const n of nodes) { n.ping = Math.max(0, n.ping - dt * 1.1); n.req = Math.max(0, n.req - dt); }
+    for (let i = timers.length - 1; i >= 0; i--) if (timers[i] && timers[i].at <= time) { const t = timers.splice(i, 1)[0]; t.fn(); }
+    for (const p of pulses.slice()) if ((time - p.t0) / p.dur >= 1) { pulses.splice(pulses.indexOf(p), 1); p.cb && p.cb(); }
+    for (let i = flares.length - 1; i >= 0; i--) if (time - flares[i].t0 > 1) flares.splice(i, 1);
+    if (typing) {
+      const k = Math.min(typing.text.length, Math.floor((time - typing.t0) * typing.cps));
+      if (!userTyped && promptEl.value.length !== k) promptEl.value = typing.text.slice(0, k);
+      if (k >= typing.text.length) typing = null;
+    }
+    schedule();
+    if ((orgTick += dt) > .15) { orgTick = 0; updateOrg(); }
+  }
+  function ringStroke(r, front) {
+    ctx.beginPath(); let on = false;
+    for (let i = 0; i <= 200; i++) { const a = i / 200 * Math.PI * 2; if ((Math.sin(a) >= 0) !== front) { on = false; continue; } const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a) * tilt; on ? ctx.lineTo(x, y) : ctx.moveTo(x, y); on = true; }
+    ctx.stroke();
+  }
+  function node(n) {
+    const d = (n.z + 1) / 2, sc = S * (.76 + .24 * d), al = .42 + .58 * d;
+    const wk = isWorking(n) ? (time - n.work.t0) / n.work.dur : -1, req = n.req > 0;
+    const hue = n.type === 'ppl' ? C.human : n.type === 'ai' ? C.accent : C.fg;
+    const soft = n.type === 'ppl' ? C.humanSoft : n.type === 'ai' ? C.accentSoft : C.sunk;
+    const rad = n.type === 'ai' ? 25 : 21;
+    ctx.save(); ctx.translate(n.x, n.y); ctx.scale(sc, sc);
+    if (req) { const k = Math.sin(time * 6) * .5 + .5; ctx.globalAlpha = al * (.3 + .3 * k); ctx.strokeStyle = C.human; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 0, 19 + k * 5, 0, Math.PI * 2); ctx.stroke(); }
+    else if (n.ping > 0 && wk < 0) { ctx.globalAlpha = al * n.ping * .5; ctx.strokeStyle = hue; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, 18 + (1 - n.ping) * 14, 0, Math.PI * 2); ctx.stroke(); }
+    if (wk >= 0) {
+      const fade = Math.min(1, (1 - wk) * 6);
+      ctx.lineWidth = 1.2; ctx.globalAlpha = al * .14 * fade; ctx.strokeStyle = C.fg; ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.globalAlpha = al * fade; ctx.strokeStyle = hue;
+      ctx.beginPath(); ctx.arc(0, 0, rad, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * wk); ctx.stroke(); ctx.lineCap = 'butt';
+    }
+    const lit = wk >= 0 || req;
+    ctx.globalAlpha = al; ctx.beginPath();
+    if (n.type === 'ai') ctx.roundRect(-20, -12, 40, 24, 7);
+    else if (n.type === 'ppl') ctx.arc(0, 0, 12.5, 0, Math.PI * 2);
+    else ctx.roundRect(-13, -13, 26, 26, 4);
+    ctx.shadowColor = C.shadow; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
+    ctx.fillStyle = lit ? soft : C.panel; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.lineWidth = 1; ctx.strokeStyle = lit ? hue : (n.type === 'ppl' ? 'rgba(224,130,11,.45)' : C.line); ctx.stroke();
+    const ink = lit ? hue : (n.type === 'ppl' ? C.human : C.fg);
+    ctx.fillStyle = ink; ctx.strokeStyle = ink;
+    if (n.type === 'ai') { ctx.font = `500 10.5px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(n.key, 0, .8); }
+    else if (n.type === 'ppl') {
+      ctx.beginPath(); ctx.arc(0, -3, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.lineWidth = 1.7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(0, 7, 6, Math.PI * 1.13, Math.PI * 1.87); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(-7.5, -7); ctx.lineTo(7.5, -7); ctx.lineTo(7.5, -3);
+      for (let i = 2; i >= 0; i--) ctx.arc(-7.5 + 5 * (i + .5), -3, 2.5, 0, Math.PI, false);
+      ctx.closePath(); ctx.fill();
+      ctx.lineWidth = 1.3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-6, -.5); ctx.lineTo(-6, 7); ctx.lineTo(6, 7); ctx.lineTo(6, -.5); ctx.stroke();
+      ctx.fillRect(-4.2, 2, 3.2, 5); ctx.lineWidth = 1.1; ctx.strokeRect(1, 2, 3.4, 2.6);
+    }
+    ctx.restore();
+    const showName = n.type === 'ai' ? (!narrow || wk < 0) : (lit || n.ping > 0);
+    if (showName && !n.tag) {
+      ctx.save(); ctx.globalAlpha = al * (lit ? 1 : n.type === 'ai' ? .6 : Math.min(1, n.ping * 1.5));
+      ctx.font = `500 ${narrow ? 9 : 10}px ${MONO}`; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = lit ? hue : C.muted;
+      ctx.fillText(n.name.toUpperCase(), n.x, n.y + 17 * sc); if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+      ctx.restore();
+    }
+  }
+  function tag(n) {
+    if (!n.tag || narrow) return;
+    const isP = n.type === 'ppl';
+    let a = 1;
+    if (isWorking(n)) { const wk = (time - n.work.t0) / n.work.dur; a = Math.min(1, wk * 6, (1 - wk) * 6); }
+    else if (n.req > 0) a = Math.min(1, (2.4 - n.req) * 5, n.req * 5 + .2);
+    if (a <= 0) return;
+    const fs = narrow ? 9.5 : 11; ctx.font = `500 ${fs}px ${MONO}`;
+    const text = n.tag, tw = ctx.measureText(text).width, w = tw + 26, h = fs + 12;
+    const x = Math.max(6, Math.min(W - w - 6, n.x - w / 2)), y = Math.max(4, n.y - 26 * S - h - 2);
+    ctx.save(); ctx.globalAlpha = a; ctx.shadowColor = C.shadow; ctx.shadowBlur = 12; ctx.shadowOffsetY = 3;
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, 6); ctx.fillStyle = isP ? C.humanSoft : C.panel; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.strokeStyle = isP ? C.human : C.line; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = isP ? C.human : n.type === 'ai' ? C.accent : C.fg; ctx.beginPath(); ctx.arc(x + 11, y + h / 2, 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(text, x + 19, y + h / 2 + .5);
+    ctx.restore();
+  }
+  function ends(p) {
+    let ax = p.from.x, ay = p.from.y, bx = p.to.x, by = p.to.y;
+    if (p.from.core) { const dx = bx - ax, dy = by - ay, l = Math.hypot(dx, dy) || 1; ax += dx / l * coreR * 1.05; ay += dy / l * coreR * 1.05; }
+    if (p.to.core) { const dx = ax - bx, dy = ay - by, l = Math.hypot(dx, dy) || 1; bx += dx / l * coreR * 1.05; by += dy / l * coreR * 1.05; }
+    return [ax, ay, bx, by];
+  }
+  function bez(e, sign, u) { const [ax, ay, bx, by] = e, mx = (ax + bx) / 2, my = (ay + by) / 2, dx = bx - ax, dy = by - ay, k = .13 * sign, qx = mx - dy * k, qy = my + dx * k, v = 1 - u; return [v * v * ax + 2 * v * u * qx + u * u * bx, v * v * ay + 2 * v * u * qy + u * u * by]; }
+  const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+  function drawPulse(p) {
+    const raw = Math.min(1, Math.max(0, (time - p.t0) / p.dur)), u = ease(raw), e = ends(p), col = p.col, w = Math.min(1, raw * 5) * Math.min(1, (1 - raw) * 4);
+    ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.globalAlpha = .2 * w;
+    ctx.beginPath(); for (let i = 0; i <= 28; i++) { const [x, y] = bez(e, p.sign, i / 28); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
+    ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+    let prev = bez(e, p.sign, Math.max(0, u - .2));
+    for (let i = 1; i <= 12; i++) { const pt = bez(e, p.sign, Math.max(0, u - .2 + .2 * i / 12)); ctx.globalAlpha = .9 * (i / 12); ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); prev = pt; }
+    const [hx, hy] = bez(e, p.sign, u);
+    ctx.globalAlpha = .14; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(hx, hy, 6.5, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(hx, hy, 2.7, 0, Math.PI * 2);
+    if (p.ret) { ctx.fillStyle = C.bg; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); } else ctx.fill();
+    ctx.lineCap = 'butt';
+  }
+  function draw() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, W, H); place();
+    ctx.strokeStyle = C.fg; ctx.lineWidth = 1; ctx.setLineDash([2, 5]); ctx.globalAlpha = .2; R.forEach(r => ringStroke(r, false));
+    // standing business-to-business links
+    ctx.setLineDash([1, 4]);
+    for (const [a, b] of links) { ctx.globalAlpha = .1 + .14 * ((a.z + b.z) / 2 + 1) / 2; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    const hr = coreR * 2.4, g = ctx.createRadialGradient(cx, cy, coreR * .6, cx, cy, hr);
+    g.addColorStop(0, C.accentSoft); g.addColorStop(1, 'rgba(234,243,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(cx, cy, hr, hr * (.62 + tilt * .4), 0, 0, Math.PI * 2); ctx.fill();
+    const sorted = nodes.slice().sort((a, b) => a.z - b.z);
+    for (const n of sorted) if (n.z < 0) node(n);
+    sphere(ctx, cx, cy, coreR * (1 + .018 * Math.sin(time * 1.7)), time, { flares, glow });
+    ctx.save(); ctx.strokeStyle = C.muted; ctx.globalAlpha = .35; ctx.setLineDash([1, 5]); ctx.lineDashOffset = -time * 6; ctx.beginPath(); ctx.arc(cx, cy, coreR * 1.2, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = C.fg; ctx.globalAlpha = .28; ctx.lineWidth = 1; R.forEach(r => ringStroke(r, true)); ctx.globalAlpha = 1;
+    ctx.lineCap = 'round';
+    R.forEach((r, i) => {
+      const dir = i % 2 ? -1 : 1, a0 = time * (.3 + i * .07) * dir + i * 2.1, gc = i === 1 ? C.human : C.accent2;
+      for (let k = 1; k <= 24; k++) {
+        const a1 = a0 - dir * .7 * (1 - (k - 1) / 24), a2 = a0 - dir * .7 * (1 - k / 24), fr = Math.sin(a2) >= 0;
+        ctx.globalAlpha = (k / 24) * (fr ? .7 : .3) * (i === 1 ? .7 : 1); ctx.strokeStyle = gc; ctx.lineWidth = fr ? 1.6 : 1.1;
+        ctx.beginPath(); ctx.moveTo(cx + r * Math.cos(a1), cy + r * Math.sin(a1) * tilt); ctx.lineTo(cx + r * Math.cos(a2), cy + r * Math.sin(a2) * tilt); ctx.stroke();
+      }
+    });
+    ctx.globalAlpha = 1; ctx.lineCap = 'butt';
+    if (!narrow) {
+      ctx.font = `500 10px ${MONO}`; if ('letterSpacing' in ctx) ctx.letterSpacing = '1.4px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      RINGS.forEach((rg, i) => {
+        const a = Math.PI * 1.5 - .42 - i * .06, x = cx + R[i] * Math.cos(a), y = cy + R[i] * Math.sin(a) * tilt, tw = ctx.measureText(rg.label).width;
+        ctx.fillStyle = C.bg; ctx.fillRect(x - tw / 2 - 7, y - 8, tw + 14, 16);
+        ctx.fillStyle = i === 1 ? C.human : i === 0 ? C.accent : C.fg; ctx.globalAlpha = .75; ctx.fillText(rg.label, x, y + .5); ctx.globalAlpha = 1;
+      });
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    }
+    for (const p of pulses) drawPulse(p);
+    ctx.globalAlpha = 1;
+    for (const n of sorted) if (n.z >= 0) node(n);
+    for (const n of nodes) tag(n);
+  }
+  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; });
+  document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    userTyped = false; typing = null; loadSprint(+c.dataset.i, true);
+    if (reduce) { for (let i = 0; i < 300; i++) step(1 / 30); draw(); updateOrg(); }
+  }));
+  const setMode = full => { $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full)); $('orgMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous'; };
+  $('modeFull').addEventListener('click', () => setMode(true));
+  $('modeSemi').addEventListener('click', () => setMode(false));
+  const showFiles = () => { const f = [...$('fileMedia').files, ...$('fileDocs').files]; $('fileNames').textContent = f.length ? (f.length === 1 ? f[0].name : f.length + ' files') : ''; };
+  $('fileMedia').addEventListener('change', showFiles); $('fileDocs').addEventListener('change', showFiles);
+  loadSprint(0);
+  onResize(wrap, resize);
+  if (reduce) { for (let i = 0; i < 300; i++) step(1 / 30); setTimeout(() => { draw(); updateOrg(); }, 50); }
+  else animate(wrap, dt => { step(dt); draw(); });
+
+  // ships strip follows the departments in the sim
+  const ships = [...document.querySelectorAll('.ship')];
+  setInterval(() => { const w = DEPTS.findIndex(d => isWorking(byKey[d.key])); ships.forEach(s => s.classList.toggle('on', +s.dataset.d === w)); }, 300);
+
+  // ================= TEXTURE behind "why" =================
+  function noise2(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, s = v => v * v * (3 - 2 * v), h = (a, b) => hash(a, b, 1);
+    const a = h(xi, yi), b = h(xi + 1, yi), c = h(xi, yi + 1), d = h(xi + 1, yi + 1);
+    return a + (b - a) * s(xf) + (c - a) * s(yf) + (a - b - c + d) * s(xf) * s(yf);
+  }
+  const tex = $('tex1');
+  onResize(tex, () => {
+    const { ctx, W, H } = fit(tex); ctx.clearRect(0, 0, W, H);
+    const cw = 7, ch = 10; ctx.font = `500 9px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = C.muted;
+    for (let y = 0; y < H; y += ch) for (let x = 0; x < W; x += cw) {
+      const n = noise2(x / 90, y / 70) * .65 + noise2(x / 30, y / 24) * .35;
+      const keep = Math.min(1, Math.max(Math.abs(x / W - .5) * 2 * 1.15 - .25, 0) + Math.abs(y / H - .5) * 2 * .2);
+      const v = (n - .52) * 4 * keep; if (v <= 0) continue;
+      ctx.globalAlpha = Math.min(.5, v * .5); ctx.fillText('.:-=+*'[Math.min(5, Math.floor(v * 4))], x + cw / 2, y + ch / 2);
+    }
+    ctx.globalAlpha = 1;
+  });
+
+  // bento loops
+  const seats = [...$('seats').children], stops = [...document.querySelectorAll('#track .stop')], ail = [...document.querySelectorAll('#ailog .l')], bsteps = [...$('bookSteps').children];
+  let sk = 0;
+  function bentoTick() {
+    sk = (sk + 1) % 10;
+    seats.forEach((s, i) => s.classList.toggle('on', i < Math.min(sk, 6)));
+    const n = Math.min(sk, 5); stops.forEach((s, i) => s.classList.toggle('on', i < n));
+    $('trackFill').style.width = (n <= 1 ? 0 : (n - 1) / 4 * 100) + '%';
+    ail.forEach((l, i) => l.classList.toggle('on', i === sk % 5));
+    const bs = Math.floor(sk / 2.5); bsteps.forEach((s, i) => { s.classList.toggle('done', i < bs); s.classList.toggle('on', i === bs); });
+  }
+  if (reduce) { sk = 6; bentoTick(); } else setInterval(bentoTick, 700);
+
+  // ================= HOW: mini core + crew =================
+  const mini = $('miniCore'), m = fit(mini); let mt = 0, nextMF = 0; const mflares = [];
+  const drawMini = () => { m.ctx.clearRect(0, 0, 150, 150); sphere(m.ctx, 75, 75, 52, mt, { flares: mflares }); };
+  drawMini();
+  animate(mini, dt => {
+    mt += dt;
+    if (mt > nextMF) { mflares.push({ ang: (Math.random() - .3) * 1.2, t0: mt, col: Math.random() < .3 ? C.human : C.accent }); nextMF = mt + 1.2; }
+    for (let i = mflares.length - 1; i >= 0; i--) if (mt - mflares[i].t0 > 1) mflares.splice(i, 1);
+    drawMini();
+  });
+  const crewDots = [...document.querySelectorAll('#crew .d i')], asm = [...$('asm').children];
+  let fk = 0;
+  setInterval(() => {
+    fk++; const on = Math.min(fk % 9, 6);
+    crewDots.forEach((d, i) => d.classList.toggle('on', hash(i, Math.floor(fk / 2), 4) > .62));
+    asm.forEach((s, i) => s.classList.toggle('on', i < on));
+    $('asmCount').textContent = on === 6 ? 'READY 6/6' : 'ASSEMBLING ' + on + '/6';
+    $('asmOn').textContent = on;
+  }, reduce ? 1e9 : 700);
+  if (reduce) { asm.forEach(s => s.classList.add('on')); $('asmCount').textContent = 'READY 6/6'; $('asmOn').textContent = '6'; crewDots.forEach((d, i) => d.classList.toggle('on', i % 3 === 0)); }
+
+  // ================= BLUE BLOCK edges =================
+  const edge = $('edge'); let E, et = 0;
+  const WHITE = { base: '#FFFFFF', shade: '#9FD3FF', s1: '#CFE9FF', s2: '#FFFFFF', flare: '#FFFFFF' };
+  const drawEdge = () => {
+    if (!E) return; const { ctx, W, H } = E; ctx.clearRect(0, 0, W, H);
+    const r = Math.min(H * .5, 330), a = W < 760 ? .2 : .5;
+    sphere(ctx, -r * .22, H * .5, r, et, { pal: WHITE, res: 30, cellMin: 6, alpha: a, clipW: W });
+    sphere(ctx, W + r * .22, H * .55, r * .9, et + 7, { pal: WHITE, res: 28, cellMin: 6, alpha: a, clipW: W });
+  };
+  onResize(edge, () => { E = fit(edge); drawEdge(); });
+  animate(edge, dt => { et += dt * .7; drawEdge(); });
+
+  // org chart
+  const NAMES = ['STRATEGY', 'MANAGEMENT', 'TECHNOLOGY', 'FINANCE', 'MARKETING', 'SALES'], ROLES = ['plans', 'coordinates', 'builds', 'budgets', 'grows', 'sells'];
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function buildWide() {
+    const BW = 14, GAP = 2, Wd = 6 * BW + 5 * GAP, rows = [];
+    const blank = () => Array.from({ length: Wd }, () => ({ c: ' ', o: '' }));
+    const put = (row, x, s, o) => { for (let i = 0; i < s.length; i++) row[x + i] = { c: s[i], o }; };
+    const centers = NAMES.map((_, i) => i * (BW + GAP) + Math.floor(BW / 2)), RW = 34, rx = Math.floor((Wd - RW) / 2), mid = Math.floor(Wd / 2);
+    let r = blank(); put(r, rx, '┌' + '─'.repeat(RW - 2) + '┐', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '│ ' + 'YOUR AUTONOMOUS ORGANISATION'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '│ ' + 'goal: first 100 customers'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '└' + '─'.repeat(RW - 2) + '┘', 'rt'); r[mid] = { c: '┬', o: 'rt' }; rows.push(r);
+    r = blank(); r[mid] = { c: '│', o: 'L*' }; rows.push(r);
+    r = blank();
+    for (let x = centers[0]; x <= centers[5]; x++) {
+      const paths = centers.map((c, i) => (x >= Math.min(c, mid) && x <= Math.max(c, mid)) ? i : -1).filter(i => i >= 0), ci = centers.indexOf(x);
+      let ch = x === centers[0] ? '┌' : x === centers[5] ? '┐' : ci >= 0 ? '┬' : '─';
+      if (x === mid) ch = ci >= 0 ? '┼' : '┴';
+      r[x] = { c: ch, o: 'L' + paths.join(',') };
+    }
+    rows.push(r);
+    r = blank(); centers.forEach((c, i) => r[c] = { c: '│', o: 'L' + i }); rows.push(r);
+    const b = [blank(), blank(), blank(), blank()];
+    NAMES.forEach((nm, i) => {
+      const x = i * (BW + GAP);
+      put(b[0], x, '┌' + '─'.repeat(BW - 2) + '┐', 'B' + i); b[0][centers[i]] = { c: '┴', o: 'B' + i };
+      put(b[1], x, '│ ' + nm.padEnd(BW - 4) + ' │', 'N' + i);
+      put(b[2], x, '│ ' + ('› ' + ROLES[i]).padEnd(BW - 4) + ' │', 'B' + i);
+      put(b[3], x, '└' + '─'.repeat(BW - 2) + '┘', 'B' + i);
+    });
+    rows.push(...b);
+    // the outside world, reached through Management
+    r = blank(); rows.push(r);
+    r = blank(); put(r, 2, '· · · people booked for real-world work · · · · · · · · · partner businesses on the network · · ·', 'X'); rows.push(r);
+    return rows;
+  }
+  function buildNarrow() {
+    const rows = [], line = segs => rows.push(segs.flatMap(([s, o]) => [...s].map(c => ({ c, o }))));
+    line([['YOUR AUTONOMOUS ORGANISATION', 'rt']]); line([['│', 'L*']]);
+    NAMES.forEach((nm, i) => {
+      const last = i === 5;
+      line([[last ? '└── ' : '├── ', 'L' + i], [nm.padEnd(11), 'N' + i], [' ··· ' + ROLES[i], 'B' + i]]);
+      if (!last) line([['│', 'L' + [0, 1, 2, 3, 4, 5].filter(k => k > i).join(',')]]);
+    });
+    line([['', '']]); line([['+ people and partner businesses', 'X']]);
+    return rows;
+  }
+  function renderOrg(rows) {
+    return rows.map(row => {
+      let html = '', cur = null, buf = '';
+      const flush = () => {
+        if (!buf) return;
+        if (!cur || cur === 'X') html += esc(buf);
+        else if (cur === 'rt') html += '<span class="rt">' + esc(buf) + '</span>';
+        else if (cur[0] === 'L') html += '<span class="ln" data-p="' + cur.slice(1) + '">' + esc(buf) + '</span>';
+        else html += '<span class="bx' + (cur[0] === 'N' ? ' nm' : '') + '" data-d="' + cur.slice(1) + '">' + esc(buf) + '</span>';
+        buf = '';
+      };
+      for (const cell of row) { const o = cell.o || null; if (o !== cur) { flush(); cur = o; } buf += cell.c; }
+      flush(); return html.replace(/\s+$/, '');
+    }).join('\n');
+  }
+  $('orgWide').innerHTML = renderOrg(buildWide()); $('orgNarrow').innerHTML = renderOrg(buildNarrow());
+  const deptEls = [...document.querySelectorAll('.dept')];
+  let activeDept = 0, hoverLock = false;
+  function setDept(i) {
+    activeDept = i;
+    deptEls.forEach((el, k) => el.classList.toggle('on', k === i));
+    document.querySelectorAll('.org .bx').forEach(el => el.classList.toggle('on', +el.dataset.d === i));
+    document.querySelectorAll('.org .ln').forEach(el => { const p = el.dataset.p; el.classList.toggle('on', p === '*' || p.split(',').includes(String(i))); });
+  }
+  deptEls.forEach((el, i) => {
+    const on = () => { hoverLock = true; setDept(i); }, off = () => { hoverLock = false; };
+    el.addEventListener('mouseenter', on); el.addEventListener('focus', on); el.addEventListener('mouseleave', off); el.addEventListener('blur', off);
+  });
+  setDept(0);
+  if (!reduce) setInterval(() => { if (!hoverLock) setDept((activeDept + 1) % 6); }, 2200);
+
+  // ================= VIDEO poster sphere =================
+  const vid = $('vidSphere'); let V, vt = 3;
+  const NIGHT = { base: '#DCEBFF', shade: '#64C9FF', s1: '#64C9FF', s2: '#FFFFFF', flare: '#64C9FF' };
+  const drawVid = () => {
+    if (!V) return; const { ctx, W, H } = V; ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(100,201,255,.22)'; ctx.setLineDash([2, 6]); ctx.lineWidth = 1;
+    [1.55, 2.1].forEach(k => { ctx.beginPath(); ctx.ellipse(W / 2, H / 2, H * .3 * k, H * .3 * k * .38, 0, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]);
+    sphere(ctx, W / 2, H / 2, H * .3, vt, { pal: NIGHT, res: 18, cellMin: 5, alpha: .55 });
+  };
+  onResize(vid, () => { V = fit(vid); drawVid(); });
+  animate(vid, dt => { vt += dt * .8; drawVid(); });
+
+  // ================= SUNRISE =================
+  const sun = $('sunrise'); let SN, st = 0, nextF = 0; const sfl = [];
+  const drawSun = () => {
+    if (!SN) return; const { ctx, W, H } = SN; ctx.clearRect(0, 0, W, H);
+    const r = Math.min(W * .36, 440), x = W / 2, y = H + r * .45;
+    ctx.strokeStyle = C.fg; ctx.lineWidth = 1; ctx.setLineDash([2, 6]);
+    [1.3, 1.7].forEach((k, i) => { ctx.globalAlpha = .14 - i * .05; ctx.beginPath(); ctx.ellipse(x, y, r * k, r * k * .4, 0, Math.PI, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    const g = ctx.createRadialGradient(x, y, r * .7, x, y, r * 1.4); g.addColorStop(0, C.accentSoft); g.addColorStop(1, 'rgba(234,243,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 1.4, 0, Math.PI * 2); ctx.fill();
+    sphere(ctx, x, y, r, st, { flares: sfl, res: 36, cellMin: 6, clipH: H, alpha: .65 });
+  };
+  onResize(sun, () => { SN = fit(sun); drawSun(); });
+  animate(sun, dt => {
+    st += dt;
+    if (st > nextF) { sfl.push({ ang: -Math.PI / 2 + (Math.random() - .5) * 1.8, t0: st, col: Math.random() < .3 ? C.human : C.accent }); nextF = st + 1.2 + Math.random() * 1.4; }
+    for (let i = sfl.length - 1; i >= 0; i--) if (st - sfl[i].t0 > 1) sfl.splice(i, 1);
+    drawSun();
+  });
+
+  // ================= ASCII WORDMARK =================
+  const wm = $('wordmark'); let WMk, mask = null, mx = -1e4, my = -1e4, wt = 0;
+  const wmCW = 8, wmCH = 12;
+  function buildMask() {
+    WMk = fit(wm); const { W, H } = WMk;
+    const cols = Math.floor(W / wmCW), rows = Math.floor(H / wmCH);
+    const off = document.createElement('canvas'); off.width = Math.max(1, cols); off.height = Math.max(1, rows);
+    const o = off.getContext('2d'); o.fillStyle = '#000'; o.textAlign = 'center'; o.textBaseline = 'middle';
+    let fs = rows * 1.15; o.font = `600 ${fs}px Geist, sans-serif`;
+    const tw = o.measureText('M-WORLD').width * (wmCW / wmCH);
+    if (tw > cols * .94) fs *= cols * .94 / tw;
+    o.save(); o.scale(wmCH / wmCW, 1); o.font = `600 ${fs}px Geist, sans-serif`; o.fillText('M-WORLD', cols / 2 * wmCW / wmCH, rows * .56); o.restore();
+    const d = o.getImageData(0, 0, off.width, off.height).data;
+    mask = { cols, rows, a: Array.from({ length: cols * rows }, (_, i) => d[i * 4 + 3] / 255) };
+    drawWM();
+  }
+  function drawWM() {
+    if (!mask) return; const { ctx, W, H } = WMk; ctx.clearRect(0, 0, W, H);
+    ctx.font = `500 11px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for (let j = 0; j < mask.rows; j++) for (let i = 0; i < mask.cols; i++) {
+      const a = mask.a[j * mask.cols + i], x = i * wmCW + wmCW / 2, y = j * wmCH + wmCH / 2;
+      const near = Math.max(0, 1 - Math.hypot(x - mx, y - my) / 140);
+      if (a < .15) { if (near > .3 && hash(i, j, Math.floor(wt * 3)) > .9) { ctx.globalAlpha = near * .5; ctx.fillStyle = C.accent2; ctx.fillText('·', x, y); } continue; }
+      const sh = hash(i, j, Math.floor(wt * 1.5 + hash(i, j, 2) * 6));
+      const v = Math.min(1, a * .8 + near * .4 + (sh > .97 ? .3 : 0));
+      ctx.globalAlpha = Math.min(1, .45 + v * .5 + near * .2);
+      ctx.fillStyle = near > .25 || sh > .985 ? C.accent : (a > .6 ? C.faint : C.line2);
+      ctx.fillText(RAMP[Math.max(5, Math.min(RAMP.length - 1, Math.round(v * (RAMP.length - 1))))], x, y);
+    }
+    ctx.globalAlpha = 1;
+  }
+  onResize(wm, buildMask);
+  if (document.fonts) document.fonts.ready.then(() => { buildMask(); readColors(); draw(); });
+  wm.parentElement.addEventListener('pointermove', e => { const r = wm.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; if (reduce) drawWM(); });
+  wm.parentElement.addEventListener('pointerleave', () => { mx = my = -1e4; if (reduce) drawWM(); });
+  animate(wm, dt => { wt += dt; drawWM(); });
+
+  // ================= FAQ =================
+  const FAQ = [
+    { t: 'Understanding AOs', q: [
+      ['What is an Autonomous Organisation?', 'An Autonomous Organisation (AO) is a business run by coordinated AI agents. You describe what you want to build and set the goals. Its six departments plan the business, build the product, run marketing and reach customers, bring in people and partner businesses when a job needs them, and report progress to you in one dashboard.'],
+      ['How does an Autonomous Organisation work?', 'M-World reads your prompt and any files you add, then sets up Strategy, Management, Technology, Finance, Marketing and Sales. Management breaks the plan into sprints and hands each department its tasks. You follow every task, booking, order and credit in the dashboard.'],
+      ['Is an Autonomous Organisation the same as an AI agent?', 'No. An AI agent completes one task when you ask it to. An Autonomous Organisation coordinates many agents across six departments, plus the people and businesses it works with, toward the goals you set.'] ] },
+    { t: 'People & businesses', q: [
+      ['What happens when a task needs a real person?', 'Your organisation recognises work that needs hands or judgment, like a product shoot, a contract review or a tax check. It writes the brief, books a suitable person, tracks the job, and pulls the result back into the plan. Every booking shows up in your dashboard.'],
+      ['How do businesses on the network work together?', 'Your organisation can order from suppliers, payment providers, couriers and other services, and those businesses can hand work to each other, for example a supplier passing an order to a packaging partner and then to a courier. Other organisations on M-World can become your suppliers or your customers.'] ] },
+    { t: 'Getting started', q: [
+      ['What do I need to begin?', 'A description of the business you want to build. A sentence works. You can add photos, media and documents to give your organisation more context.'],
+      ['Do I need a credit card?', 'No. The Starter plan is free and needs no card. You can create your organisation, explore every department and build your first app on it.'] ] },
+    { t: 'Autonomy & pricing', q: [
+      ['What is the difference between Semi- and Fully-Autonomous?', 'On Semi-Autonomous you decide when each department works: marketing today, sales tomorrow. On Fully-Autonomous the organisation runs continuously in sprints, planning and executing across every department without waiting for your instruction.'],
+      ['What are credits?', 'Credits pay for the work your departments do. Semi-Autonomous includes 200 credits per billing cycle and Fully-Autonomous includes 600.'] ] }
+  ];
+  $('faqRows').innerHTML = FAQ.map((g, gi) => `<section class="row faq-row" aria-label="${g.t}"><div class="cell"><div class="cat">${g.t.replace('&', '&amp;')}<small>${String(g.q.length).padStart(2, '0')} QUESTIONS</small></div><div>${
+    g.q.map(([q, a], qi) => `<details${gi === 0 && qi === 0 ? ' open' : ''}><summary>${q}</summary><p class="a">${a}</p></details>`).join('')}</div></div></section>`).join('');
+
+  // ================= CONTACT =================
+  $('copyEmail').addEventListener('click', async () => {
+    const btn = $('copyEmail');
+    try { await navigator.clipboard.writeText('hq@mworld.tech'); btn.textContent = 'COPIED'; }
+    catch { const r = document.createRange(); r.selectNodeContents($('emailText')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'SELECTED'; }
+    setTimeout(() => { btn.textContent = 'COPY'; }, 1600);
+  });
+  $('contactForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const note = $('formNote'); note.hidden = false;
+    const missing = ['fFirst', 'fEmail', 'fMsg'].filter(id => !$(id).value.trim());
+    if (missing.length) { note.textContent = 'Add your first name, email and a message, then send.'; $(missing[0]).focus(); return; }
+    if (!$('fEmail').checkValidity()) { note.textContent = 'That email address looks incomplete. Check it and send again.'; $('fEmail').focus(); return; }
+    note.textContent = 'Preview only: this form is not connected yet. On mworld.tech it will deliver to hq@mworld.tech.';
+  });
+})();
+</script>

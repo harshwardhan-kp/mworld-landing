@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+body{margin:0;background:#F8FAFD;font-family:Geist,sans-serif}
+#popPlan{position:relative;width:413px;height:420px;background:#EAF3FF;overflow:hidden;margin:20px;font-family:Geist,sans-serif}
+#popArt{position:absolute;inset:0;width:100%;height:100%}
+.t{position:relative;z-index:1;padding:34px 44px}
+h3{margin:0;font-weight:500;font-size:24px} .p{font-size:62px;font-weight:500;letter-spacing:-.04em;margin-top:18px}.p span{font-size:19px;color:#586174;letter-spacing:0}
+.c{color:#0A5FD8;font-size:17px;margin-top:8px}.g{font-size:19px;margin-top:22px}
+</style></head><body>
+<div id="popPlan"><canvas id="popArt"></canvas><div class="t"><h3>Fully-Autonomous</h3><div class="p">$30 <span>/ month</span></div><div class="c">600 credits per billing cycle</div><div class="g">It works even when you don't.</div></div></div>
+<script>
+const $=id=>document.getElementById(id), MONO='"Geist Mono", ui-monospace, monospace', reduce=false;
+const C={accent:'#2486FF',accent2:'#64C9FF',accentInk:'#0A5FD8',fg:'#141821'};
+function hash(a,b,c){const n=Math.sin(a*127.1+b*311.7+c*74.7)*43758.5453;return n-Math.floor(n)}
+function fit(cv){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;const ctx=cv.getContext('2d');ctx.setTransform(d,0,0,d,0,0);return{ctx,W:r.width,H:r.height}}
+const onResize=(el,fn)=>new ResizeObserver(()=>fn()).observe(el);
+function animate(el,fn){let l=performance.now();const f=t=>{fn(Math.min(.05,(t-l)/1000));l=t;requestAnimationFrame(f)};requestAnimationFrame(f)}
+</script>
+<script src="blackhole.js"></script>
+</body></html>

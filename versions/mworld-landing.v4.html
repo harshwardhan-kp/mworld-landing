@@ -1,0 +1,1641 @@
+<title>M-World</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* The frame is a blueprint: one 1240px column between two rails, full-bleed hairlines, a crosshair where they meet.
+   Three actors, three colours, everywhere: AI departments (blue), people (amber), businesses (ink).
+   ASCII only where it carries the idea: the core sphere, the org chart, the blue field's edges, the sunrise, the wordmark. */
+:root {
+  --bg: #F8FAFD;
+  --panel: #FFFFFF;
+  --sunk: #EEF2F8;
+  --fg: #141821;
+  --ink-2: #283041;
+  --muted: #586174;
+  --faint: #8A93A5;
+  --line: #E1E6EF;
+  --line-2: #C9D2E0;
+  --accent: #2486FF;
+  --accent-2: #64C9FF;
+  --accent-soft: #EAF3FF;
+  --accent-deep: #1677F0;
+  --accent-ink: #0A5FD8;
+  --human: #E0820B;
+  --human-ink: #9A5300;
+  --human-soft: #FFF2DF;
+  --human-line: #E0820B73;
+  --block: #1566E0;
+  --block-line: #FFFFFF2E;
+  --on-block: #FFFFFF;
+  --on-block-2: #FFFFFFC7;
+  --on-block-3: #FFFFFF73;
+  --on-block-soft: #FFFFFF26;
+  --sph-block-shade: #9FD3FF;
+  --sph-block-s1: #CFE9FF;
+  --night: #0A1222;
+  --night-ink: #DCEBFF;
+  --night-ring: #64C9FF38;
+  --night-text: #FFFFFFA6;
+  --shadow: #14285014;
+  --shadow-2: #14285038;
+  --glow: #2486FF8C;
+  --iso-l: #E8EDF5;
+  --iso-r: #D3DCE9;
+  --iso-edge: #B7C3D5;
+  --iso-ink-t: #3A4356;
+  --iso-ink-r: #232A38;
+  --iso-slab-l: #D8E9FF;
+  --iso-slab-r: #B9D6FB;
+  --iso-blue-edge: #8EC0FF;
+  --human-2: #F6B256;
+  --human-deep: #B5660A;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --rail: 1240px;
+  --pad: clamp(20px, 3.2vw, 44px);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-weight: 500; text-wrap: balance; }
+p { text-wrap: pretty; }
+::selection { background: var(--accent); color: var(--on-block); }
+
+/* ---------- the frame ---------- */
+.row { position: relative; border-top: 1px solid var(--line); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.cell { position: relative; max-width: var(--rail); margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+.cell::before, .cell::after {
+  content: ""; position: absolute; top: -5px; width: 9px; height: 9px; z-index: 3; pointer-events: none;
+  background: linear-gradient(var(--line-2), var(--line-2)) center / 1px 9px no-repeat, linear-gradient(var(--line-2), var(--line-2)) center / 9px 1px no-repeat;
+}
+.cell::before { left: -5px; }
+.cell::after { right: -5px; }
+.grid { display: grid; }
+.grid > * { min-width: 0; }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid.ruled > * + * { border-left: 1px solid var(--line); }
+@media (max-width: 860px) {
+  .g3 { grid-template-columns: 1fr; }
+  .grid.ruled.g3 > * + * { border-left: 0; border-top: 1px solid var(--line); }
+}
+
+/* ---------- type: five sizes ---------- */
+.h1 { font-size: clamp(56px, 8.4vw, 116px); line-height: .9; letter-spacing: -0.058em; margin-left: -0.05em; }
+.h2 { font-size: clamp(36px, 4.6vw, 62px); line-height: 1; letter-spacing: -0.048em; }
+.statement { font-size: clamp(24px, 2.3vw, 32px); line-height: 1.12; letter-spacing: -0.03em; font-weight: 500; }
+.text { font-size: 17px; line-height: 1.55; color: var(--ink-2); max-width: 54ch; }
+.small { font-size: 15px; line-height: 1.5; color: var(--muted); }
+.label { font: 500 13px/1 var(--font-mono); color: var(--muted); }
+
+/* section head: heading left, statement right */
+.head .cell { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: 20px 48px; align-items: end; padding: clamp(72px, 8vw, 112px) var(--pad) clamp(36px, 4vw, 52px); }
+.head .text { justify-self: end; max-width: 46ch; }
+@media (max-width: 860px) { .head .cell { grid-template-columns: 1fr; } .head .text { justify-self: start; } }
+
+/* buttons: the brand pill */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 46px; padding: 0 22px; border-radius: 999px; font: 500 15px/1 var(--font-sans); text-decoration: none; white-space: nowrap; border: 0; cursor: pointer; transition: transform .15s ease, background .2s; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--fg); color: var(--on-block); box-shadow: inset -4px 4px 4px 0 var(--accent), inset 4px -4px 4px 0 var(--accent-2); }
+.btn-primary:hover { transform: translateY(-1px); }
+.btn-soft { background: var(--sunk); color: var(--fg); }
+.btn-soft:hover { background: var(--line); }
+.btn-sm { height: 38px; padding: 0 16px; font-size: 15px; }
+.more { display: inline-flex; gap: 6px; align-items: center; color: var(--accent-ink); text-decoration: none; font-weight: 500; font-size: 17px; }
+.more:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- nav ---------- */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-top: 0; border-bottom: 1px solid var(--line); }
+.nav .cell { height: 64px; display: flex; align-items: center; gap: 28px; padding: 0 var(--pad); }
+.nav .cell::before, .nav .cell::after { display: none; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 600 20px/1 var(--font-sans); letter-spacing: -0.02em; }
+.mark { width: 26px; height: 26px; border-radius: 7px; background: var(--fg); color: var(--on-block); display: grid; place-items: center; font: 600 14px/1 var(--font-mono); box-shadow: inset -2px 2px 3px 0 var(--accent), inset 2px -2px 3px 0 var(--accent-2); }
+.nav ul { display: flex; gap: 4px; list-style: none; margin: 0 auto; padding: 0; }
+.nav ul a { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; font-size: 15px; color: var(--ink-2); }
+.nav ul a:hover { background: var(--sunk); }
+.nav .right { display: flex; align-items: center; gap: 6px; }
+.nav .right .txt { font-size: 15px; color: var(--ink-2); text-decoration: none; padding: 8px 12px; }
+@media (max-width: 960px) { .nav ul, .nav .right .txt { display: none; } .nav .cell { justify-content: space-between; } }
+
+/* ---------- hero ---------- */
+.hero-top .cell { padding: clamp(48px, 6vw, 84px) var(--pad) clamp(28px, 3vw, 40px); }
+.hero-top h1 { white-space: nowrap; }
+@media (max-width: 700px) { .hero-top h1 { white-space: normal; } }
+.hero-main .cell { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.hero-main .cell > * + * { border-left: 1px solid var(--line); }
+.hero-l { padding: 36px var(--pad) 40px; display: grid; gap: 22px; align-content: start; }
+.hero-l .text { margin-top: -8px; }
+.prompt { position: relative; background: var(--panel); border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line-2); }
+.prompt:focus-within { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 4px var(--accent-soft); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.prompt textarea { display: block; width: 100%; border: 0; outline: 0; resize: none; background: transparent; padding: 16px 18px 6px 44px; font: 400 17px/1.5 var(--font-sans); color: var(--fg); min-height: 76px; }
+.prompt .glyph { position: absolute; left: 17px; top: 20px; width: 16px; height: 16px; color: var(--accent); }
+.prompt textarea::placeholder { color: var(--faint); }
+.pbar { display: flex; align-items: center; gap: 6px; padding: 8px; border-top: 1px solid var(--line); }
+.seg { display: inline-flex; padding: 3px; background: var(--sunk); border-radius: 9px; gap: 2px; }
+.seg button { appearance: none; border: 0; background: transparent; cursor: pointer; padding: 8px 10px; border-radius: 7px; font: 500 13px/1 var(--font-sans); color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.seg button[aria-pressed="true"] { background: var(--panel); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
+.seg button i { width: 6px; height: 6px; border-radius: 50%; background: var(--faint); }
+.seg button[aria-pressed="true"] i { background: var(--accent); }
+.seg button { white-space: nowrap; }
+@media (max-width: 480px) { .wide-only { display: none; } }
+.attach { position: relative; display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; color: var(--muted); cursor: pointer; flex: none; }
+.attach:hover { background: var(--sunk); color: var(--fg); }
+.attach:focus-within { outline: 2px solid var(--accent); }
+.attach input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.attach svg { width: 17px; height: 17px; }
+.files { font: 500 13px/1 var(--font-mono); color: var(--accent-ink); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.go { margin-left: auto; flex: none; display: inline-grid; place-items: center; width: 44px; height: 36px; border-radius: 9px; background: var(--accent); color: var(--on-block); text-decoration: none; transition: background .2s; }
+.go:hover { background: var(--accent-deep); }
+.go svg { width: 17px; height: 17px; }
+.tries { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: -6px; }
+.tries .k { font-size: 15px; color: var(--muted); margin-right: 2px; }
+.chip { appearance: none; cursor: pointer; font: 500 14px/1 var(--font-sans); color: var(--ink-2); background: var(--sunk); border: 0; border-radius: 999px; padding: 10px 12px; transition: background .2s, color .2s; }
+.chip:hover { background: var(--line); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--on-block); }
+.free { font-size: 15px; color: var(--muted); margin-top: -8px; }
+.free b { color: var(--fg); font-weight: 500; }
+
+/* the run panel: one surface for the org's state and its live sprint */
+.runbox { border-radius: 12px; background: var(--panel); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.runbox-h { display: flex; align-items: baseline; gap: 10px; padding: 12px 14px 10px; }
+.runbox-h b { font-weight: 500; font-size: 15px; }
+.runbox-h span { font-size: 13px; color: var(--muted); }
+.runbox-h span:last-child { margin-left: auto; color: var(--fg); font-variant-numeric: tabular-nums; }
+.bar { height: 3px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .5s ease; }
+.actors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+.actors li { padding: 10px 14px; display: grid; gap: 5px; font-size: 15px; color: var(--ink-2); transition: background .25s; }
+.actors li + li { border-left: 1px solid var(--line); }
+.actors li span { display: flex; gap: 7px; align-items: center; font-weight: 500; }
+.actors li span::before { content: ""; width: 9px; height: 9px; flex: none; }
+.actors .ai span::before { background: var(--accent); border-radius: 2px; }
+.actors .ppl span::before { background: var(--human); border-radius: 50%; }
+.actors .biz span::before { background: var(--fg); border-radius: 1px; }
+.actors li em { font: normal 400 13px/1 var(--font-sans); color: var(--muted); font-variant-numeric: tabular-nums; }
+.actors li.on.ai { background: var(--accent-soft); } .actors li.on.ai em { color: var(--accent-ink); }
+.actors li.on.ppl { background: var(--human-soft); } .actors li.on.ppl em { color: var(--human-ink); }
+.actors li.on.biz { background: var(--sunk); } .actors li.on.biz em { color: var(--fg); }
+.feed { list-style: none; margin: 0; padding: 6px; display: grid; gap: 1px; min-height: 140px; align-content: start; font: 400 13px/1.4 var(--font-mono); }
+.feed li { display: grid; grid-template-columns: 42px 32px minmax(0, 1fr) auto; gap: 6px; padding: 4px 8px; border-radius: 6px; color: var(--muted); animation: rowIn .35s ease both; }
+.feed li.run { background: var(--accent-soft); }
+.feed li.run.ppl { background: var(--human-soft); }
+.feed li .tm { color: var(--muted); font-variant-numeric: tabular-nums; }
+.feed li .cd { color: var(--accent-ink); font-weight: 500; }
+.feed li.ppl .cd { color: var(--human-ink); }
+.feed li.biz .cd { color: var(--fg); }
+.feed li .tx { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.feed li .st { text-align: right; font-size: 13px; }
+.feed li.done .st { color: var(--fg); }
+.feed li.run .st { color: var(--accent-ink); }
+.feed li.run.ppl .st { color: var(--human-ink); }
+@keyframes rowIn { from { opacity: 0; transform: translateY(4px); } }
+
+/* orbit */
+.orbit-wrap { position: relative; min-height: 640px; overflow: hidden; }
+.orbit-wrap::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--line-2) 1px, transparent 1.2px); background-size: 18px 18px; background-position: center; opacity: .55; }
+.orbit-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.legend { position: absolute; left: 14px; top: 14px; z-index: 2; display: none; gap: 14px; font-size: 13px; color: var(--ink-2); }
+.legend span { display: flex; align-items: center; gap: 7px; }
+.legend i { width: 9px; height: 9px; }
+.legend .a i { background: var(--accent); border-radius: 2px; }
+.legend .p i { background: var(--human); border-radius: 50%; }
+.legend .b i { background: var(--fg); border-radius: 1px; }
+@media (max-width: 860px) {
+  .hero-main .cell { grid-template-columns: 1fr; }
+  .hero-main .cell > * + * { border-left: 0; border-top: 1px solid var(--line); }
+  .hero-main .orbit-wrap { order: 2; min-height: 0; height: 400px; }
+  .hero-l { display: contents; }
+  .hero-l > .intro { order: 1; padding: 24px var(--pad) 32px; display: grid; gap: 22px; }
+  .hero-l > .runbox { order: 3; margin: 0 var(--pad) 28px; }
+  .legend { display: flex; }
+}
+.intro { display: grid; gap: 22px; }
+
+/* ---------- how it works ---------- */
+.tree .cell { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; padding: 44px var(--pad) 120px; }
+.tree canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.tcard { position: relative; z-index: 1; background: var(--panel); border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line-2); padding: 16px 18px; display: grid; gap: 10px; font-size: 15px; width: min(300px, 100%); }
+.tcard .label { display: flex; justify-content: space-between; }
+.tcard q { font-size: 17px; line-height: 1.4; color: var(--fg); quotes: "\201C" "\201D"; }
+#youCard { justify-self: start; }
+#dashCard { justify-self: end; }
+.core-slot { height: 190px; }
+.drow { display: grid; grid-template-columns: 9px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 15px; }
+.drow i { width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+.drow i.p { border-radius: 50%; background: var(--human); }
+.drow i.b { background: var(--fg); border-radius: 1px; }
+.drow .t { color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.drow .s { font-size: 13px; color: var(--muted); }
+@media (max-width: 860px) {
+  .tree .cell { grid-template-columns: 1fr; justify-items: center; padding: 28px var(--pad); gap: 0; }
+  #youCard, #dashCard { justify-self: center; }
+  .core-slot { height: 170px; }
+}
+.actor .cell > div { display: grid; grid-template-rows: 250px auto; }
+.actor .ill { position: relative; display: grid; place-items: center; border-bottom: 1px solid var(--line); overflow: hidden; padding: 0 24px; }
+.actor .txt { padding: 26px var(--pad) 40px; display: grid; gap: 10px; align-content: start; }
+.actor h3 { font-size: 24px; letter-spacing: -0.025em; display: flex; align-items: center; gap: 10px; }
+.actor h3::before { content: ""; width: 12px; height: 12px; flex: none; }
+.actor .a h3::before { background: var(--accent); border-radius: 3px; }
+.actor .p h3::before { background: var(--human); border-radius: 50%; }
+.actor .b h3::before { background: var(--fg); border-radius: 1px; }
+.actor .a .ill { background: var(--accent-soft); }
+.actor .p .ill { background: var(--human-soft); }
+.actor .b .ill { background: var(--sunk); }
+svg.iso { width: 100%; height: 100%; max-width: 420px; display: block; overflow: visible; }
+.iso text { font-family: var(--font-mono); }
+.iso .lattice line { stroke: var(--line-2); stroke-width: .6; }
+.iso .ishadow { fill: var(--shadow-2); opacity: .55; }
+.ibox polygon { stroke-linejoin: round; stroke-width: .8; }
+.ibox.bld .ft { fill: var(--panel); stroke: var(--iso-edge); }
+.ibox.bld .fl { fill: var(--iso-l); stroke: var(--iso-edge); }
+.ibox.bld .fr { fill: var(--iso-r); stroke: var(--iso-edge); }
+.ibox.ink .ft { fill: var(--iso-ink-t); stroke: var(--iso-ink-t); }
+.ibox.ink .fl { fill: var(--fg); stroke: var(--fg); }
+.ibox.ink .fr { fill: var(--iso-ink-r); stroke: var(--iso-ink-r); }
+.ibox.blue .ft { fill: var(--accent-2); stroke: var(--accent-2); }
+.ibox.blue .fl { fill: var(--accent); stroke: var(--accent); }
+.ibox.blue .fr { fill: var(--block); stroke: var(--block); }
+.ibox.cap polygon { fill: var(--iso-ink-t); stroke: none; transition: fill .3s; }
+.ibox.cap.on .ft { fill: var(--accent-2); } .ibox.cap.on .fl { fill: var(--accent); } .ibox.cap.on .fr { fill: var(--block); }
+.ibox.slab .ft { fill: var(--panel); stroke: var(--iso-blue-edge); }
+.ibox.slab .fl { fill: var(--iso-slab-l); stroke: var(--iso-blue-edge); }
+.ibox.slab .fr { fill: var(--iso-slab-r); stroke: var(--iso-blue-edge); }
+.ibox.slab.on .ft { fill: var(--accent-2); stroke: var(--accent); }
+.ibox.slab.on .fl { fill: var(--accent); stroke: var(--accent); }
+.ibox.slab.on .fr { fill: var(--block); stroke: var(--block); }
+.ibox.slab .face { font-size: 7.4px; fill: var(--accent-ink); letter-spacing: .03em; }
+.ibox.slab.on .face { fill: var(--on-block); }
+.ibox.tile .ft { fill: var(--panel); stroke: var(--human-line); }
+.ibox.tile .fl { fill: var(--human-soft); stroke: var(--human-line); }
+.ibox.tile .fr { fill: var(--human-2); stroke: var(--human-line); }
+.ibox.tile.on .ft { fill: var(--human-2); }
+.ibox.parcel .ft { fill: var(--iso-ink-t); stroke: var(--iso-ink-t); }
+.ibox.parcel .fl { fill: var(--fg); stroke: var(--fg); }
+.ibox.parcel .fr { fill: var(--iso-ink-r); stroke: var(--iso-ink-r); }
+.ibox.parcel.boxed .ft { fill: var(--panel); stroke: var(--fg); }
+.ibox.parcel.boxed .fl { fill: var(--iso-l); stroke: var(--fg); }
+.ibox.parcel.boxed .fr { fill: var(--iso-r); stroke: var(--fg); }
+.ibox.parcel.bp .ft { fill: var(--accent-2); stroke: var(--accent); }
+.ibox.parcel.bp .fl { fill: var(--accent); stroke: var(--accent); }
+.ibox.parcel.bp .fr { fill: var(--block); stroke: var(--block); }
+.iso .win { stroke: var(--accent-2); stroke-width: 1.3; stroke-linecap: round; }
+.iso .win.w { stroke: var(--on-block-2); }
+.iso .door { fill: var(--iso-ink-r); opacity: .75; }
+.iso .road { fill: none; stroke: var(--panel); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round; }
+.iso .road-c { fill: none; stroke: var(--line-2); stroke-width: .8; stroke-dasharray: 2 4; }
+.iso .ring { fill: none; stroke-width: 1.4; }
+.iso .ring.k { stroke: var(--fg); } .iso .ring.b { stroke: var(--accent); } .iso .ring.a { stroke: var(--human); }
+.iso .lbl { font-size: 9.5px; fill: var(--ink-2); text-anchor: middle; paint-order: stroke; stroke: var(--bg); stroke-width: 3px; stroke-linejoin: round; }
+.iso .lbl.you { fill: var(--fg); font-weight: 500; }
+.iso .lbl.org { fill: var(--accent-ink); }
+.iso .lbl.ppl { fill: var(--human-ink); stroke: var(--human-soft); }
+.iso .cap-t { font-size: 10px; fill: var(--fg); }
+.iso .call { fill: none; stroke: var(--accent); stroke-width: 1; }
+.iso .call-dot { fill: var(--accent); }
+.iso .call-t { font-size: 10px; fill: var(--fg); text-anchor: end; }
+.iso .call-t tspan:first-child { fill: var(--accent-ink); font-weight: 500; }
+.iso .spk { font-size: 9px; fill: var(--accent); text-anchor: middle; }
+.iso .pb { fill: var(--human); }
+.iso .pb2 { fill: var(--human-deep); }
+.iso .ph { fill: var(--human-2); }
+.iso .psh { fill: var(--shadow-2); }
+.iso .card { fill: var(--panel); stroke: var(--human); stroke-width: 1; }
+.iso .card-l { stroke: var(--line-2); stroke-width: 1; }
+.iso .chk { font-size: 10px; fill: var(--human-ink); font-weight: 500; text-anchor: middle; }
+.iso .tag rect { fill: var(--panel); stroke: var(--human); stroke-width: 1; }
+.iso .tag text { font-size: 9.5px; fill: var(--fg); text-anchor: middle; }
+.iso .tag circle { fill: var(--human); }
+
+/* ---------- departments: the blue field ---------- */
+.block { background: var(--block); border-top-color: var(--block); color: var(--on-block); }
+.block .cell { border-color: var(--block-line); padding: clamp(72px, 7vw, 96px) var(--pad) clamp(48px, 5vw, 64px); text-align: center; display: grid; justify-items: center; gap: 22px; }
+.block .cell::before, .block .cell::after { background: linear-gradient(var(--on-block-3), var(--on-block-3)) center / 1px 9px no-repeat, linear-gradient(var(--on-block-3), var(--on-block-3)) center / 9px 1px no-repeat; }
+.block canvas.edge { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.block .h2 { position: relative; }
+.block .text { position: relative; color: var(--on-block-2); font-size: 20px; max-width: 50ch; }
+.btn-white { background: var(--on-block); color: var(--block); position: relative; }
+.btn-white:hover { transform: translateY(-1px); }
+.org { position: relative; margin-top: 18px; max-width: 100%; display: grid; justify-items: center; }
+.org pre { margin: 0; font: 500 14px/1.38 var(--font-mono); color: var(--on-block-3); text-align: left; }
+.org .rt { color: var(--on-block); }
+.org .ln { color: var(--on-block-3); transition: color .25s; }
+.org .ln.on { color: var(--on-block); }
+.org .bx { color: var(--on-block-2); transition: color .25s, background .25s; cursor: pointer; }
+.org .bx.on { color: var(--on-block); }
+.org .bx.on.nm { background: var(--on-block-soft); }
+.org .narrow { display: none; }
+@media (max-width: 1000px) { .org .wide { display: none; } .org .narrow { display: block; } }
+.dtabs { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 10px; }
+.dtabs button { appearance: none; cursor: pointer; border: 0; background: transparent; color: var(--on-block-2); font: 500 15px/1 var(--font-sans); padding: 9px 13px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--block-line); transition: background .2s, color .2s; }
+.dtabs button:hover { color: var(--on-block); }
+.dtabs button[aria-selected="true"] { background: var(--on-block); color: var(--block); box-shadow: none; }
+.dpanel { position: relative; min-height: 96px; display: grid; gap: 10px; justify-items: center; max-width: 56ch; }
+.dpanel p { font-size: 20px; line-height: 1.45; color: var(--on-block); }
+.dpanel small { font: 500 13px/1.4 var(--font-mono); color: var(--on-block-2); }
+
+/* ---------- autonomous organisation + video ---------- */
+.ao .cell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.ao .cell > * + * { border-left: 1px solid var(--line); }
+.ao .cell > div { padding: clamp(56px, 6vw, 80px) var(--pad); display: grid; gap: 22px; align-content: start; }
+.ao .cell > div:last-child { align-content: center; }
+.ao .h2 { font-size: clamp(28px, 3.4vw, 46px); letter-spacing: -0.04em; }
+.ao .text b { color: var(--fg); font-weight: 500; }
+.cmp { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
+.cmp th, .cmp td { text-align: left; padding: 11px 14px; vertical-align: top; border-top: 1px solid var(--line); }
+.cmp tr:first-child th { border-top: 0; }
+.cmp th { font-weight: 500; }
+.cmp thead th { font-size: 15px; color: var(--muted); background: var(--sunk); }
+.cmp thead th.us { color: var(--accent-ink); background: var(--accent-soft); }
+.cmp tbody th { font-size: 15px; color: var(--muted); width: 26%; }
+.cmp td { color: var(--muted); }
+.cmp td.us { color: var(--fg); }
+.video { position: relative; display: block; aspect-ratio: 16 / 10; width: 100%; border-radius: 14px; overflow: hidden; background: var(--night); color: var(--on-block); text-decoration: none; }
+.video canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.video .play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--on-block); color: var(--night); transition: transform .2s; }
+.video:hover .play { transform: scale(1.06); }
+.video .play svg { width: 24px; height: 24px; margin-left: 3px; }
+.video .vb { position: absolute; left: 20px; right: 20px; bottom: 18px; display: flex; justify-content: space-between; align-items: end; gap: 12px; }
+.video .vb b { font: 500 20px/1.2 var(--font-sans); letter-spacing: -0.01em; }
+.video .vb span { font-size: 15px; color: var(--night-text); white-space: nowrap; }
+@media (max-width: 860px) { .ao .cell { grid-template-columns: 1fr; } .ao .cell > * + * { border-left: 0; border-top: 1px solid var(--line); } }
+
+/* ---------- pricing ---------- */
+.plan { padding: 34px var(--pad) 38px; display: grid; gap: 20px; align-content: start; position: relative; }
+.plan.pop { background: var(--accent-soft); }
+.plan.pop::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 3px; background: var(--accent); }
+.plan .ph { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.plan h3 { font-size: 24px; letter-spacing: -0.02em; }
+.badge { font-size: 13px; font-weight: 500; color: var(--on-block); background: var(--block); padding: 6px 10px; border-radius: 999px; }
+.plan .tag { color: var(--ink-2); font-size: 17px; }
+.price { display: flex; align-items: baseline; gap: 8px; }
+.price b { font: 500 62px/1 var(--font-sans); letter-spacing: -0.05em; }
+.price span { color: var(--muted); font-size: 17px; }
+.credits { font-size: 15px; font-weight: 500; color: var(--accent-ink); font-variant-numeric: tabular-nums; margin-top: -10px; }
+.plan .btn { width: 100%; }
+.plan.pop .btn-soft { background: var(--panel); }
+.plan ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.plan li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 10px; font-size: 15px; color: var(--ink-2); }
+.plan li svg { width: 14px; height: 14px; margin-top: 4px; color: var(--accent); }
+
+/* ---------- FAQ ---------- */
+.faq .cell { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.faq .cell > * + * { border-left: 1px solid var(--line); }
+.faq-l { padding: clamp(64px, 7vw, 96px) var(--pad); display: grid; gap: 22px; align-content: start; }
+.faq-l .facts { margin-top: 18px; gap: 22px; }
+.faq-r { padding: clamp(40px, 4vw, 56px) 0; }
+.faq details + details { border-top: 1px solid var(--line); }
+.faq summary { list-style: none; cursor: pointer; padding: 20px var(--pad); display: grid; grid-template-columns: minmax(0, 1fr) 16px; gap: 16px; align-items: center; font-weight: 500; font-size: 20px; letter-spacing: -0.015em; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; width: 8px; height: 8px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translate(-2px, -2px); transition: transform .2s; }
+.faq details[open] summary::after { transform: rotate(-135deg) translate(-2px, -2px); border-color: var(--accent); }
+.faq summary:hover { background: var(--panel); }
+.faq .a { padding: 0 72px 22px var(--pad); color: var(--ink-2); max-width: 66ch; }
+@media (max-width: 860px) { .faq .cell { grid-template-columns: 1fr; } .faq .cell > * + * { border-left: 0; border-top: 1px solid var(--line); } .faq-r { padding: 8px 0; } .faq .a { padding-right: var(--pad); } }
+
+/* ---------- closing + contact ---------- */
+.closing .cell { overflow: hidden; padding: clamp(80px, 9vw, 120px) var(--pad) clamp(260px, 25vw, 320px); display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 28px 48px; align-items: end; }
+.closing canvas { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 66%; pointer-events: none; }
+.closing h2, .closing .cta { position: relative; z-index: 1; }
+.closing .cta { display: grid; gap: 14px; justify-items: start; }
+@media (max-width: 860px) { .closing .cell { grid-template-columns: 1fr; padding-bottom: 210px; } .closing canvas { height: 46%; } }
+.contact .cell { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.contact .cell > * + * { border-left: 1px solid var(--line); }
+.contact .cell > div { padding: clamp(48px, 5vw, 64px) var(--pad); display: grid; gap: 22px; align-content: start; }
+.contact h2 { font-size: clamp(32px, 3.4vw, 46px); letter-spacing: -0.04em; line-height: 1.05; }
+.facts { display: grid; gap: 18px; }
+.fact { display: grid; gap: 4px; }
+.fact .k { font-size: 15px; color: var(--muted); }
+.fact .v { color: var(--ink-2); font-size: 17px; }
+.fact .big { font: 500 32px/1.1 var(--font-sans); letter-spacing: -0.035em; font-variant-numeric: tabular-nums; }
+.email { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.email a { font: 500 24px/1.1 var(--font-sans); letter-spacing: -0.03em; text-decoration: none; color: var(--accent-ink); overflow-wrap: anywhere; }
+.email a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.copy { appearance: none; cursor: pointer; border: 0; background: var(--sunk); border-radius: 999px; font: 500 13px/1 var(--font-sans); padding: 8px 12px; color: var(--ink-2); }
+.copy:hover { background: var(--line); }
+form.msg { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.field { display: grid; gap: 7px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-size: 15px; font-weight: 500; color: var(--ink-2); }
+.field input, .field select, .field textarea { font: 400 17px/1.4 var(--font-sans); color: var(--fg); background: var(--panel); border: 0; box-shadow: inset 0 0 0 1px var(--line-2); border-radius: 10px; padding: 11px 12px; width: 100%; }
+.field textarea { min-height: 104px; resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: 0; box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px var(--accent-soft); }
+.form-foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
+.form-foot p { font-size: 15px; color: var(--muted); max-width: 40ch; }
+.form-note { grid-column: 1 / -1; font-size: 15px; color: var(--accent-ink); }
+@media (max-width: 860px) { .contact .cell { grid-template-columns: 1fr; } .contact .cell > * + * { border-left: 0; border-top: 1px solid var(--line); } }
+@media (max-width: 520px) { form.msg { grid-template-columns: 1fr; } }
+
+/* ---------- footer ---------- */
+.foot .cell { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 32px; padding: 28px var(--pad); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 6px 24px; }
+.foot a { text-decoration: none; color: var(--ink-2); font-size: 15px; }
+.foot nav a:hover { color: var(--accent-deep); }
+.wordmark .cell { height: calc(min(100vw - 32px, var(--rail)) / 5); overflow: hidden; }
+.wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.legal .cell { padding: 18px var(--pad); display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; font-size: 15px; color: var(--muted); }
+.end { border-top: 1px solid var(--line); height: 40px; }
+
+/* phone overrides, kept last so they win the cascade */
+@media (max-width: 480px) {
+  .actors { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.25fr); }
+  .actors li { padding: 10px 9px; font-size: 14px; }
+  .video { aspect-ratio: 4 / 3.4; }
+  .video .vb { flex-direction: column; align-items: start; gap: 2px; }
+  .video .vb b { font-size: 18px; }
+  .video .play { top: 44%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .feed li { animation: none; }
+  .btn, .chip, .bar i, .book .steps3 span, .org .bx, .org .ln { transition: none; }
+}
+</style>
+
+<!-- NAV -->
+<header class="row nav">
+  <div class="cell">
+    <a class="brand" href="#top" aria-label="M-World home"><span class="mark" aria-hidden="true">M</span>M-World</a>
+    <ul>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#departments">Departments</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="right">
+      <a class="txt" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Log in</a>
+      <a class="btn btn-primary btn-sm" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Start building</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO: the headline, then the prompt beside the organisation it becomes -->
+<section aria-labelledby="hero-title">
+  <div class="row hero-top" style="border-top:0">
+    <div class="cell"><h1 class="h1" id="hero-title"><span id="h1s">Describe a business.</span></h1></div>
+  </div>
+  <div class="row hero-main">
+    <div class="cell">
+      <div class="hero-l">
+        <div class="intro">
+          <p class="statement">Get the company that runs it.</p>
+          <p class="text">One prompt becomes an Autonomous Organisation. Six AI departments do the work, people step in where hands or judgment are needed, and businesses on the network supply the rest.</p>
+          <div class="prompt" data-ui>
+            <label class="sr" for="promptInput">Describe the business you want to build</label>
+            <svg class="glyph" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5l3.5 3.5L3 11.5M8.5 12H13"/></svg>
+            <textarea id="promptInput" rows="2" placeholder="Describe the business you want to build"></textarea>
+            <div class="pbar">
+              <div class="seg" role="group" aria-label="How autonomous should it be">
+                <button type="button" id="modeFull" aria-pressed="true" aria-label="Fully-Autonomous"><i></i><span>Fully<span class="wide-only">-Autonomous</span></span></button>
+                <button type="button" id="modeSemi" aria-pressed="false" aria-label="Semi-Autonomous"><i></i>Semi</button>
+              </div>
+              <label class="attach" title="Add photos and media"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2"/><circle cx="6" cy="7" r="1.3"/><path d="M14 11l-3.5-3.5L4 13"/></svg><input id="fileMedia" type="file" accept="image/*,video/*" multiple aria-label="Add photos and media"></label>
+              <label class="attach" title="Add documents"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 1.8h5.5L12.5 5v9.2H4z"/><path d="M9.3 2v3.2h3"/></svg><input id="fileDocs" type="file" accept=".pdf,.doc,.docx,.txt,.md,.ppt,.pptx,.xls,.xlsx,.csv" multiple aria-label="Add documents"></label>
+              <span class="files" id="fileNames"></span>
+              <a class="go" id="buildBtn" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=hero" target="_blank" rel="noopener" aria-label="Build my organisation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+            </div>
+          </div>
+          <div class="tries" role="group" aria-label="Example prompts">
+            <span class="k">Try</span>
+            <button class="chip" type="button" data-i="0" aria-pressed="true">Pet products</button>
+            <button class="chip" type="button" data-i="1" aria-pressed="false">Coffee subscription</button>
+            <button class="chip" type="button" data-i="2" aria-pressed="false">Tutoring app</button>
+          </div>
+          <p class="free"><b>Free to start.</b> Your first mobile app is on us.</p>
+        </div>
+        <div class="runbox" data-ui aria-label="Live sprint of the example organisation">
+          <div class="runbox-h"><b id="orgName">Pet products</b><span id="orgMode">Fully-Autonomous</span><span id="feedCount">0 / 7</span></div>
+          <div class="bar"><i id="orgBar"></i></div>
+          <ul class="actors">
+            <li class="ai" id="oAI"><span>AI</span><em>idle</em></li>
+            <li class="ppl" id="oPPL"><span>People</span><em>0 booked</em></li>
+            <li class="biz" id="oBIZ"><span>Businesses</span><em>0 engaged</em></li>
+          </ul>
+          <ol class="feed" id="feedList"></ol>
+        </div>
+      </div>
+      <div class="orbit-wrap" id="orbitWrap">
+        <canvas id="orbit" role="img" aria-label="An ASCII sphere, your organisation's core, sits at the centre of three orbits: six AI departments, people it books for real-world work, and businesses it buys from. Tasks travel out from the core and results come back. Businesses also pass work between each other, and a person lights up amber while being booked."></canvas>
+        <div class="legend" aria-hidden="true"><span class="a"><i></i>AI</span><span class="p"><i></i>People</span><span class="b"><i></i>Businesses</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS: one prompt in, the core, three kinds of worker out -->
+<section id="how" aria-labelledby="how-title">
+  <div class="row head">
+    <div class="cell">
+      <h2 class="h2" id="how-title">Who does the work</h2>
+      <p class="text">Six AI departments do the screen work. When a job needs hands, a signature or a delivery, your organisation books a person or orders from a business, and every result comes back to one dashboard.</p>
+    </div>
+  </div>
+  <div class="row tree">
+    <div class="cell" id="treeCell">
+      <canvas id="tree" aria-hidden="true"></canvas>
+      <div class="tcard" data-ui id="youCard"><span class="label"><span>Your prompt</span><span>You</span></span><q id="howPrompt">Build me a premium pet-products business.</q></div>
+      <div class="core-slot" aria-hidden="true"></div>
+      <div class="tcard" data-ui id="dashCard"><span class="label"><span>Your dashboard</span><span>Sprint 1</span></span>
+        <div class="drow"><i></i><span class="t" id="dAI">Build the storefront and checkout</span><span class="s">Shipped</span></div>
+        <div class="drow"><i class="p"></i><span class="t" id="dPPL">Book a photographer</span><span class="s">Booked</span></div>
+        <div class="drow"><i class="b"></i><span class="t" id="dBIZ">Order treats and packaging</span><span class="s">In transit</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="row actor">
+    <div class="cell grid g3 ruled">
+      <div class="a">
+        <div class="ill" aria-hidden="true">
+          <svg class="iso" id="isoAI" viewBox="0 0 340 250"></svg>
+        </div>
+        <div class="txt">
+          <h3>AI departments</h3>
+          <p class="text">Research, code, design, writing, numbers and outreach run on AI, around the clock.</p>
+        </div>
+      </div>
+      <div class="p">
+        <div class="ill" aria-hidden="true">
+          <svg class="iso" id="isoPPL" viewBox="0 0 340 250"></svg>
+        </div>
+        <div class="txt">
+          <h3>People in the loop</h3>
+          <p class="text">When a task needs hands or judgment, like a photographer, an accountant or a lawyer, your organisation briefs them, books them and brings the result back into the plan.</p>
+        </div>
+      </div>
+      <div class="b">
+        <div class="ill" aria-hidden="true">
+          <svg class="iso" id="isoBIZ" viewBox="0 0 340 250"></svg>
+        </div>
+        <div class="txt">
+          <h3>Businesses on the network</h3>
+          <p class="text">Your organisation orders from suppliers, payment providers and couriers, and they hand work on to each other. Other M-World organisations can be your suppliers, or your customers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPARTMENTS: the blue field -->
+<section class="row block" id="departments" aria-labelledby="dept-title">
+  <canvas class="edge" id="edge" aria-hidden="true"></canvas>
+  <div class="cell">
+    <h2 class="h2" id="dept-title">A full company, staffed by AI</h2>
+    <p class="text">Every organisation gets the same six departments, working every hour you're not. Each owns its part of the business and hands work to the others.</p>
+    <div class="org"><pre class="wide" id="orgWide" aria-hidden="true"></pre><pre class="narrow" id="orgNarrow" aria-hidden="true"></pre></div>
+    <div class="dtabs" role="tablist" aria-label="Departments" id="dtabs"></div>
+    <div class="dpanel" role="tabpanel" id="dpanel" aria-live="polite"><p id="dRole"></p><small id="dOut"></small></div>
+    <a class="btn btn-white" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=departments" target="_blank" rel="noopener">Start building</a>
+  </div>
+</section>
+
+<!-- WHAT IS AN AO + VIDEO -->
+<section class="row ao" aria-labelledby="ao-title">
+  <div class="cell">
+    <div>
+      <h2 class="h2" id="ao-title">What is an Autonomous Organisation?</h2>
+      <p class="text"><b>A company run by coordinated AI agents.</b> You set the goals. Its departments plan, build, market and sell, bring in people and businesses when needed, and report back in one dashboard.</p>
+      <table class="cmp">
+        <thead><tr><th scope="col"><span class="sr">Compare</span></th><th scope="col">AI agent</th><th scope="col" class="us">Autonomous Organisation</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Scope</th><td>One task</td><td class="us">The whole business</td></tr>
+          <tr><th scope="row">Directed by</th><td>A prompt each time</td><td class="us">Goals you set</td></tr>
+          <tr><th scope="row">Real world</th><td>Stays on screen</td><td class="us">Books people, orders from businesses</td></tr>
+          <tr><th scope="row">Works</th><td>When you ask</td><td class="us">In sprints, around the clock</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <a class="video" href="https://www.youtube.com/watch?v=b7bmx9AORWU" target="_blank" rel="noopener" aria-label="Watch Introducing M-World on YouTube, one minute">
+        <canvas id="vidSphere" aria-hidden="true"></canvas>
+        <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg></span>
+        <span class="vb"><b>Introducing M-World</b><span>1 min on YouTube</span></span>
+      </a>
+      <a class="more" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=aboutUs" target="_blank" rel="noopener">Explore M-World <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" aria-labelledby="pricing-title">
+  <div class="row head">
+    <div class="cell">
+      <h2 class="h2" id="pricing-title">Choose how much it does without you</h2>
+      <p class="text">Every plan gives you an Autonomous Organisation. The difference is who decides when it works. Prices in USD; credits pay for the work your departments do.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="cell grid g3 ruled">
+      <article class="plan">
+        <div class="ph"><h3>Starter</h3></div>
+        <div class="price"><b>$0</b><span>forever</span></div>
+        <p class="credits">Production-ready app or site</p>
+        <p class="tag">See how it works. No card, no commitment.</p>
+        <a class="btn btn-soft" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingStarter" target="_blank" rel="noopener">Get started free</a>
+        <ul>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Your organisation's full dashboard</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Explore every department</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Build your first mobile app, free</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Community support</li>
+        </ul>
+      </article>
+      <article class="plan">
+        <div class="ph"><h3>Semi-Autonomous</h3></div>
+        <div class="price"><b>$10</b><span>/ month</span></div>
+        <p class="credits">200 credits per billing cycle</p>
+        <p class="tag">You decide when it works.</p>
+        <a class="btn btn-soft" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingCustom" target="_blank" rel="noopener">Try it myself</a>
+        <ul>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Everything in Starter</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Deploy any department, any time</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Higher-priority AI execution</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Advanced analytics and insights</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Higher automation limits</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Priority support, early access</li>
+        </ul>
+      </article>
+      <article class="plan pop">
+        <div class="ph"><h3>Fully-Autonomous</h3><span class="badge">Most popular</span></div>
+        <div class="price"><b>$30</b><span>/ month</span></div>
+        <p class="credits">600 credits per billing cycle</p>
+        <p class="tag">It works even when you don't.</p>
+        <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingAutonomous" target="_blank" rel="noopener">Get started now</a>
+        <ul>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Runs continuously in sprints</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>All six departments in sync, around the clock</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Save, reuse and optimise workflows</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Usage analytics and performance insights</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Faster AI processing than Starter</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Priority email support</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="row faq" id="faq" aria-labelledby="faq-title">
+  <div class="cell">
+    <div class="faq-l">
+      <h2 class="h2" id="faq-title">Questions</h2>
+      <p class="text">The short answers. For anything else, email us.</p>
+      <div class="facts">
+        <div class="fact"><span class="email"><a href="mailto:hq@mworld.tech" id="emailText">hq@mworld.tech</a><button class="copy" type="button" id="copyEmail">Copy</button></span></div>
+        <div class="fact"><span class="big">13.0 hrs</span><span class="k">average response time</span></div>
+      </div>
+    </div>
+    <div class="faq-r">
+      <details open><summary>How does an Autonomous Organisation work?</summary><p class="a">M-World reads your prompt and any files you add, then sets up Strategy, Management, Technology, Finance, Marketing and Sales. Management breaks the plan into sprints and hands each department its tasks. You follow every task, booking, order and credit in the dashboard.</p></details>
+      <details><summary>What happens when a task needs a real person?</summary><p class="a">Your organisation recognises work that needs hands or judgment, like a product shoot, a contract review or a tax check. It writes the brief, books a suitable person, tracks the job and pulls the result back into the plan. Every booking shows up in your dashboard.</p></details>
+      <details><summary>How do businesses on the network work together?</summary><p class="a">Your organisation can order from suppliers, payment providers, couriers and other services, and those businesses can hand work to each other, for example a supplier passing an order to a packaging partner and then to a courier. Other organisations on M-World can become your suppliers or your customers.</p></details>
+      <details><summary>What is the difference between Semi- and Fully-Autonomous?</summary><p class="a">On Semi-Autonomous you decide when each department works: marketing today, sales tomorrow. On Fully-Autonomous the organisation runs continuously in sprints, planning and executing across every department without waiting for your instruction.</p></details>
+      <details><summary>What are credits?</summary><p class="a">Credits pay for the work your departments do. Semi-Autonomous includes 200 credits per billing cycle and Fully-Autonomous includes 600.</p></details>
+      <details><summary>Do I need a credit card to start?</summary><p class="a">No. The Starter plan is free and needs no card. A sentence describing your business is enough to create your organisation, explore every department and build your first app.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section class="row closing" aria-labelledby="close-title">
+  <div class="cell">
+    <canvas id="sunrise" aria-hidden="true"></canvas>
+    <h2 class="h2" id="close-title">The co-founder you never got to hire</h2>
+    <div class="cta">
+      <p class="text">You own the vision. Your organisation runs the execution.</p>
+      <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=finalCTA" target="_blank" rel="noopener">Create your organisation</a>
+      <p class="small">Free to start. No credit card needed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="row contact" id="contact" aria-labelledby="contact-title">
+  <div class="cell">
+    <div>
+      <h2 id="contact-title">Talk to a human</h2>
+      <p class="text">Questions about the platform, subscriptions, billing or partnerships.</p>
+      <div class="facts">
+        <div class="fact"><span class="k">Email</span><a class="more" href="mailto:hq@mworld.tech">hq@mworld.tech</a></div>
+        <div class="fact"><span class="k">Registered office</span><span class="v">LAFLABS Technology Private Limited<br>Office No. 1003, Silver Tower, Sector-18, Noida, Uttar Pradesh 201301, India</span></div>
+      </div>
+    </div>
+    <div>
+      <form class="msg" id="contactForm" novalidate>
+        <div class="field"><label for="fFirst">First name</label><input id="fFirst" name="first" autocomplete="given-name" required></div>
+        <div class="field"><label for="fLast">Last name</label><input id="fLast" name="last" autocomplete="family-name"></div>
+        <div class="field"><label for="fEmail">Email</label><input id="fEmail" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="fSubject">Subject</label><select id="fSubject" name="subject"><option>Sales</option><option>Support</option><option>Billing</option><option>Partnerships</option></select></div>
+        <div class="field full"><label for="fMsg">Message</label><textarea id="fMsg" name="message" required placeholder="Tell us what you're building or what you need help with."></textarea></div>
+        <div class="form-foot"><p>For privacy or data concerns, see our Privacy Policy or email us directly.</p><button class="btn btn-primary" type="submit">Send message</button></div>
+        <p class="form-note" id="formNote" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="row foot">
+    <div class="cell">
+      <a class="brand" href="#top"><span class="mark" aria-hidden="true">M</span>M-World</a>
+      <nav aria-label="Footer">
+        <a href="#how">How it works</a><a href="#departments">Departments</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+        <a href="https://www.youtube.com/channel/UCgQyXOTC7vYz6nUd-jNzB9Q" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=footer" target="_blank" rel="noopener">Builder</a>
+        <a href="https://mworld.tech" target="_blank" rel="noopener">Privacy Policy</a><a href="https://mworld.tech" target="_blank" rel="noopener">Terms</a>
+      </nav>
+    </div>
+  </div>
+  <div class="row wordmark"><div class="cell"><canvas id="wordmark" role="img" aria-label="M-World"></canvas></div></div>
+  <div class="row legal"><div class="cell"><span>© 2026 LAFLABS Technology Private Limited</span><span>Noida, India</span></div></div>
+  <div class="end"></div>
+</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MONO = '"Geist Mono", ui-monospace, Menlo, monospace';
+  let C = {};
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
+    C = { fg: g('--fg'), muted: g('--muted'), faint: g('--faint'), line: g('--line'), line2: g('--line-2'), panel: g('--panel'), accent: g('--accent'),
+          accent2: g('--accent-2'), accentSoft: g('--accent-soft'), human: g('--human'), humanSoft: g('--human-soft'), humanLine: g('--human-line'), bg: g('--bg'),
+          shadow: g('--shadow'), sunk: g('--sunk'), white: g('--on-block'), bShade: g('--sph-block-shade'), bS1: g('--sph-block-s1'),
+          nightInk: g('--night-ink'), nightRing: g('--night-ring') };
+  }
+  readColors();
+
+  // ---------- one RAF loop for every visible canvas ----------
+  const loops = new Set(); let raf = 0, lastTs = 0;
+  function tick(ts) { const dt = Math.min(.05, (ts - lastTs) / 1000 || 0); lastTs = ts; for (const f of loops) f(dt); raf = loops.size ? requestAnimationFrame(tick) : 0; }
+  function animate(el, fn) {
+    if (reduce) return;
+    new IntersectionObserver(es => {
+      es[0].isIntersecting ? loops.add(fn) : loops.delete(fn);
+      if (loops.size && !raf) { lastTs = performance.now(); raf = requestAnimationFrame(tick); }
+    }, { rootMargin: '80px' }).observe(el);
+  }
+  function fit(cvs) {
+    const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+    cvs.width = Math.max(1, Math.round(r.width * dpr)); cvs.height = Math.max(1, Math.round(r.height * dpr));
+    const ctx = cvs.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (!ctx.roundRect) ctx.roundRect = function (x, y, w, h, rr) { this.moveTo(x + rr, y); this.arcTo(x + w, y, x + w, y + h, rr); this.arcTo(x + w, y + h, x, y + h, rr); this.arcTo(x, y + h, x, y, rr); this.arcTo(x, y, x + w, y, rr); this.closePath(); };
+    return { ctx, W: r.width, H: r.height };
+  }
+  const onResize = (el, fn) => { new ResizeObserver(() => fn()).observe(el); };
+  const clear = c => c + '00';
+
+  // ---------- the ASCII sphere ----------
+  const RAMP = ' .·:;-=+*#';
+  function hash(a, b, c) { const n = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453; return n - Math.floor(n); }
+  function sphere(ctx, cx, cy, r, t, o) {
+    o = o || {};
+    const P = o.pal || { base: C.fg, shade: C.accent2, s1: C.accent2, s2: C.accent, flare: C.accent };
+    const cell = Math.max(o.cellMin || 5, r / (o.res || 10.5)), cw = cell * .74;
+    const flares = o.flares || [], glow = o.glow || 0, clipH = o.clipH == null ? Infinity : o.clipH, clipW = o.clipW == null ? Infinity : o.clipW, A = o.alpha == null ? 1 : o.alpha;
+    ctx.font = `500 ${cell * 1.08}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const la = t * .28, lx = Math.cos(la) * .55 - .25, ly = -.5, lz = .7, ln = Math.hypot(lx, ly, lz), spin = t * .4;
+    for (let y = -r; y <= r + .1; y += cell) {
+      if (cy + y > clipH + cell || cy + y < -cell) continue;
+      for (let x = -r; x <= r + .1; x += cw) {
+        if (cx + x < -cw || cx + x > clipW + cw) continue;
+        const nx = x / r, ny = y / r, d2 = nx * nx + ny * ny;
+        if (d2 > 1) continue;
+        const nz = Math.sqrt(1 - d2), diff = Math.max(0, (nx * lx + ny * ly + nz * lz) / ln);
+        const lon = Math.atan2(nx, nz) + spin, lat = Math.asin(Math.max(-1, Math.min(1, ny * .96 + nx * .08)));
+        const meridian = Math.pow(Math.abs(Math.cos(lon * 3)), 18), parallel = Math.pow(Math.abs(Math.cos(lat * 5)), 22);
+        const rim = Math.pow(1 - nz, 3) * .35;
+        let v = .12 + diff * .66 + (meridian + parallel) * .22 * (.4 + diff) + rim + glow * .18;
+        let flare = 0, fcol = null;
+        if (d2 > .4 && flares.length) {
+          const ang = Math.atan2(y, x);
+          for (const f of flares) {
+            let da = Math.abs(ang - f.ang); if (da > Math.PI) da = Math.PI * 2 - da;
+            const k = Math.max(0, 1 - da / .45) * (1 - (t - f.t0)) * Math.min(1, (d2 - .4) * 3);
+            if (k > flare) { flare = k; fcol = f.col; }
+          }
+        }
+        v = Math.min(1, v + flare * .6);
+        let ci = Math.max(1, Math.round(v * (RAMP.length - 1))), col = P.base, alpha = .16 + .84 * v;
+        const shade = (1 - diff) * Math.max(0, d2 - .45) / .55;
+        if (shade > .32) { col = P.shade; alpha = .35 + .55 * shade; ci = Math.max(ci, 3); }
+        const ix = Math.round(x / cw), iy = Math.round(y / cell), tk = Math.floor(t * 1.6 + hash(ix, iy, 7) * 10), h = hash(ix + tk * 13, iy - tk * 7, 3);
+        if (h > .955 && d2 < .85) { col = h > .985 ? P.s2 : P.s1; ci = RAMP.length - 2; alpha = .95; }
+        if (flare > .35) col = fcol || P.flare;
+        ctx.globalAlpha = alpha * A; ctx.fillStyle = col;
+        ctx.fillText(RAMP[ci], cx + x, cy + y);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // ================= HERO LINE: fitted to the width of the rail =================
+  const h1 = $('hero-title'), h1s = $('h1s');
+  function fitH1() {
+    h1.style.fontSize = '';
+    if (innerWidth <= 700) return;
+    const cs = getComputedStyle(h1.parentElement), avail = h1.parentElement.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const cur = parseFloat(getComputedStyle(h1).fontSize), w = h1s.getBoundingClientRect().width;
+    if (w > 0) h1.style.fontSize = Math.min(150, cur * avail * .985 / w) + 'px';
+  }
+  fitH1(); addEventListener('resize', fitH1);
+
+  // ================= ORBIT CENTREPIECE: AI, people, businesses =================
+  const DEPTS = [{ key: 'STR', name: 'Strategy' }, { key: 'MGT', name: 'Management' }, { key: 'TEC', name: 'Technology' }, { key: 'FIN', name: 'Finance' }, { key: 'MKT', name: 'Marketing' }, { key: 'SAL', name: 'Sales' }];
+  const PEOPLE = ['photographer', 'designer', 'accountant', 'tutor', 'lawyer', 'driver', 'recruiter'];
+  const BIZ = ['supplier', 'packaging', 'courier', 'warehouse', 'payments', 'roaster', 'print shop', 'ad studio', 'legal firm'];
+  const LINKS = [['supplier', 'packaging'], ['packaging', 'courier'], ['warehouse', 'courier'], ['roaster', 'packaging'], ['print shop', 'ad studio'], ['payments', 'legal firm'], ['supplier', 'warehouse']];
+  const RINGS = [
+    { type: 'ai', label: 'AI DEPARTMENTS', speed: .055, items: DEPTS },
+    { type: 'ppl', label: 'PEOPLE', speed: -.036, items: PEOPLE.map(n => ({ key: n, name: n })) },
+    { type: 'biz', label: 'BUSINESSES', speed: .022, items: BIZ.map(n => ({ key: n, name: n })) }
+  ];
+  // kinds: ai = department does it; ppl = book a person; biz = order from one business; chain = business hands work to another
+  const SPRINTS = [
+    { name: 'Pet products', prompt: 'Build me a premium pet-products business.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Size the premium pet-treat market' },
+      { k: 'ai', w: 'TEC', t: 'Build the storefront and checkout' },
+      { k: 'chain', w: ['supplier', 'packaging'], t: 'Order treats and branded packaging' },
+      { k: 'ppl', w: 'photographer', t: 'Book a photographer for product shots' },
+      { k: 'biz', w: 'payments', t: 'Set up card payments' },
+      { k: 'ai', w: 'MKT', t: 'Write the launch email sequence' },
+      { k: 'chain', w: ['warehouse', 'courier'], t: 'Store stock and ship first orders' } ] },
+    { name: 'Coffee subscription', prompt: 'Start a monthly single-origin coffee subscription.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Pick a niche: home pour-over brewers' },
+      { k: 'chain', w: ['roaster', 'packaging'], t: 'Source beans from a partner roaster' },
+      { k: 'ai', w: 'TEC', t: 'Build the subscription signup flow' },
+      { k: 'ppl', w: 'designer', t: 'Brief a designer for the bag labels' },
+      { k: 'biz', w: 'payments', t: 'Set up recurring billing' },
+      { k: 'ppl', w: 'accountant', t: 'Have an accountant check the tax setup' },
+      { k: 'ai', w: 'SAL', t: 'Draft outreach to coffee creators' } ] },
+    { name: 'Tutoring app', prompt: 'Launch a maths tutoring app for high-school students.', tasks: [
+      { k: 'ai', w: 'STR', t: 'Map the syllabus and competitors' },
+      { k: 'ai', w: 'TEC', t: 'Ship the mobile app beta' },
+      { k: 'ppl', w: 'tutor', t: 'Recruit five maths tutors' },
+      { k: 'ppl', w: 'lawyer', t: 'Have a lawyer review the parent terms' },
+      { k: 'chain', w: ['print shop', 'ad studio'], t: 'Print flyers and plan school ads' },
+      { k: 'ai', w: 'MKT', t: 'Write the app-store listing' } ] }
+  ];
+  const wrap = $('orbitWrap'), cvs = $('orbit');
+  let ctx, W = 0, H = 0, cx = 0, cy = 0, tilt = .42, R = [0, 0, 0], coreR = 0, S = 1, narrow = false;
+  const nodes = [], byKey = {};
+  RINGS.forEach((rg, ri) => rg.items.forEach((it, i) => {
+    const n = { ...it, ri, type: rg.type, base: i / rg.items.length * Math.PI * 2 + ri * .55, ping: 0, x: 0, y: 0, z: 0, work: null, req: 0, tag: '' };
+    nodes.push(n); byKey[it.key] = n;
+  }));
+  const links = LINKS.map(([a, b]) => [byKey[a], byKey[b]]);
+  function resize() {
+    ({ ctx, W, H } = fit(cvs));
+    narrow = W < 560;
+    cx = W / 2; cy = narrow ? H * .5 : H * .5;
+    const Rw = W / 2 - (narrow ? 26 : 46);
+    tilt = narrow ? .6 : Math.max(.42, Math.min(.8, (H / 2 - 74) / Rw));
+    const R3 = Math.min(Rw, (Math.min(cy, H - cy) - (narrow ? 34 : 64)) / tilt);
+    R = [R3 * .48, R3 * .74, R3]; coreR = R3 * (narrow ? .26 : .3); S = Math.max(.78, Math.min(1, R3 / 400));
+    readColors(); draw();
+  }
+  function place() { for (const n of nodes) { const a = n.base + RINGS[n.ri].speed * time, r = R[n.ri]; n.x = cx + r * Math.cos(a); n.y = cy + r * Math.sin(a) * tilt; n.z = Math.sin(a); } }
+  let time = 0, glow = 0;
+  const pulses = [], timers = [], flares = [];
+  const CORE = { core: true, get x() { return cx; }, get y() { return cy; } };
+  const later = (s, fn) => timers.push({ at: time + s, fn });
+  function pulse(from, to, dur, col, ret, cb) {
+    pulses.push({ from, to, t0: time, dur, col, ret, sign: Math.random() < .5 ? -1 : 1, cb });
+    if (from.core) { glow = 1; flares.push({ ang: Math.atan2(to.y - cy, to.x - cx), t0: time, col }); }
+  }
+  const feedList = $('feedList'), promptEl = $('promptInput');
+  let sIdx = 0, sprint, nextIdx = 0, active = 0, done = 0, nextStart = 0, finishedAt = null, gen = 0, sprintT0 = 0, userTyped = false, typing = null, fullAuto = true;
+  let booked = 0, engaged = new Set();
+  const clock = () => { const s = Math.floor(time - sprintT0); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  function setChips(i) { document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i))); }
+  const isWorking = n => n.work && time - n.work.t0 < n.work.dur;
+  function updateOrg() {
+    const aiW = nodes.filter(n => n.type === 'ai' && (isWorking(n) || n.pending)).length;
+    const pplW = nodes.some(n => n.type === 'ppl' && (n.req > 0 || isWorking(n) || n.pending));
+    const bizW = nodes.some(n => n.type === 'biz' && (isWorking(n) || n.pending));
+    const set = (id, on, text) => { const el = $(id); el.classList.toggle('on', on); el.lastElementChild.textContent = text; };
+    set('oAI', aiW > 0, aiW ? aiW + ' working' : 'idle');
+    set('oPPL', pplW, pplW ? 'booking…' : booked + ' booked');
+    set('oBIZ', bizW, bizW ? 'ordering…' : engaged.size + ' engaged');
+    $('feedCount').textContent = done + ' / ' + sprint.tasks.length;
+    $('orgBar').style.width = (done / sprint.tasks.length * 100) + '%';
+  }
+  // the How it works cards follow the chosen example
+  function syncHow() {
+    $('howPrompt').textContent = sprint.prompt;
+    const pick = k => sprint.tasks.find(t => k === 'biz' ? (t.k === 'biz' || t.k === 'chain') : t.k === k);
+    const ai = sprint.tasks.filter(t => t.k === 'ai')[1] || pick('ai'), p = pick('ppl'), b = pick('biz');
+    $('dAI').textContent = ai ? ai.t : ''; $('dPPL').textContent = p ? p.t : ''; $('dBIZ').textContent = b ? b.t : '';
+  }
+  function loadSprint(i, instant) {
+    gen++; sIdx = i % SPRINTS.length; sprint = SPRINTS[sIdx];
+    nextIdx = 0; active = 0; done = 0; finishedAt = null; sprintT0 = time; booked = 0; engaged = new Set();
+    pulses.length = 0; timers.length = 0;
+    for (const n of nodes) { n.work = null; n.tag = ''; n.req = 0; n.pending = false; }
+    feedList.replaceChildren();
+    $('orgName').textContent = sprint.name;
+    setChips(sIdx); syncHow();
+    let delay = .8;
+    if (!userTyped) {
+      if (instant || reduce) promptEl.value = sprint.prompt;
+      else { typing = { text: sprint.prompt, t0: time, cps: 34 }; promptEl.value = ''; delay = sprint.prompt.length / 34 + .5; }
+    }
+    nextStart = time + delay;
+    updateOrg();
+  }
+  const CHECK = '<svg viewBox="0 0 14 14" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-1px;margin-right:4px"><path d="M2.5 7.5l3 3 6-7"/></svg>';
+  function addRow(tk) {
+    const li = document.createElement('li');
+    const kind = tk.k === 'ai' ? 'ai' : tk.k === 'ppl' ? 'ppl' : 'biz';
+    li.className = 'run ' + kind;
+    li.innerHTML = '<span class="tm"></span><span class="cd"></span><span class="tx"></span><span class="st"></span>';
+    li.children[0].textContent = clock();
+    li.children[1].textContent = tk.k === 'ai' ? tk.w : tk.k === 'ppl' ? 'PPL' : 'BIZ';
+    li.children[2].textContent = tk.t;
+    li.children[3].textContent = tk.k === 'ppl' ? 'booking' : tk.k === 'ai' ? 'working' : 'ordering';
+    feedList.appendChild(li);
+    while (feedList.children.length > (narrow ? 4 : 5)) feedList.firstChild.remove();
+    return li;
+  }
+  function startTask(i) {
+    const tk = sprint.tasks[i], g = gen, row = addRow(tk);
+    active++;
+    const finish = () => { if (g !== gen) return; active--; done++; row.className = 'done ' + row.className.split(' ')[1]; row.querySelector('.st').innerHTML = CHECK + 'done'; };
+    const work = (n, d) => { n.ping = 1; n.work = { t0: time, dur: d }; n.pending = false; };
+    if (tk.k === 'ai') {
+      const n = byKey[tk.w]; n.pending = true;
+      pulse(CORE, n, 1.1, C.fg, false, () => { if (g !== gen) return; work(n, 1.7); n.tag = tk.t; later(1.7, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.0, C.accent, true, finish); }); });
+    } else if (tk.k === 'ppl') {
+      const n = byKey[tk.w]; n.pending = true;
+      pulse(CORE, n, 1.3, C.human, false, () => {
+        if (g !== gen) return;
+        n.pending = false; n.ping = 1; n.req = 2.4; n.tag = 'Booking a person · ' + tk.w;
+        later(2.4, () => {
+          if (g !== gen) return;
+          booked++; n.tag = tk.w + ' confirmed · on the job';
+          row.querySelector('.st').textContent = 'on job';
+          work(n, 1.6);
+          later(1.6, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.3, C.human, true, finish); });
+        });
+      });
+    } else if (tk.k === 'biz') {
+      const n = byKey[tk.w]; n.pending = true; engaged.add(tk.w);
+      pulse(CORE, n, 1.3, C.fg, false, () => { if (g !== gen) return; work(n, 1.4); n.tag = 'Order · ' + tk.w; later(1.4, () => { if (g !== gen) return; n.tag = ''; pulse(n, CORE, 1.2, C.fg, true, finish); }); });
+    } else {
+      const a = byKey[tk.w[0]], b = byKey[tk.w[1]]; a.pending = true; engaged.add(tk.w[0]); engaged.add(tk.w[1]);
+      pulse(CORE, a, 1.3, C.fg, false, () => {
+        if (g !== gen) return; work(a, 1); a.tag = tk.w[0] + ' → ' + tk.w[1];
+        later(1, () => {
+          if (g !== gen) return; a.tag = ''; b.pending = true;
+          pulse(a, b, 1.1, C.fg, false, () => {
+            if (g !== gen) return; work(b, 1); b.tag = tk.w[1] + ' → your org';
+            later(1, () => { if (g !== gen) return; b.tag = ''; pulse(b, CORE, 1.3, C.fg, true, finish); });
+          });
+        });
+      });
+    }
+  }
+  function schedule() {
+    const n = sprint.tasks.length;
+    if (finishedAt === null) {
+      // Semi-Autonomous: one department at a time, with a pause where you would decide
+      if (active < (fullAuto ? 2 : 1) && nextIdx < n && time >= nextStart) { startTask(nextIdx++); nextStart = time + (fullAuto ? 1.4 : 2.6); }
+      if (done === n) finishedAt = time;
+    } else if (time - finishedAt > 3) loadSprint(sIdx + 1);
+  }
+  let orgTick = 0;
+  function step(dt) {
+    time += dt; glow *= Math.pow(.15, dt);
+    for (const n of nodes) { n.ping = Math.max(0, n.ping - dt * 1.1); n.req = Math.max(0, n.req - dt); }
+    for (let i = timers.length - 1; i >= 0; i--) if (timers[i] && timers[i].at <= time) { const t = timers.splice(i, 1)[0]; t.fn(); }
+    for (const p of pulses.slice()) if ((time - p.t0) / p.dur >= 1) { pulses.splice(pulses.indexOf(p), 1); p.cb && p.cb(); }
+    for (let i = flares.length - 1; i >= 0; i--) if (time - flares[i].t0 > 1) flares.splice(i, 1);
+    if (typing) {
+      const k = Math.min(typing.text.length, Math.floor((time - typing.t0) * typing.cps));
+      if (!userTyped && promptEl.value.length !== k) promptEl.value = typing.text.slice(0, k);
+      if (k >= typing.text.length) typing = null;
+    }
+    schedule();
+    if ((orgTick += dt) > .15) { orgTick = 0; updateOrg(); }
+  }
+  function ringStroke(r, front) {
+    ctx.beginPath(); let on = false;
+    for (let i = 0; i <= 200; i++) { const a = i / 200 * Math.PI * 2; if ((Math.sin(a) >= 0) !== front) { on = false; continue; } const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a) * tilt; on ? ctx.lineTo(x, y) : ctx.moveTo(x, y); on = true; }
+    ctx.stroke();
+  }
+  function node(n) {
+    const d = (n.z + 1) / 2, sc = S * (.76 + .24 * d), al = .42 + .58 * d;
+    const wk = isWorking(n) ? (time - n.work.t0) / n.work.dur : -1, req = n.req > 0;
+    const hue = n.type === 'ppl' ? C.human : n.type === 'ai' ? C.accent : C.fg;
+    const soft = n.type === 'ppl' ? C.humanSoft : n.type === 'ai' ? C.accentSoft : C.sunk;
+    const rad = n.type === 'ai' ? 25 : 21;
+    ctx.save(); ctx.translate(n.x, n.y); ctx.scale(sc, sc);
+    if (req) { const k = Math.sin(time * 6) * .5 + .5; ctx.globalAlpha = al * (.3 + .3 * k); ctx.strokeStyle = C.human; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(0, 0, 19 + k * 5, 0, Math.PI * 2); ctx.stroke(); }
+    else if (n.ping > 0 && wk < 0) { ctx.globalAlpha = al * n.ping * .5; ctx.strokeStyle = hue; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(0, 0, 18 + (1 - n.ping) * 14, 0, Math.PI * 2); ctx.stroke(); }
+    if (wk >= 0) {
+      const fade = Math.min(1, (1 - wk) * 6);
+      ctx.lineWidth = 1.2; ctx.globalAlpha = al * .14 * fade; ctx.strokeStyle = C.fg; ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2); ctx.stroke();
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.globalAlpha = al * fade; ctx.strokeStyle = hue;
+      ctx.beginPath(); ctx.arc(0, 0, rad, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * wk); ctx.stroke(); ctx.lineCap = 'butt';
+    }
+    const lit = wk >= 0 || req;
+    ctx.globalAlpha = al; ctx.beginPath();
+    if (n.type === 'ai') ctx.roundRect(-20, -12, 40, 24, 7);
+    else if (n.type === 'ppl') ctx.arc(0, 0, 12.5, 0, Math.PI * 2);
+    else ctx.roundRect(-13, -13, 26, 26, 4);
+    ctx.fillStyle = lit ? soft : C.panel; ctx.fill();
+    ctx.lineWidth = 1; ctx.strokeStyle = lit ? hue : (n.type === 'ppl' ? C.humanLine : C.line2); ctx.stroke();
+    const ink = lit ? hue : (n.type === 'ppl' ? C.human : C.fg);
+    ctx.fillStyle = ink; ctx.strokeStyle = ink;
+    if (n.type === 'ai') { ctx.font = `500 10.5px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(n.key, 0, .8); }
+    else if (n.type === 'ppl') {
+      ctx.beginPath(); ctx.arc(0, -3, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.lineWidth = 1.7; ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(0, 7, 6, Math.PI * 1.13, Math.PI * 1.87); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(-7.5, -7); ctx.lineTo(7.5, -7); ctx.lineTo(7.5, -3);
+      for (let i = 2; i >= 0; i--) ctx.arc(-7.5 + 5 * (i + .5), -3, 2.5, 0, Math.PI, false);
+      ctx.closePath(); ctx.fill();
+      ctx.lineWidth = 1.3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-6, -.5); ctx.lineTo(-6, 7); ctx.lineTo(6, 7); ctx.lineTo(6, -.5); ctx.stroke();
+      ctx.fillRect(-4.2, 2, 3.2, 5); ctx.lineWidth = 1.1; ctx.strokeRect(1, 2, 3.4, 2.6);
+    }
+    ctx.restore();
+    const showName = n.type === 'ai' ? (!narrow || wk < 0) : (lit || n.ping > 0);
+    if (showName && !n.tag) {
+      ctx.save(); ctx.globalAlpha = al * (lit ? 1 : n.type === 'ai' ? .75 : Math.min(1, n.ping * 1.5));
+      ctx.font = `500 ${narrow ? 9 : 10}px ${MONO}`; if ('letterSpacing' in ctx) ctx.letterSpacing = '1px';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillStyle = lit ? hue : C.muted;
+      ctx.fillText(n.name.toUpperCase(), n.x, n.y + 17 * sc); if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+      ctx.restore();
+    }
+  }
+  function tag(n) {
+    if (!n.tag || narrow) return;
+    const isP = n.type === 'ppl';
+    let a = 1;
+    if (isWorking(n)) { const wk = (time - n.work.t0) / n.work.dur; a = Math.min(1, wk * 6, (1 - wk) * 6); }
+    else if (n.req > 0) a = Math.min(1, (2.4 - n.req) * 5, n.req * 5 + .2);
+    if (a <= 0) return;
+    const fs = 11.5; ctx.font = `500 ${fs}px ${MONO}`;
+    const text = n.tag, tw = ctx.measureText(text).width, w = tw + 26, h = fs + 13;
+    const x = Math.max(6, Math.min(W - w - 6, n.x - w / 2)), y = Math.max(4, n.y - 26 * S - h - 2);
+    ctx.save(); ctx.globalAlpha = a;
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, 6); ctx.fillStyle = isP ? C.humanSoft : C.panel; ctx.fill();
+    ctx.strokeStyle = isP ? C.human : C.line2; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = isP ? C.human : n.type === 'ai' ? C.accent : C.fg; ctx.beginPath(); ctx.arc(x + 11, y + h / 2, 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.fg; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(text, x + 19, y + h / 2 + .5);
+    ctx.restore();
+  }
+  function ends(p) {
+    let ax = p.from.x, ay = p.from.y, bx = p.to.x, by = p.to.y;
+    if (p.from.core) { const dx = bx - ax, dy = by - ay, l = Math.hypot(dx, dy) || 1; ax += dx / l * coreR * 1.05; ay += dy / l * coreR * 1.05; }
+    if (p.to.core) { const dx = ax - bx, dy = ay - by, l = Math.hypot(dx, dy) || 1; bx += dx / l * coreR * 1.05; by += dy / l * coreR * 1.05; }
+    return [ax, ay, bx, by];
+  }
+  function bez(e, sign, u) { const [ax, ay, bx, by] = e, mx = (ax + bx) / 2, my = (ay + by) / 2, dx = bx - ax, dy = by - ay, k = .13 * sign, qx = mx - dy * k, qy = my + dx * k, v = 1 - u; return [v * v * ax + 2 * v * u * qx + u * u * bx, v * v * ay + 2 * v * u * qy + u * u * by]; }
+  const ease = u => u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+  function drawPulse(p) {
+    const raw = Math.min(1, Math.max(0, (time - p.t0) / p.dur)), u = ease(raw), e = ends(p), col = p.col, w = Math.min(1, raw * 5) * Math.min(1, (1 - raw) * 4);
+    ctx.strokeStyle = col; ctx.lineWidth = 1; ctx.globalAlpha = .2 * w;
+    ctx.beginPath(); for (let i = 0; i <= 28; i++) { const [x, y] = bez(e, p.sign, i / 28); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke();
+    ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+    let prev = bez(e, p.sign, Math.max(0, u - .2));
+    for (let i = 1; i <= 12; i++) { const pt = bez(e, p.sign, Math.max(0, u - .2 + .2 * i / 12)); ctx.globalAlpha = .9 * (i / 12); ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(pt[0], pt[1]); ctx.stroke(); prev = pt; }
+    const [hx, hy] = bez(e, p.sign, u);
+    ctx.globalAlpha = .14; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(hx, hy, 6.5, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(hx, hy, 2.7, 0, Math.PI * 2);
+    if (p.ret) { ctx.fillStyle = C.bg; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); } else ctx.fill();
+    ctx.lineCap = 'butt';
+  }
+  function draw() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, W, H); place();
+    ctx.strokeStyle = C.fg; ctx.lineWidth = 1; ctx.setLineDash([2, 5]); ctx.globalAlpha = .2; R.forEach(r => ringStroke(r, false));
+    // standing business-to-business links
+    ctx.setLineDash([1, 4]);
+    for (const [a, b] of links) { ctx.globalAlpha = .1 + .14 * ((a.z + b.z) / 2 + 1) / 2; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    const hr = coreR * 2.4, g = ctx.createRadialGradient(cx, cy, coreR * .6, cx, cy, hr);
+    g.addColorStop(0, C.accentSoft); g.addColorStop(1, clear(C.accentSoft));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(cx, cy, hr, hr * (.62 + tilt * .4), 0, 0, Math.PI * 2); ctx.fill();
+    const sorted = nodes.slice().sort((a, b) => a.z - b.z);
+    for (const n of sorted) if (n.z < 0) node(n);
+    sphere(ctx, cx, cy, coreR * (1 + .018 * Math.sin(time * 1.7)), time, { flares, glow });
+    ctx.save(); ctx.strokeStyle = C.muted; ctx.globalAlpha = .35; ctx.setLineDash([1, 5]); ctx.lineDashOffset = -time * 6; ctx.beginPath(); ctx.arc(cx, cy, coreR * 1.2, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    ctx.strokeStyle = C.fg; ctx.globalAlpha = .28; ctx.lineWidth = 1; R.forEach(r => ringStroke(r, true)); ctx.globalAlpha = 1;
+    ctx.lineCap = 'round';
+    R.forEach((r, i) => {
+      const dir = i % 2 ? -1 : 1, a0 = time * (.3 + i * .07) * dir + i * 2.1, gc = i === 1 ? C.human : C.accent2;
+      for (let k = 1; k <= 24; k++) {
+        const a1 = a0 - dir * .7 * (1 - (k - 1) / 24), a2 = a0 - dir * .7 * (1 - k / 24), fr = Math.sin(a2) >= 0;
+        ctx.globalAlpha = (k / 24) * (fr ? .7 : .3) * (i === 1 ? .7 : 1); ctx.strokeStyle = gc; ctx.lineWidth = fr ? 1.6 : 1.1;
+        ctx.beginPath(); ctx.moveTo(cx + r * Math.cos(a1), cy + r * Math.sin(a1) * tilt); ctx.lineTo(cx + r * Math.cos(a2), cy + r * Math.sin(a2) * tilt); ctx.stroke();
+      }
+    });
+    ctx.globalAlpha = 1; ctx.lineCap = 'butt';
+    if (!narrow) {
+      ctx.font = `500 11px ${MONO}`; if ('letterSpacing' in ctx) ctx.letterSpacing = '1.2px'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      RINGS.forEach((rg, i) => {
+        const a = Math.PI * 1.5 - .42 - i * .06, x = cx + R[i] * Math.cos(a), y = cy + R[i] * Math.sin(a) * tilt, tw = ctx.measureText(rg.label).width;
+        ctx.fillStyle = C.bg; ctx.fillRect(x - tw / 2 - 7, y - 8, tw + 14, 16);
+        ctx.fillStyle = i === 1 ? C.human : i === 0 ? C.accent : C.fg; ctx.globalAlpha = .9; ctx.fillText(rg.label, x, y + .5); ctx.globalAlpha = 1;
+      });
+      if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+    }
+    for (const p of pulses) drawPulse(p);
+    ctx.globalAlpha = 1;
+    for (const n of sorted) if (n.z >= 0) node(n);
+    for (const n of nodes) tag(n);
+  }
+  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; });
+  const settle = () => { for (let i = 0; i < 300; i++) step(1 / 30); draw(); updateOrg(); };
+  document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+    userTyped = false; typing = null; loadSprint(+c.dataset.i, true);
+    if (reduce) settle();
+  }));
+  const setMode = full => { fullAuto = full; $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full)); $('orgMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous'; };
+  $('modeFull').addEventListener('click', () => setMode(true));
+  $('modeSemi').addEventListener('click', () => setMode(false));
+  const showFiles = () => { const f = [...$('fileMedia').files, ...$('fileDocs').files]; $('fileNames').textContent = f.length ? (f.length === 1 ? f[0].name : f.length + ' files') : ''; };
+  $('fileMedia').addEventListener('change', showFiles); $('fileDocs').addEventListener('change', showFiles);
+  loadSprint(0);
+  onResize(wrap, resize);
+  if (reduce) { settle(); setTimeout(() => { draw(); updateOrg(); }, 50); }
+  else animate(wrap, dt => { step(dt); draw(); });
+
+  // ================= HOW: prompt → core → three kinds of worker =================
+  const tree = $('tree'), treeCell = $('treeCell'), youCard = $('youCard'), dashCard = $('dashCard');
+  let TR = null, geo = null, tt = 0, nextTF = 0; const tfl = [];
+  function treeGeo() {
+    TR = fit(tree); const o = tree.getBoundingClientRect(), a = youCard.getBoundingClientRect(), b = dashCard.getBoundingClientRect();
+    const st = TR.W < 700;
+    const core = st ? { x: TR.W / 2, y: (a.bottom + b.top) / 2 - o.top } : { x: TR.W / 2, y: (a.top + a.bottom) / 2 - o.top };
+    geo = { st, core, r: st ? 58 : 76,
+      you: st ? [a.left + a.width / 2 - o.left, a.bottom - o.top] : [a.right - o.left, (a.top + a.bottom) / 2 - o.top],
+      dash: st ? [b.left + b.width / 2 - o.left, b.top - o.top] : [b.left - o.left, (b.top + b.bottom) / 2 - o.top] };
+    drawTree();
+  }
+  function curve(c, p0, p1, p2, p3) { c.beginPath(); c.moveTo(...p0); c.bezierCurveTo(...p1, ...p2, ...p3); c.stroke(); }
+  function onCurve(p0, p1, p2, p3, u) { const v = 1 - u; return [0, 1].map(k => v * v * v * p0[k] + 3 * v * v * u * p1[k] + 3 * v * u * u * p2[k] + u * u * u * p3[k]); }
+  function drawTree() {
+    if (!TR || !geo) return;
+    const { ctx: c, W: w, H: h } = TR, { core, r } = geo; c.clearRect(0, 0, w, h);
+    const paths = [];
+    if (geo.st) {
+      paths.push({ p: [geo.you, [geo.you[0], geo.you[1] + 20], [core.x, core.y - r - 20], [core.x, core.y - r * 1.12]], col: C.fg });
+      paths.push({ p: [[core.x, core.y + r * 1.12], [core.x, core.y + r + 20], [geo.dash[0], geo.dash[1] - 20], geo.dash], col: C.accent });
+    } else {
+      paths.push({ p: [geo.you, [geo.you[0] + 60, geo.you[1]], [core.x - r - 60, core.y], [core.x - r * 1.15, core.y]], col: C.fg });
+      paths.push({ p: [[core.x + r * 1.15, core.y], [core.x + r + 60, core.y], [geo.dash[0] - 60, geo.dash[1]], geo.dash], col: C.accent });
+      const y0 = core.y + r * 1.15, my = (y0 + h) / 2;
+      [[w / 6, C.accent], [w / 2, C.human], [w * 5 / 6, C.fg]].forEach(([x, col]) => paths.push({ p: [[core.x, y0], [core.x, my], [x, my], [x, h]], col }));
+    }
+    c.lineWidth = 1; c.setLineDash([3, 5]); c.strokeStyle = C.line2;
+    for (const q of paths) curve(c, ...q.p);
+    c.setLineDash([]);
+    paths.forEach((q, i) => {
+      const u = ((tt * .42) + i * .23) % 1, [x, y] = onCurve(...q.p, u), fade = Math.min(1, u * 6, (1 - u) * 6);
+      c.globalAlpha = .16 * fade; c.fillStyle = q.col; c.beginPath(); c.arc(x, y, 7, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = fade; c.beginPath(); c.arc(x, y, 3.2, 0, Math.PI * 2); c.fill();
+    });
+    c.globalAlpha = 1;
+    const g = c.createRadialGradient(core.x, core.y, r * .5, core.x, core.y, r * 1.9);
+    g.addColorStop(0, C.accentSoft); g.addColorStop(1, clear(C.accentSoft));
+    c.fillStyle = g; c.beginPath(); c.arc(core.x, core.y, r * 1.9, 0, Math.PI * 2); c.fill();
+    sphere(c, core.x, core.y, r, tt, { flares: tfl });
+    c.save(); c.strokeStyle = C.muted; c.globalAlpha = .35; c.setLineDash([1, 5]); c.lineDashOffset = -tt * 6; c.beginPath(); c.arc(core.x, core.y, r * 1.15, 0, Math.PI * 2); c.stroke(); c.restore();
+  }
+  onResize(treeCell, treeGeo);
+  animate(treeCell, dt => {
+    tt += dt;
+    if (tt > nextTF) { tfl.push({ ang: [Math.PI / 2, Math.PI / 2 + .6, Math.PI / 2 - .6, 0][Math.floor(Math.random() * 4)], t0: tt, col: [C.accent, C.human, C.fg, C.accent][Math.floor(Math.random() * 4)] }); nextTF = tt + 1.1; }
+    for (let i = tfl.length - 1; i >= 0; i--) if (tt - tfl[i].t0 > 1) tfl.splice(i, 1);
+    drawTree();
+  });
+  // ================= ISO MINIATURES: the three actor panels =================
+  // Each panel is a small isometric world drawn in SVG: the tower (AI), the handoff (people), the district (businesses).
+  const NS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
+  const pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const ez = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+  const c01 = v => Math.max(0, Math.min(1, v));
+  const lerp = (a, b, u) => a + (b - a) * u;
+  const isoP = (s, ox, oy) => (x, y, z = 0) => [ox + (x - y) * s * .866, oy + (x + y) * s * .5 - z * s];
+  function hull(ps) {
+    ps = ps.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]), lo = [], up = [];
+    for (const p of ps) { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
+    for (const p of ps.reverse()) { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
+    return lo.slice(0, -1).concat(up.slice(0, -1));
+  }
+  function ibox(parent, P, cls) {
+    const g = sv('g', { class: 'ibox ' + cls }, parent);
+    const fl = sv('polygon', { class: 'fl' }, g), fr = sv('polygon', { class: 'fr' }, g), ft = sv('polygon', { class: 'ft' }, g);
+    g.set = (x, y, z, w, d, h) => {
+      fl.setAttribute('points', pts([P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x, y + d, z + h)]));
+      fr.setAttribute('points', pts([P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x + w, y, z + h)]));
+      ft.setAttribute('points', pts([P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)]));
+      g.depth = x + w / 2 + y + d / 2;
+    };
+    return g;
+  }
+  function ishadow(parent, P, x, y, w, d, h) {
+    const sx = h * .55, sy = -h * .14, c = [[x, y], [x + w, y], [x + w, y + d], [x, y + d]];
+    sv('polygon', { class: 'ishadow', points: pts(hull(c.concat(c.map(([a, b]) => [a + sx, b + sy])).map(([a, b]) => P(a, b, 0)))) }, parent);
+  }
+  function lattice(svg, P, n, id, cx, cy, rx, ry) {
+    const defs = sv('defs', {}, svg);
+    const rg = sv('radialGradient', { id: id + 'g', cx: cx, cy: cy, r: '0.62', gradientUnits: 'objectBoundingBox' }, defs);
+    sv('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '1' }, rg);
+    sv('stop', { offset: '1', 'stop-color': '#fff', 'stop-opacity': '0' }, rg);
+    const m = sv('mask', { id: id + 'm', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: 340, height: 250 }, defs);
+    sv('rect', { x: 0, y: 0, width: 340, height: 250, fill: `url(#${id}g)` }, m);
+    const g = sv('g', { class: 'lattice', mask: `url(#${id}m)` }, svg);
+    for (let i = -n; i <= n; i++) {
+      let a = P(i + rx, -n + ry), b = P(i + rx, n + ry); sv('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, g);
+      a = P(-n + rx, i + ry); b = P(n + rx, i + ry); sv('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, g);
+    }
+  }
+  function ringAt(parent, cls) { return sv('ellipse', { class: 'ring ' + cls, rx: 0, ry: 0, opacity: 0 }, parent); }
+  function pulseRing(r, P, x, y, z, u, s) {
+    if (u < 0 || u > 1) { r.setAttribute('opacity', 0); return; }
+    const [X, Y] = P(x, y, z), k = ez(u);
+    r.setAttribute('cx', X); r.setAttribute('cy', Y); r.setAttribute('rx', (.6 + k * 1.6) * s); r.setAttribute('ry', (.6 + k * 1.6) * s * .5); r.setAttribute('opacity', (1 - u) * .9);
+  }
+  function runIso(svg, frame, still) {
+    let t = 0; frame(still);
+    animate(svg, dt => { t += dt; frame(t); });
+  }
+
+  // ---- AI: the tower. Six glass floors; the working one slides out like a drawer and names its task.
+  (function tower() {
+    const svg = $('isoAI'), s = 17, P = isoP(s, 166, 168);
+    lattice(svg, P, 7, 'la', .5, .62, 0, 0);
+    const W = 4.8, x0 = -W / 2, y0 = -W / 2, GAP = .86, H = .56;
+    const ground = sv('g', {}, svg); ishadow(ground, P, x0, y0, W, W, 5 * GAP + H);
+    const world = sv('g', {}, svg);
+    const F = [['STR', 'STRATEGY', 'Sizing the market'], ['MGT', 'MANAGEMENT', 'Planning the sprint'], ['TEC', 'TECHNOLOGY', 'Building the checkout'],
+               ['FIN', 'FINANCE', 'Modelling margins'], ['MKT', 'MARKETING', 'Writing launch emails'], ['SAL', 'SALES', 'Finding 40 boutiques']];
+    const floors = F.map((f, i) => { const g = ibox(world, P, 'slab'), t = sv('text', { class: 'face' }, g); t.textContent = f[0] + ' · ' + f[1]; return { g, t, i }; });
+    const callG = sv('g', {}, svg), line = sv('polyline', { class: 'call' }, callG), dot = sv('circle', { class: 'call-dot', r: 2.4 }, callG);
+    const ct = sv('text', { class: 'call-t' }, callG), cc = sv('tspan', {}, ct), cx_ = sv('tspan', { dx: 5 }, ct);
+    const sparks = Array.from({ length: 9 }, (_, j) => { const e = sv('text', { class: 'spk' }, svg); e.textContent = '+*·:#+·*='[j]; return e; });
+    const PER = 2.2;
+    function frame(t) {
+      const k = Math.floor(t / PER) % 6, u = (t % PER) / PER;
+      const o = u < .22 ? ez(u / .22) : u > .82 ? ez((1 - u) / .18) : 1;
+      floors.forEach(f => {
+        const z = f.i * GAP, dy = f.i === k ? o * 1.35 : 0;
+        f.g.set(x0, y0 + dy, z, W, W, H); f.g.classList.toggle('on', f.i === k && o > .35);
+        const [X, Y] = P(x0 + .32, y0 + W + dy, z + .15); f.t.setAttribute('transform', `matrix(.866 .5 0 1 ${X.toFixed(1)} ${Y.toFixed(1)})`);
+      });
+      const z = k * GAP, a = P(x0 + W, y0 + W + o * 1.35, z + H * .5), ex = 334, ey = Math.min(236, a[1] + 28);
+      line.setAttribute('points', pts([a, [a[0] + 18, ey], [ex, ey]])); dot.setAttribute('cx', a[0]); dot.setAttribute('cy', a[1]);
+      ct.setAttribute('x', ex); ct.setAttribute('y', ey - 6); cc.textContent = F[k][0]; cx_.textContent = F[k][2];
+      callG.setAttribute('opacity', c01((o - .3) / .5));
+      sparks.forEach((e, j) => {
+        const ph = ((t * .55 + j / sparks.length) % 1), sx = x0 + .6 + (j * 1.37 % 1) * (W - 1.2), sy = y0 + W + o * 1.35 - .35;
+        const [X, Y] = P(sx, sy, z + H + ph * 2.2);
+        e.setAttribute('x', X.toFixed(1)); e.setAttribute('y', Y.toFixed(1)); e.setAttribute('opacity', (o * Math.sin(Math.PI * ph) * .9).toFixed(2));
+      });
+    }
+    runIso(svg, frame, PER * 4 + PER * .5);
+  })();
+
+  // ---- People: the handoff. A brief leaves your organisation, a person accepts it, does the job, and it comes back stamped.
+  (function handoff() {
+    const svg = $('isoPPL'), s = 15, P = isoP(s, 172, 126);
+    lattice(svg, P, 8, 'lp', .5, .55, 0, 0);
+    const ground = sv('g', {}, svg), world = sv('g', {}, svg), top = sv('g', {}, svg);
+    const ORG = [-4.6, 1.6, 1.7, 1.7, 3.3];
+    ishadow(ground, P, ...ORG.slice(0, 4), ORG[4]);
+    const org = ibox(world, P, 'ink'); org.set(ORG[0], ORG[1], 0, ORG[2], ORG[3], ORG[4]);
+    for (let k = 1; k <= 3; k++) { const a = P(ORG[0] + .3, ORG[1] + ORG[3], k * .85), b = P(ORG[0] + ORG[2] - .3, ORG[1] + ORG[3], k * .85); sv('line', { class: 'win', x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, world); }
+    const cap = ibox(world, P, 'cap'); cap.set(ORG[0] + .2, ORG[1] + .2, ORG[4], ORG[2] - .4, ORG[3] - .4, .14);
+    const ol = sv('text', { class: 'lbl you' }, top); const op = P(ORG[0] + ORG[2] / 2, ORG[1] + ORG[3] / 2, ORG[4]), oq = P(ORG[0], ORG[1], ORG[4]); ol.setAttribute('x', op[0]); ol.setAttribute('y', oq[1] - 7); ol.textContent = 'your org';
+    const ROLES = [['photographer', 1.55, -4.25], ['accountant', 6.9, 1.1], ['lawyer', 1.4, 4.2]];
+    const people = ROLES.map(([name, x, y]) => {
+      ishadow(ground, P, x - 1.15, y - 1.15, 2.3, 2.3, .22);
+      const tile = ibox(world, P, 'tile'); tile.set(x - 1.15, y - 1.15, 0, 2.3, 2.3, .22);
+      const [X, Y] = P(x, y, .22), g = sv('g', {}, world);
+      sv('ellipse', { class: 'psh', cx: X + 2, cy: Y + 1, rx: 8, ry: 3.6 }, g);
+      const body = sv('g', {}, g);
+      sv('rect', { class: 'pb2', x: X - 5.6, y: Y - 17, width: 11.2, height: 17, rx: 5.6 }, body);
+      sv('rect', { class: 'pb', x: X - 5.6, y: Y - 17, width: 7.4, height: 17, rx: 5.6 }, body);
+      sv('circle', { class: 'ph', cx: X, cy: Y - 23, r: 5.2 }, body);
+      const lb = sv('text', { class: 'lbl ppl', x: X, y: Y - 36 }, top); lb.textContent = name;
+      return { name, x, y, tile, body, ring: ringAt(top, 'a') };
+    });
+    const card = sv('g', {}, top), sheet = sv('polygon', { class: 'card' }, card), l1 = sv('line', { class: 'card-l' }, card), l2 = sv('line', { class: 'card-l' }, card), chk = sv('text', { class: 'chk' }, card); chk.textContent = '✓';
+    const tag = sv('g', { class: 'tag' }, top), tr = sv('rect', { rx: 6, height: 19 }, tag), tc = sv('circle', { r: 2.6 }, tag), tt = sv('text', {}, tag);
+    const PER = 6.4;
+    function placeCard(x, y, z, done) {
+      const c = [[x - .55, y - .38], [x + .55, y - .38], [x + .55, y + .38], [x - .55, y + .38]].map(([a, b]) => P(a, b, z));
+      sheet.setAttribute('points', pts(c));
+      const m1 = P(x - .35, y - .1, z), m2 = P(x + .25, y - .1, z), m3 = P(x - .35, y + .12, z), m4 = P(x + .1, y + .12, z);
+      l1.setAttribute('x1', m1[0]); l1.setAttribute('y1', m1[1]); l1.setAttribute('x2', m2[0]); l1.setAttribute('y2', m2[1]);
+      l2.setAttribute('x1', m3[0]); l2.setAttribute('y1', m3[1]); l2.setAttribute('x2', m4[0]); l2.setAttribute('y2', m4[1]);
+      const cp = P(x + .3, y + .05, z); chk.setAttribute('x', cp[0]); chk.setAttribute('y', cp[1] - 2); chk.setAttribute('opacity', done);
+    }
+    function frame(t) {
+      const idx = Math.floor(t / PER) % 3, u = (t % PER) / PER, p = people[idx];
+      const A = [ORG[0] + ORG[2] / 2, ORG[1] + ORG[3] / 2, ORG[4] + .5], B = [p.x + .15, p.y + 1.5, .3];
+      let cxy, done = 0;
+      if (u < .22) { const k = ez(u / .22); cxy = [lerp(A[0], B[0], k), lerp(A[1], B[1], k), lerp(A[2], B[2], k) + Math.sin(Math.PI * k) * 2.6]; }
+      else if (u < .62) { cxy = B; done = c01((u - .52) / .06); }
+      else if (u < .84) { const k = ez((u - .62) / .22); cxy = [lerp(B[0], A[0], k), lerp(B[1], A[1], k), lerp(B[2], A[2], k) + Math.sin(Math.PI * k) * 2.6]; done = 1; }
+      else cxy = A;
+      placeCard(cxy[0], cxy[1], cxy[2], done);
+      card.setAttribute('opacity', u > .86 ? c01((.94 - u) / .08) : 1);
+      cap.classList.toggle('on', u > .82 && u < .97);
+      people.forEach((q, i) => {
+        const on = i === idx && u > .22 && u < .62;
+        q.tile.classList.toggle('on', on);
+        const bob = on && u > .32 ? Math.sin((u - .32) * 60) * 1.2 : 0;
+        q.body.setAttribute('transform', `translate(0 ${bob.toFixed(2)})`);
+        pulseRing(q.ring, P, q.x, q.y, .22, i === idx ? (u - .22) / .2 : -1, s);
+      });
+      const label = u < .22 ? 'Brief sent' : u < .32 ? 'Booked' : u < .52 ? 'On the job' : u < .84 ? 'Delivered' : 'Back in the plan';
+      tt.textContent = p.name + ' · ' + label;
+      const w = Math.max(150, (tt.getComputedTextLength ? tt.getComputedTextLength() : 150) + 26), tx = 12, ty = 222;
+      tr.setAttribute('x', tx); tr.setAttribute('y', ty); tr.setAttribute('width', w);
+      tc.setAttribute('cx', tx + 10); tc.setAttribute('cy', ty + 9.5); tt.setAttribute('x', tx + w / 2 + 6); tt.setAttribute('y', ty + 13);
+      tag.setAttribute('opacity', u < .04 ? u / .04 : 1);
+    }
+    runIso(svg, frame, PER * .4);
+  })();
+
+  // ---- Businesses: the district. Parcels move supplier → packaging → courier → your org; another M-World org ships in too.
+  (function district() {
+    const svg = $('isoBIZ'), s = 14, P = isoP(s, 150, 108);
+    lattice(svg, P, 9, 'lb', .5, .55, 1.5, 1);
+    const ground = sv('g', {}, svg), roads = sv('g', {}, svg), world = sv('g', {}, svg), top = sv('g', {}, svg);
+    const B = {
+      you:      { x: 0,    y: 0,    w: 2.2, d: 2.2, h: 4.6, cls: 'ink',  label: 'your org', lc: 'you' },
+      supplier: { x: 4.6,  y: -3.4, w: 2.2, d: 1.7, h: 2.3, cls: 'bld',  label: 'supplier' },
+      packaging:{ x: 5.6,  y: 1.4,  w: 2.6, d: 1.7, h: 1.3, cls: 'bld',  label: 'packaging' },
+      courier:  { x: 2.6,  y: 4.6,  w: 2.2, d: 1.7, h: 1.7, cls: 'bld',  label: 'courier' },
+      other:    { x: -4.2, y: 3.0,  w: 1.9, d: 1.9, h: 3.2, cls: 'blue', label: 'another org', lc: 'org' }
+    };
+    // a few unnamed low blocks give the district its texture
+    const filler = [[8.6, -1.6, 1.1, 1.1, .6], [6.6, 4.8, 1.2, 1.2, .5]];
+    const road = (pp) => { const d = 'M' + pp.map(([x, y]) => P(x, y, 0).map(v => v.toFixed(1)).join(' ')).join(' L'); sv('path', { class: 'road', d }, roads); sv('path', { class: 'road-c', d }, roads); };
+    const R = {
+      sp: [[5.7, -1.5], [5.7, .6], [6.9, .6], [6.9, 1.2]],
+      pc: [[6.9, 1.2], [6.9, .6], [3.6, .6], [3.6, 4.4]],
+      cy: [[3.6, 4.4], [3.6, 2.9], [1.1, 2.9], [1.1, 2.3]],
+      oy: [[-2.1, 3.9], [-.7, 3.9], [-.7, 2.9], [.5, 2.9], [.5, 2.3]]
+    };
+    Object.values(R).forEach(road);
+    for (const k in B) { const b = B[k]; ishadow(ground, P, b.x, b.y, b.w, b.d, b.h); b.g = ibox(world, P, b.cls); b.g.set(b.x, b.y, 0, b.w, b.d, b.h); }
+    filler.forEach(([x, y, w, d, h]) => { ishadow(ground, P, x, y, w, d, h); const g = ibox(world, P, 'bld'); g.set(x, y, 0, w, d, h); g.style.opacity = .55; });
+    const winOn = (b, n, cls) => { for (let k = 1; k <= n; k++) { const z = k * b.h / (n + 1), a = P(b.x + .3, b.y + b.d, z), c = P(b.x + b.w - .3, b.y + b.d, z); sv('line', { class: 'win ' + cls, x1: a[0], y1: a[1], x2: c[0], y2: c[1] }, b.g); } };
+    winOn(B.you, 4, ''); winOn(B.other, 3, 'w');
+    const door = (b, x1, x2, h) => sv('polygon', { class: 'door', points: pts([P(b.x + x1, b.y + b.d, 0), P(b.x + x2, b.y + b.d, 0), P(b.x + x2, b.y + b.d, h), P(b.x + x1, b.y + b.d, h)]) }, b.g);
+    door(B.courier, .5, 1.6, 1.05); door(B.packaging, .9, 1.9, .8); door(B.supplier, .6, 1.4, .9);
+    const cap = ibox(world, P, 'cap'); cap.set(B.you.x + .25, B.you.y + .25, B.you.h, B.you.w - .5, B.you.d - .5, .14); cap.depth = B.you.g.depth + .01;
+    for (const k in B) { const b = B[k], [X] = P(b.x + b.w / 2, b.y + b.d / 2, b.h), [, Y] = P(b.x, b.y, b.h); const t = sv('text', { class: 'lbl ' + (b.lc || ''), x: X, y: Y - 7 }, top); t.textContent = b.label; }
+    const trips = [
+      { r: R.sp, start: 0,   dur: 1.7, cls: '',      size: .5,  to: 'packaging', txt: ['supplier', 'packaging'] },
+      { r: R.pc, start: 2.3, dur: 2.5, cls: 'boxed', size: .62, to: 'courier',   txt: ['packaging', 'courier'] },
+      { r: R.cy, start: 5.2, dur: 1.8, cls: 'boxed', size: .62, to: 'you',       txt: ['courier', 'your org'] },
+      { r: R.oy, start: 1.0, dur: 2.6, cls: 'bp',    size: .55, to: 'you',       txt: ['another org', 'your org'] }
+    ];
+    trips.forEach(tp => {
+      tp.g = ibox(world, P, 'parcel ' + tp.cls); tp.ring = ringAt(top, tp.cls === 'bp' ? 'b' : 'k');
+      tp.len = [0]; for (let i = 1; i < tp.r.length; i++) tp.len.push(tp.len[i - 1] + Math.hypot(tp.r[i][0] - tp.r[i - 1][0], tp.r[i][1] - tp.r[i - 1][1]));
+    });
+    const capT = sv('text', { class: 'cap-t', x: 12, y: 238 }, svg), c1 = sv('tspan', {}, capT), c2 = sv('tspan', { dx: 4 }, capT); c2.style.fill = 'var(--muted)';
+    const PER = 8.2, kids = () => [...world.children];
+    function at(tp, k) {
+      const L = tp.len[tp.len.length - 1] * k; let i = 1; while (i < tp.len.length - 1 && tp.len[i] < L) i++;
+      const a = tp.r[i - 1], b = tp.r[i], seg = tp.len[i] - tp.len[i - 1] || 1, f = (L - tp.len[i - 1]) / seg;
+      return [lerp(a[0], b[0], f), lerp(a[1], b[1], f)];
+    }
+    function frame(t) {
+      const u = t % PER; let latest = null, arriving = false;
+      trips.forEach(tp => {
+        const k = (u - tp.start) / tp.dur;
+        if (k >= 0 && k <= 1) {
+          const [x, y] = at(tp, ez(k)), h = tp.size;
+          tp.g.style.display = ''; tp.g.set(x - h / 2, y - h / 2, .02 + Math.abs(Math.sin(k * Math.PI * 6)) * .05, h, h, h * .85);
+          if (!latest || tp.start > latest.start) latest = tp;
+        } else tp.g.style.display = 'none';
+        const end = tp.r[tp.r.length - 1], rk = (u - tp.start - tp.dur) / .9;
+        pulseRing(tp.ring, P, end[0], end[1], 0, rk, s);
+        if (tp.to === 'you' && rk >= 0 && rk <= 1) arriving = true;
+      });
+      cap.classList.toggle('on', arriving);
+      // painter's order: sort the world by depth so parcels pass in front of and behind buildings correctly
+      const ord = kids().filter(n => n.depth != null).sort((a, b) => a.depth - b.depth);
+      ord.forEach(n => world.appendChild(n));
+      if (latest) { c1.textContent = latest.txt[0] + ' → ' + latest.txt[1]; c2.textContent = latest.cls === 'bp' ? '· M-World to M-World' : '· business to business'; }
+    }
+    runIso(svg, frame, 3.2);
+  })();
+
+  // ================= BLUE FIELD: sphere edges =================
+  const edge = $('edge'); let E, et = 0;
+  const drawEdge = () => {
+    if (!E) return; const { ctx, W, H } = E; ctx.clearRect(0, 0, W, H);
+    const WHITE = { base: C.white, shade: C.bShade, s1: C.bS1, s2: C.white, flare: C.white };
+    const r = Math.min(H * .52, 380), a = W < 760 ? .18 : .42;
+    sphere(ctx, -r * .12, H * .46, r, et, { pal: WHITE, res: 30, cellMin: 6, alpha: a, clipW: W });
+    sphere(ctx, W + r * .12, H * .58, r * .92, et + 7, { pal: WHITE, res: 28, cellMin: 6, alpha: a, clipW: W });
+  };
+  onResize(edge, () => { E = fit(edge); drawEdge(); });
+  animate(edge, dt => { et += dt * .7; drawEdge(); });
+
+  // org chart + department tabs
+  const DINFO = [
+    ['Strategy', 'plans', 'Turns your prompt into a plan: who the customer is, what to sell, how to position it and what to do first.', 'Market research · Business plan · Positioning'],
+    ['Management', 'coordinates', 'Breaks the plan into sprints, assigns the work, and books people or partner businesses when a task needs them.', 'Sprint plans · Bookings · Progress reports'],
+    ['Technology', 'builds', 'Builds and ships the product itself: a production-ready website, web app or mobile app.', 'Website · Mobile app · Integrations'],
+    ['Finance', 'budgets', 'Models costs, pricing and runway, and keeps track of what you spend with suppliers and people.', 'Financial model · Pricing · Budget tracking'],
+    ['Marketing', 'grows', 'Creates the brand and runs the campaigns: copy, content, social posts and email.', 'Brand kit · Campaigns · Content calendar'],
+    ['Sales', 'sells', 'Finds the people and businesses most likely to buy, reaches out and follows up until they become customers.', 'Lead lists · Outreach · Pipeline']
+  ];
+  const NAMES = DINFO.map(d => d[0].toUpperCase()), ROLES = DINFO.map(d => d[1]);
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  function buildWide() {
+    const BW = 14, GAP = 2, Wd = 6 * BW + 5 * GAP, rows = [];
+    const blank = () => Array.from({ length: Wd }, () => ({ c: ' ', o: '' }));
+    const put = (row, x, s, o) => { for (let i = 0; i < s.length; i++) row[x + i] = { c: s[i], o }; };
+    const centers = NAMES.map((_, i) => i * (BW + GAP) + Math.floor(BW / 2)), RW = 34, rx = Math.floor((Wd - RW) / 2), mid = Math.floor(Wd / 2);
+    let r = blank(); put(r, rx, '┌' + '─'.repeat(RW - 2) + '┐', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '│ ' + 'YOUR AUTONOMOUS ORGANISATION'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '│ ' + 'goal: first 100 customers'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '└' + '─'.repeat(RW - 2) + '┘', 'rt'); r[mid] = { c: '┬', o: 'rt' }; rows.push(r);
+    r = blank(); r[mid] = { c: '│', o: 'L*' }; rows.push(r);
+    r = blank();
+    for (let x = centers[0]; x <= centers[5]; x++) {
+      const paths = centers.map((c, i) => (x >= Math.min(c, mid) && x <= Math.max(c, mid)) ? i : -1).filter(i => i >= 0), ci = centers.indexOf(x);
+      let ch = x === centers[0] ? '┌' : x === centers[5] ? '┐' : ci >= 0 ? '┬' : '─';
+      if (x === mid) ch = ci >= 0 ? '┼' : '┴';
+      r[x] = { c: ch, o: 'L' + paths.join(',') };
+    }
+    rows.push(r);
+    r = blank(); centers.forEach((c, i) => r[c] = { c: '│', o: 'L' + i }); rows.push(r);
+    const b = [blank(), blank(), blank(), blank()];
+    NAMES.forEach((nm, i) => {
+      const x = i * (BW + GAP);
+      put(b[0], x, '┌' + '─'.repeat(BW - 2) + '┐', 'B' + i); b[0][centers[i]] = { c: '┴', o: 'B' + i };
+      put(b[1], x, '│ ' + nm.padEnd(BW - 4) + ' │', 'N' + i);
+      put(b[2], x, '│ ' + ('› ' + ROLES[i]).padEnd(BW - 4) + ' │', 'B' + i);
+      put(b[3], x, '└' + '─'.repeat(BW - 2) + '┘', 'B' + i);
+    });
+    rows.push(...b);
+    r = blank(); rows.push(r);
+    r = blank(); put(r, 2, '· · · people booked for real-world work · · · · · · · · · partner businesses on the network · · ·', 'X'); rows.push(r);
+    return rows;
+  }
+  function buildNarrow() {
+    const rows = [], line = segs => rows.push(segs.flatMap(([s, o]) => [...s].map(c => ({ c, o }))));
+    line([['YOUR AUTONOMOUS ORGANISATION', 'rt']]); line([['│', 'L*']]);
+    NAMES.forEach((nm, i) => {
+      const last = i === 5;
+      line([[last ? '└── ' : '├── ', 'L' + i], [nm.padEnd(11), 'N' + i], [' › ' + ROLES[i], 'B' + i]]);
+      if (!last) line([['│', 'L' + [0, 1, 2, 3, 4, 5].filter(k => k > i).join(',')]]);
+    });
+    line([['', '']]); line([['+ people and partner businesses', 'X']]);
+    return rows;
+  }
+  function renderOrg(rows) {
+    return rows.map(row => {
+      let html = '', cur = null, buf = '';
+      const flush = () => {
+        if (!buf) return;
+        if (!cur || cur === 'X') html += esc(buf);
+        else if (cur === 'rt') html += '<span class="rt">' + esc(buf) + '</span>';
+        else if (cur[0] === 'L') html += '<span class="ln" data-p="' + cur.slice(1) + '">' + esc(buf) + '</span>';
+        else html += '<span class="bx' + (cur[0] === 'N' ? ' nm' : '') + '" data-d="' + cur.slice(1) + '">' + esc(buf) + '</span>';
+        buf = '';
+      };
+      for (const cell of row) { const o = cell.o || null; if (o !== cur) { flush(); cur = o; } buf += cell.c; }
+      flush(); return html.replace(/\s+$/, '');
+    }).join('\n');
+  }
+  $('orgWide').innerHTML = renderOrg(buildWide()); $('orgNarrow').innerHTML = renderOrg(buildNarrow());
+  const dtabs = $('dtabs');
+  dtabs.innerHTML = DINFO.map((d, i) => `<button type="button" role="tab" id="dt${i}" aria-controls="dpanel" aria-selected="false" data-d="${i}">${d[0]}</button>`).join('');
+  const tabEls = [...dtabs.children];
+  let activeDept = 0, pinned = false;
+  function setDept(i) {
+    activeDept = i;
+    tabEls.forEach((el, k) => { el.setAttribute('aria-selected', String(k === i)); el.tabIndex = k === i ? 0 : -1; });
+    $('dpanel').setAttribute('aria-labelledby', 'dt' + i);
+    $('dRole').textContent = DINFO[i][2]; $('dOut').textContent = DINFO[i][3];
+    document.querySelectorAll('.org .bx').forEach(el => el.classList.toggle('on', +el.dataset.d === i));
+    document.querySelectorAll('.org .ln').forEach(el => { const p = el.dataset.p; el.classList.toggle('on', p === '*' || p.split(',').includes(String(i))); });
+  }
+  dtabs.addEventListener('click', e => { const b = e.target.closest('button'); if (b) { pinned = true; setDept(+b.dataset.d); } });
+  dtabs.addEventListener('keydown', e => {
+    const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
+    e.preventDefault(); pinned = true; const n = (activeDept + k + 6) % 6; setDept(n); tabEls[n].focus();
+  });
+  document.querySelector('.org').addEventListener('click', e => { const b = e.target.closest('.bx'); if (b) { pinned = true; setDept(+b.dataset.d); } });
+  setDept(0);
+  if (!reduce) setInterval(() => { if (!pinned) setDept((activeDept + 1) % 6); }, 2600);
+
+  // ================= VIDEO poster sphere =================
+  const vid = $('vidSphere'); let V, vt = 3;
+  const drawVid = () => {
+    if (!V) return; const { ctx, W, H } = V; ctx.clearRect(0, 0, W, H);
+    const NIGHT = { base: C.nightInk, shade: C.accent2, s1: C.accent2, s2: C.white, flare: C.accent2 };
+    ctx.strokeStyle = C.nightRing; ctx.setLineDash([2, 6]); ctx.lineWidth = 1;
+    [1.55, 2.1].forEach(k => { ctx.beginPath(); ctx.ellipse(W / 2, H / 2, H * .3 * k, H * .3 * k * .38, 0, 0, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]);
+    sphere(ctx, W / 2, H / 2, H * .32, vt, { pal: NIGHT, res: 18, cellMin: 5, alpha: .6 });
+  };
+  onResize(vid, () => { V = fit(vid); drawVid(); });
+  animate(vid, dt => { vt += dt * .8; drawVid(); });
+
+  // ================= SUNRISE =================
+  const sun = $('sunrise'); let SN, st = 0, nextF = 0; const sfl = [];
+  const drawSun = () => {
+    if (!SN) return; const { ctx, W, H } = SN; ctx.clearRect(0, 0, W, H);
+    const r = W < 860 ? W * .56 : Math.min(W * .4, 500), x = W < 860 ? W / 2 : W * .62, y = H + r * .42;
+    ctx.strokeStyle = C.fg; ctx.lineWidth = 1; ctx.setLineDash([2, 6]);
+    [1.3, 1.7].forEach((k, i) => { ctx.globalAlpha = .16 - i * .05; ctx.beginPath(); ctx.ellipse(x, y, r * k, r * k * .4, 0, Math.PI, Math.PI * 2); ctx.stroke(); });
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    const g = ctx.createRadialGradient(x, y, r * .7, x, y, r * 1.4); g.addColorStop(0, C.accentSoft); g.addColorStop(1, clear(C.accentSoft));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 1.4, 0, Math.PI * 2); ctx.fill();
+    sphere(ctx, x, y, r, st, { flares: sfl, res: 36, cellMin: 6, clipH: H, alpha: .75 });
+  };
+  onResize(sun, () => { SN = fit(sun); drawSun(); });
+  animate(sun, dt => {
+    st += dt;
+    if (st > nextF) { sfl.push({ ang: -Math.PI / 2 + (Math.random() - .5) * 1.8, t0: st, col: Math.random() < .3 ? C.human : C.accent }); nextF = st + 1.2 + Math.random() * 1.4; }
+    for (let i = sfl.length - 1; i >= 0; i--) if (st - sfl[i].t0 > 1) sfl.splice(i, 1);
+    drawSun();
+  });
+
+  // ================= ASCII WORDMARK: solid ink letters, a blue scan passes through =================
+  const wm = $('wordmark'); let WMk, mask = null, mx = -1e4, my = -1e4, wt = 0, wcw = 6, wch = 10;
+  function buildMask() {
+    WMk = fit(wm); const { W, H } = WMk;
+    wcw = W < 600 ? 4 : 6; wch = Math.round(wcw * 1.6);
+    const cols = Math.floor(W / wcw), rows = Math.floor(H / wch);
+    const off = document.createElement('canvas'); off.width = Math.max(1, cols); off.height = Math.max(1, rows);
+    const o = off.getContext('2d'); o.fillStyle = C.fg; o.textAlign = 'center'; o.textBaseline = 'alphabetic';
+    // measure in cell units: x is squeezed by wcw/wch so letters keep their proportions on the grid
+    // a glyph drawn into the mask is squeezed by wcw/wch on screen, so stretch x by k = wch/wcw
+    const k = wch / wcw;
+    o.font = `600 100px Geist, sans-serif`;
+    const m = o.measureText('M-WORLD'), asc = m.actualBoundingBoxAscent || 72, tw = m.width * k;
+    const fs = Math.min(100 * cols * .96 / tw, 100 * rows * .8 / asc);
+    o.save(); o.scale(k, 1); o.font = `600 ${fs}px Geist, sans-serif`;
+    o.fillText('M-WORLD', cols / 2 / k, rows / 2 + fs * asc / 100 / 2); o.restore();
+    const d = o.getImageData(0, 0, off.width, off.height).data;
+    mask = { cols, rows, a: Array.from({ length: cols * rows }, (_, i) => d[i * 4 + 3] / 255) };
+    drawWM();
+  }
+  const WMR = '-=+*#';
+  function drawWM() {
+    if (!mask) return; const { ctx, W, H } = WMk; ctx.clearRect(0, 0, W, H);
+    ctx.font = `600 ${wcw * 1.6}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const band = reduce ? -1e4 : ((wt * .16) % 1.5 - .25) * mask.cols;
+    for (let j = 0; j < mask.rows; j++) for (let i = 0; i < mask.cols; i++) {
+      const a = mask.a[j * mask.cols + i]; if (a < .2) continue;
+      const x = i * wcw + wcw / 2, y = j * wch + wch / 2;
+      const near = Math.max(0, 1 - Math.hypot(x - mx, y - my) / 150), scan = Math.max(0, 1 - Math.abs(i - band) / 10);
+      const lit = Math.max(near, scan);
+      const ci = a > .85 ? 4 : a > .6 ? 3 : a > .4 ? 2 : 1;
+      ctx.globalAlpha = a > .6 ? .92 : .55;
+      ctx.fillStyle = lit > .15 ? (hash(i, j, Math.floor(wt * 4)) < lit ? C.accent : C.fg) : C.fg;
+      ctx.fillText(WMR[ci], x, y);
+    }
+    ctx.globalAlpha = 1;
+  }
+  onResize(wm, buildMask);
+  if (document.fonts) document.fonts.ready.then(() => { fitH1(); readColors(); buildMask(); draw(); treeGeo(); });
+  wm.parentElement.addEventListener('pointermove', e => { const r = wm.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; if (reduce) drawWM(); });
+  wm.parentElement.addEventListener('pointerleave', () => { mx = my = -1e4; if (reduce) drawWM(); });
+  animate(wm, dt => { wt += dt; drawWM(); });
+
+  // ================= CONTACT =================
+  $('copyEmail').addEventListener('click', async () => {
+    const btn = $('copyEmail');
+    try { await navigator.clipboard.writeText('hq@mworld.tech'); btn.textContent = 'Copied'; }
+    catch { const r = document.createRange(); r.selectNodeContents($('emailText')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected'; }
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+  });
+  $('contactForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const note = $('formNote'); note.hidden = false;
+    const missing = ['fFirst', 'fEmail', 'fMsg'].filter(id => !$(id).value.trim());
+    if (missing.length) { note.textContent = 'Add your first name, email and a message, then send.'; $(missing[0]).focus(); return; }
+    if (!$('fEmail').checkValidity()) { note.textContent = 'That email address looks incomplete. Check it and send again.'; $('fEmail').focus(); return; }
+    note.textContent = 'Preview only: this form is not connected yet. On mworld.tech it will deliver to hq@mworld.tech.';
+  });
+})();
+</script>

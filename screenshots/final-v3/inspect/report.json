@@ -1,0 +1,2814 @@
+{
+ "url": "insp.html",
+ "at": "2026-10-23T14:45:53.001Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 8,
+   "filled": [
+    0.65,
+    0.38,
+    0.8,
+    0.61,
+    0.37,
+    0.33,
+    0.26,
+    0.48
+   ],
+   "motion": {
+    "elements": 35,
+    "css": 2,
+    "transitions": 33,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 6713,
+     "screens": 7.5,
+     "words": 910,
+     "img": 0,
+     "video": 0,
+     "canvas": 6,
+     "svg": 28,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 6,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Describe a business.",
+     "words": 3,
+     "chars": 20,
+     "lines": 1,
+     "size": 134.7,
+     "vw": 9.4,
+     "font": "Geist",
+     "weight": 500,
+     "tracking": -0.058,
+     "leading": 0.9,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.8,
+     "top": 149,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Describe a business.",
+     "words": 3,
+     "lines": 1,
+     "size": 134.7,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "Describe a business.",
+      "words": 3,
+      "chars": 20,
+      "lines": 1,
+      "size": 134.7,
+      "vw": 9.4,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.058,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.8,
+      "top": 149,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Get the company that runs it.",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.03,
+      "leading": 1.12,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 347,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "Who does the work",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.38,
+      "top": 1183,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "A full company, staffed by AI",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.51,
+      "top": 2245,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What is an Autonomous Organisation?",
+      "words": 5,
+      "chars": 35,
+      "lines": 2,
+      "size": 46,
+      "vw": 3.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.37,
+      "top": 3109,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Choose how much it does without you",
+      "words": 7,
+      "chars": 35,
+      "lines": 2,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.38,
+      "top": 3794,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.05,
+      "top": 4062,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "$10",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.07,
+      "top": 4062,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "$30",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.08,
+      "top": 4062,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 4637,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "13.0 hrs",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 32,
+      "vw": 2.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.035,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 4865,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "The co-founder you never got to hire",
+      "words": 7,
+      "chars": 36,
+      "lines": 2,
+      "size": 62,
+      "vw": 4.3,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.45,
+      "top": 5333,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Talk to a human",
+      "words": 4,
+      "chars": 15,
+      "lines": 1,
+      "size": 46,
+      "vw": 3.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1.05,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.3,
+      "top": 5842,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 13,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 0.86,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.14,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      17,
+      20,
+      24,
+      32,
+      46,
+      62,
+      135
+     ],
+     "sizeCount": 10,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 12.6
+     },
+     "measureChars": 85,
+     "max": {
+      "size": 134.7,
+      "vw": 9.4,
+      "font": "Geist",
+      "text": "Describe a business."
+     },
+     "monoShare": 0.14,
+     "monoProseShare": 0.05,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "M",
+      "00:01",
+      "STR",
+      "Size the premium pet-treat market",
+      "working",
+      "00:03"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0.07,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8fafd",
+     "bodyBgHsl": {
+      "h": 216,
+      "s": 0.56,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1566e0",
+       "top": 2148,
+       "hsl": {
+        "h": 216,
+        "s": 0.83,
+        "l": 0.48
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#283041",
+       "share": 0.59
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.17
+      },
+      {
+       "color": "#141821",
+       "share": 0.13
+      },
+      {
+       "color": "#586174",
+       "share": 0.08
+      },
+      {
+       "color": "#0a5fd8",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#141821",
+      "hsl": {
+       "h": 222,
+       "s": 0.25,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 12,
+     "inHero": 5,
+     "radius": "pill",
+     "height": 46,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Start building",
+      "Fully-Autonomous",
+      "Pet products",
+      "Coffee subscription",
+      "Tutoring app"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 45,
+     "hairlineSamples": [
+      "header.row.nav 1440px",
+      "div.cell 1240px",
+      "div.row.hero-main 1440px",
+      "div.cell 1240px",
+      "div#orbitWrap.orbit-wrap 722px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 9,
+     "boxRadius": 12,
+     "squareMedia": 5,
+     "roundedMedia": 1,
+     "mediaRadius": 14,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.33
+     }
+    ],
+    "nav": {
+     "links": 8,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 6713,
+    "margins": {
+     "left": 145,
+     "right": 142
+    },
+    "sections": [
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 65,
+      "height": 988,
+      "words": 88,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Describe a business.",
+       "size": 135,
+       "tag": "h1"
+      },
+      "left": 138,
+      "right": 101,
+      "textLeft": 138,
+      "textRight": 169,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#how",
+      "tag": "section",
+      "top": 1053,
+      "height": 1095,
+      "words": 189,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Who does the work",
+       "size": 62,
+       "tag": "h2"
+      },
+      "left": 101,
+      "right": 101,
+      "textLeft": 145,
+      "textRight": 142,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#departments.row.block",
+      "tag": "section",
+      "top": 2148,
+      "height": 880,
+      "words": 155,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "A full company, staffed by AI",
+       "size": 62,
+       "tag": "h2"
+      },
+      "left": 304,
+      "right": 304,
+      "textLeft": 304,
+      "textRight": 304,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.ao",
+      "tag": "section",
+      "top": 3028,
+      "height": 653,
+      "words": 82,
+      "media": 1,
+      "middle": 132,
+      "heading": {
+       "text": "What is an Autonomous Organisation?",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 145,
+      "right": 145,
+      "textLeft": 145,
+      "textRight": 165,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#pricing",
+      "tag": "section",
+      "top": 3681,
+      "height": 860,
+      "words": 154,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Choose how much it does without you",
+       "size": 62,
+       "tag": "h2"
+      },
+      "left": 145,
+      "right": 155,
+      "textLeft": 145,
+      "textRight": 155,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.row.faq",
+      "tag": "section",
+      "top": 4540,
+      "height": 671,
+      "words": 264,
+      "media": 0,
+      "middle": 112,
+      "heading": {
+       "text": "Questions",
+       "size": 62,
+       "tag": "h2"
+      },
+      "left": 145,
+      "right": 178,
+      "textLeft": 145,
+      "textRight": 178,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.closing",
+      "tag": "section",
+      "top": 5212,
+      "height": 565,
+      "words": 27,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The co-founder you never got to hire",
+       "size": 62,
+       "tag": "h2"
+      },
+      "left": 101,
+      "right": 101,
+      "textLeft": 145,
+      "textRight": 167,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#contact.row.contact",
+      "tag": "section",
+      "top": 5777,
+      "height": 504,
+      "words": 55,
+      "media": 0,
+      "middle": 114,
+      "heading": {
+       "text": "Talk to a human",
+       "size": 46,
+       "tag": "h2"
+      },
+      "left": 145,
+      "right": 145,
+      "textLeft": 145,
+      "textRight": 167,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 6281,
+      "height": 432,
+      "words": 21,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 101,
+      "right": 101,
+      "textLeft": 145,
+      "textRight": 145,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Describe a business.",
+      "size": 135,
+      "top": 149,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 138,
+      "n": 13
+     },
+     {
+      "x": 662,
+      "n": 7
+     },
+     {
+      "x": 559,
+      "n": 2
+     },
+     {
+      "x": 777,
+      "n": 2
+     },
+     {
+      "x": 971,
+      "n": 2
+     },
+     {
+      "x": 167,
+      "n": 1
+     },
+     {
+      "x": 581,
+      "n": 1
+     },
+     {
+      "x": 993,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 29,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.07,
+    "voidBox": {
+     "x": 0,
+     "y": 120,
+     "w": 120,
+     "h": 780
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 10,
+   "filled": [
+    0.67,
+    0.4,
+    0.65,
+    0.83,
+    0.73,
+    0.28,
+    0.62,
+    0.45,
+    0.35,
+    0.51
+   ],
+   "motion": {
+    "elements": 25,
+    "css": 1,
+    "transitions": 24,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 9731,
+     "screens": 9.5,
+     "words": 843,
+     "img": 0,
+     "video": 0,
+     "canvas": 6,
+     "svg": 28,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 6,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Describe a business.",
+     "words": 3,
+     "chars": 20,
+     "lines": 1,
+     "size": 80.2,
+     "vw": 10.4,
+     "font": "Geist",
+     "weight": 500,
+     "tracking": -0.058,
+     "leading": 0.9,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.9,
+     "top": 113,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Describe a business.",
+     "words": 3,
+     "lines": 1,
+     "size": 80.2,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "Describe a business.",
+      "words": 3,
+      "chars": 20,
+      "lines": 1,
+      "size": 80.2,
+      "vw": 10.4,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.058,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.9,
+      "top": 113,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Who does the work",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 1380,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "A full company, staffed by AI",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.56,
+      "top": 3402,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What is an Autonomous Organisation?",
+      "words": 5,
+      "chars": 35,
+      "lines": 1,
+      "size": 28,
+      "vw": 3.6,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 4238,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Choose how much it does without you",
+      "words": 7,
+      "chars": 35,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 5338,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 62,
+      "vw": 8.1,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.1,
+      "top": 5601,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "$10",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 8.1,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.13,
+      "top": 6082,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "$30",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 8.1,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.14,
+      "top": 6629,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 7149,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "13.0 hrs",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.035,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 7325,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "The co-founder you never got to hire",
+      "words": 7,
+      "chars": 36,
+      "lines": 1,
+      "size": 36,
+      "vw": 4.7,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 8107,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Talk to a human",
+      "words": 4,
+      "chars": 15,
+      "lines": 1,
+      "size": 32,
+      "vw": 4.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1.05,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 8553,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 12,
+     "maxLines": 1,
+     "over2Lines": 0,
+     "statements": 0,
+     "centered": 1,
+     "medianWords": 4,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 0.92,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.08,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      17,
+      20,
+      24,
+      28,
+      32,
+      36,
+      62,
+      80
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 12.6
+     },
+     "measureChars": 86,
+     "max": {
+      "size": 80.2,
+      "vw": 10.4,
+      "font": "Geist",
+      "text": "Describe a business."
+     },
+     "monoShare": 0.08,
+     "monoProseShare": 0.05,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "M",
+      "00:01",
+      "STR",
+      "Size the premium pet-treat market",
+      "working",
+      "00:03"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0.08,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8fafd",
+     "bodyBgHsl": {
+      "h": 216,
+      "s": 0.56,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1566e0",
+       "top": 3329,
+       "hsl": {
+        "h": 216,
+        "s": 0.83,
+        "l": 0.48
+       }
+      },
+      {
+       "color": "#0a1222",
+       "top": 4732,
+       "hsl": {
+        "h": 220,
+        "s": 0.55,
+        "l": 0.09
+       }
+      },
+      {
+       "color": "#eaf3ff",
+       "top": 6537,
+       "hsl": {
+        "h": 214,
+        "s": 1,
+        "l": 0.96
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#283041",
+       "share": 0.63
+      },
+      {
+       "color": "#141821",
+       "share": 0.13
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.11
+      },
+      {
+       "color": "#586174",
+       "share": 0.09
+      },
+      {
+       "color": "#0a5fd8",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#141821",
+      "hsl": {
+       "h": 222,
+       "s": 0.25,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 12,
+     "inHero": 5,
+     "radius": "pill",
+     "height": 46,
+     "withShadow": 5,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Start building",
+      "Fully-Autonomous",
+      "Pet products",
+      "Coffee subscription",
+      "Tutoring app"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 43,
+     "hairlineSamples": [
+      "header.row.nav 768px",
+      "div.row.hero-main 768px",
+      "div.cell 736px",
+      "div#orbitWrap.orbit-wrap 734px",
+      "div.row.head 768px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 9,
+     "boxRadius": 12,
+     "squareMedia": 5,
+     "roundedMedia": 1,
+     "mediaRadius": 14,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.37
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 9731,
+    "margins": {
+     "left": 42,
+     "right": 42
+    },
+    "sections": [
+     {
+      "sel": "section",
+      "tag": "section",
+      "top": 65,
+      "height": 1242,
+      "words": 91,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Describe a business.",
+       "size": 80,
+       "tag": "h1"
+      },
+      "left": 17,
+      "right": 17,
+      "textLeft": 38,
+      "textRight": 56,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.head",
+      "tag": "div",
+      "top": 1307,
+      "height": 244,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Who does the work",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 42,
+      "right": 211,
+      "textLeft": 42,
+      "textRight": 211,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.tree",
+      "tag": "div",
+      "top": 1551,
+      "height": 474,
+      "words": 33,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 17,
+      "right": 17,
+      "textLeft": 252,
+      "textRight": 231,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.actor",
+      "tag": "div",
+      "top": 2025,
+      "height": 1303,
+      "words": 117,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "AI departments",
+       "size": 24,
+       "tag": "h3"
+      },
+      "left": 42,
+      "right": 118,
+      "textLeft": 42,
+      "textRight": 118,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#departments.row.block",
+      "tag": "section",
+      "top": 3329,
+      "height": 853,
+      "words": 93,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "A full company, staffed by AI",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 67,
+      "right": 67,
+      "textLeft": 67,
+      "textRight": 67,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.ao",
+      "tag": "section",
+      "top": 4181,
+      "height": 1084,
+      "words": 82,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "What is an Autonomous Organisation?",
+       "size": 28,
+       "tag": "h2"
+      },
+      "left": 42,
+      "right": 42,
+      "textLeft": 42,
+      "textRight": 62,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.head",
+      "tag": "div",
+      "top": 5265,
+      "height": 244,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Choose how much it does without you",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 42,
+      "right": 149,
+      "textLeft": 42,
+      "textRight": 149,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row",
+      "tag": "div",
+      "top": 5509,
+      "height": 1575,
+      "words": 122,
+      "media": 0,
+      "middle": 195,
+      "heading": {
+       "text": "$0",
+       "size": 62,
+       "tag": "b"
+      },
+      "left": 42,
+      "right": 52,
+      "textLeft": 42,
+      "textRight": 52,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.row.faq",
+      "tag": "section",
+      "top": 7084,
+      "height": 942,
+      "words": 264,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Questions",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 42,
+      "right": 45,
+      "textLeft": 42,
+      "textRight": 45,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.closing",
+      "tag": "section",
+      "top": 8026,
+      "height": 478,
+      "words": 27,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The co-founder you never got to hire",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 17,
+      "right": 17,
+      "textLeft": 42,
+      "textRight": 176,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#contact.row.contact",
+      "tag": "section",
+      "top": 8504,
+      "height": 825,
+      "words": 55,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Talk to a human",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 42,
+      "right": 42,
+      "textLeft": 42,
+      "textRight": 64,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 9329,
+      "height": 402,
+      "words": 21,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 17,
+      "right": 17,
+      "textLeft": 42,
+      "textRight": 42,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Describe a business.",
+      "size": 80,
+      "top": 113,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 38,
+      "n": 26
+     },
+     {
+      "x": 64,
+      "n": 3
+     }
+    ],
+    "leftBlocks": 29,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 12,
+   "filled": [
+    0.57,
+    0.73,
+    0.52,
+    0.78,
+    0.86,
+    0.78,
+    0.6,
+    0.47,
+    0.66,
+    0.56,
+    0.67,
+    0.33
+   ],
+   "motion": {
+    "elements": 30,
+    "css": 1,
+    "transitions": 29,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 11110,
+     "screens": 13.2,
+     "words": 840,
+     "img": 0,
+     "video": 0,
+     "canvas": 6,
+     "svg": 28,
+     "sections": 8,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 6,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 1,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Describe a business.",
+     "words": 3,
+     "chars": 20,
+     "lines": 2,
+     "size": 56,
+     "vw": 14.4,
+     "font": "Geist",
+     "weight": 500,
+     "tracking": -0.058,
+     "leading": 0.9,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.82,
+     "top": 113,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Describe a business.",
+     "words": 3,
+     "lines": 2,
+     "size": 56,
+     "font": "Geist"
+    },
+    "headings": [
+     {
+      "text": "Describe a business.",
+      "words": 3,
+      "chars": 20,
+      "lines": 2,
+      "size": 56,
+      "vw": 14.4,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.058,
+      "leading": 0.9,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.82,
+      "top": 113,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Get the company that runs it.",
+      "words": 6,
+      "chars": 29,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.03,
+      "leading": 1.12,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 267,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "Who does the work",
+      "words": 4,
+      "chars": 17,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 1502,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "AI departments",
+      "words": 2,
+      "chars": 14,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 2504,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "People in the loop",
+      "words": 4,
+      "chars": 18,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 2947,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "Businesses on the network",
+      "words": 4,
+      "chars": 25,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.025,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 3443,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "A full company, staffed by AI",
+      "words": 6,
+      "chars": 29,
+      "lines": 2,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "center",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 3735,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "What is an Autonomous Organisation?",
+      "words": 5,
+      "chars": 35,
+      "lines": 2,
+      "size": 28,
+      "vw": 7.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 4766,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Choose how much it does without you",
+      "words": 7,
+      "chars": 35,
+      "lines": 2,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 5952,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Starter",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.19,
+      "top": 6247,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "$0",
+      "words": 1,
+      "chars": 2,
+      "lines": 1,
+      "size": 62,
+      "vw": 15.9,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.19,
+      "top": 6304,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "Semi-Autonomous",
+      "words": 1,
+      "chars": 15,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.52,
+      "top": 6754,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "$10",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 15.9,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.25,
+      "top": 6811,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "Fully-Autonomous",
+      "words": 1,
+      "chars": 16,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.02,
+      "leading": 1.55,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.51,
+      "top": 7301,
+      "tag": "h3",
+      "kind": "heading"
+     },
+     {
+      "text": "$30",
+      "words": 1,
+      "chars": 3,
+      "lines": 1,
+      "size": 62,
+      "vw": 15.9,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.05,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.28,
+      "top": 7358,
+      "tag": "b",
+      "kind": "heading"
+     },
+     {
+      "text": "Questions",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 7902,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "hq@mworld.tech",
+      "words": 1,
+      "chars": 14,
+      "lines": 1,
+      "size": 24,
+      "vw": 6.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.03,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 8053,
+      "tag": "a",
+      "kind": "heading"
+     },
+     {
+      "text": "13.0 hrs",
+      "words": 2,
+      "chars": 8,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.035,
+      "leading": 1.1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 8103,
+      "tag": "span",
+      "kind": "heading"
+     },
+     {
+      "text": "The co-founder you never got to hire",
+      "words": 7,
+      "chars": 36,
+      "lines": 2,
+      "size": 36,
+      "vw": 9.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.048,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 9146,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Talk to a human",
+      "words": 4,
+      "chars": 15,
+      "lines": 1,
+      "size": 32,
+      "vw": 8.2,
+      "font": "Geist",
+      "weight": 500,
+      "tracking": -0.04,
+      "leading": 1.05,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.81,
+      "top": 9655,
+      "tag": "h2",
+      "kind": "heading"
+     }
+    ],
+    "headingSummary": {
+     "count": 20,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 1,
+     "medianWords": 2,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Geist",
+       "share": 0.92,
+       "mono": false
+      },
+      {
+       "family": "Geist Mono",
+       "share": 0.08,
+       "mono": true
+      }
+     ],
+     "familyCount": 2,
+     "sizes": [
+      13,
+      14,
+      15,
+      17,
+      20,
+      24,
+      28,
+      32,
+      36,
+      56,
+      62
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Geist",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 12.6
+     },
+     "measureChars": 42,
+     "max": {
+      "size": 62,
+      "vw": 15.9,
+      "font": "Geist",
+      "text": "$0"
+     },
+     "monoShare": 0.08,
+     "monoProseShare": 0.05,
+     "monoFamilies": [
+      "Geist Mono"
+     ],
+     "monoSamples": [
+      "M",
+      "00:01",
+      "STR",
+      "Size the premium pet-treat market",
+      "working",
+      "00:03"
+     ],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0.02,
+     "centerShare": 0.07,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#f8fafd",
+     "bodyBgHsl": {
+      "h": 216,
+      "s": 0.56,
+      "l": 0.98
+     },
+     "dark": false,
+     "sectionBgs": [
+      {
+       "color": "#1566e0",
+       "top": 3662,
+       "hsl": {
+        "h": 216,
+        "s": 0.83,
+        "l": 0.48
+       }
+      },
+      {
+       "color": "#ffffff",
+       "top": 5025,
+       "hsl": {
+        "h": 0,
+        "s": 0,
+        "l": 1
+       }
+      },
+      {
+       "color": "#eaf3ff",
+       "top": 7266,
+       "hsl": {
+        "h": 214,
+        "s": 1,
+        "l": 0.96
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#283041",
+       "share": 0.64
+      },
+      {
+       "color": "#141821",
+       "share": 0.14
+      },
+      {
+       "color": "#ffffff",
+       "share": 0.11
+      },
+      {
+       "color": "#586174",
+       "share": 0.08
+      },
+      {
+       "color": "#0a5fd8",
+       "share": 0.03
+      }
+     ],
+     "button": {
+      "bg": "#141821",
+      "hsl": {
+       "h": 222,
+       "s": 0.25,
+       "l": 0.1
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 11,
+     "inHero": 4,
+     "radius": "pill",
+     "height": 46,
+     "withShadow": 4,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Start building",
+      "Pet products",
+      "Coffee subscription",
+      "Tutoring app"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 43,
+     "hairlineSamples": [
+      "header.row.nav 390px",
+      "div.row.hero-main 390px",
+      "div.cell 358px",
+      "div#orbitWrap.orbit-wrap 356px",
+      "div.row.head 390px"
+     ],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 9,
+     "boxRadius": 12,
+     "squareMedia": 4,
+     "roundedMedia": 1,
+     "mediaRadius": 14,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.1
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": true,
+     "height": 65,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "geist",
+     "geist mono"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 11110,
+    "margins": {
+     "left": 37,
+     "right": 31
+    },
+    "sections": [
+     {
+      "sel": "div.row.hero-top",
+      "tag": "div",
+      "top": 65,
+      "height": 177,
+      "words": 3,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Describe a business.",
+       "size": 56,
+       "tag": "h1"
+      },
+      "left": 34,
+      "right": 111,
+      "textLeft": 34,
+      "textRight": 111,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.hero-main",
+      "tag": "div",
+      "top": 242,
+      "height": 1187,
+      "words": 87,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "Get the company that runs it.",
+       "size": 24,
+       "tag": "p"
+      },
+      "left": 17,
+      "right": 0,
+      "textLeft": 37,
+      "textRight": -4,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.head",
+      "tag": "div",
+      "top": 1429,
+      "height": 323,
+      "words": 39,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Who does the work",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 48,
+      "textLeft": 37,
+      "textRight": 48,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.tree",
+      "tag": "div",
+      "top": 1752,
+      "height": 474,
+      "words": 33,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 17,
+      "right": 17,
+      "textLeft": 63,
+      "textRight": 42,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.actor",
+      "tag": "div",
+      "top": 2227,
+      "height": 1435,
+      "words": 117,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "AI departments",
+       "size": 24,
+       "tag": "h3"
+      },
+      "left": 37,
+      "right": 41,
+      "textLeft": 37,
+      "textRight": 42,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#departments.row.block",
+      "tag": "section",
+      "top": 3662,
+      "height": 1048,
+      "words": 91,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "A full company, staffed by AI",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 37,
+      "textLeft": 37,
+      "textRight": 37,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.ao",
+      "tag": "section",
+      "top": 4709,
+      "height": 1169,
+      "words": 82,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "What is an Autonomous Organisation?",
+       "size": 28,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 37,
+      "textLeft": 37,
+      "textRight": 57,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row.head",
+      "tag": "div",
+      "top": 5879,
+      "height": 333,
+      "words": 32,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Choose how much it does without you",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 62,
+      "textLeft": 37,
+      "textRight": 62,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "div.row",
+      "tag": "div",
+      "top": 6212,
+      "height": 1625,
+      "words": 122,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "$0",
+       "size": 62,
+       "tag": "b"
+      },
+      "left": 37,
+      "right": 41,
+      "textLeft": 37,
+      "textRight": 41,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#faq.row.faq",
+      "tag": "section",
+      "top": 7837,
+      "height": 1229,
+      "words": 264,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Questions",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 38,
+      "textLeft": 37,
+      "textRight": 38,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section.row.closing",
+      "tag": "section",
+      "top": 9065,
+      "height": 540,
+      "words": 27,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "The co-founder you never got to hire",
+       "size": 36,
+       "tag": "h2"
+      },
+      "left": 17,
+      "right": 17,
+      "textLeft": 37,
+      "textRight": 57,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#contact.row.contact",
+      "tag": "section",
+      "top": 9606,
+      "height": 1117,
+      "words": 55,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Talk to a human",
+       "size": 32,
+       "tag": "h2"
+      },
+      "left": 37,
+      "right": 37,
+      "textLeft": 37,
+      "textRight": 47,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 10723,
+      "height": 387,
+      "words": 21,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 17,
+      "right": 17,
+      "textLeft": 37,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Describe a business.",
+      "size": 56,
+      "top": 113,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 34,
+      "n": 26
+     },
+     {
+      "x": 59,
+      "n": 3
+     }
+    ],
+    "leftBlocks": 29,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "mono",
+   "width": 1440,
+   "message": "Monospace type outside code: Geist Mono — e.g. \"M\", \"00:01\", \"STR\", \"Size the premium pet-treat market\"",
+   "fix": "Set it in the text face. Monospace is for literal code inside <pre>/<code> only.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "button-fx",
+   "width": 1440,
+   "message": "Buttons with shadow/glow.",
+   "fix": "Flat fill, one colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "45 thin rule(s)/divider line(s): header.row.nav 1440px | div.cell 1240px | div.row.hero-main 1440px | div.cell 1240px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "10 different font sizes (13, 14, 15, 17, 20, 24, 32, 46, 62, 135).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 1 picture(s) on the page (0 photographs, footage or raster images, 1 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/desktop-fold.jpg",
+   "pages": [
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/desktop-page-01.jpg",
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/tablet-fold.jpg",
+   "pages": [
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/tablet-page-01.jpg",
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/mobile-fold.jpg",
+   "pages": [
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/mobile-page-01.jpg",
+    "/tmp/claude-0/-home-user/b1714039-d272-54db-8735-9f9660f96cab/scratchpad/mworld/final/inspect/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}
