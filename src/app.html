@@ -1,0 +1,39 @@
+<!-- THE APP: the whole business, run from one place -->
+<section id="how" aria-labelledby="how-title">
+  <div class="row head">
+    <div class="cell">
+      <h2 class="h2" id="how-title">Run the whole business from one place</h2>
+      <p class="text">The work, the partners, the routines, the money and the team. Try it: approve a request, drag a task, or message an agent.</p>
+    </div>
+  </div>
+  <div class="row app-row">
+    <div class="cell">
+      <div class="app" id="app" role="region" aria-label="Example of a business running on M-World">
+        <aside class="ap-side">
+          <div class="ap-biz"><span class="ap-logo" aria-hidden="true">T</span><span class="ap-biz-t"><b>Tail &amp; Co.</b><small>Premium pet treats</small></span></div>
+          <nav class="ap-nav" role="tablist" aria-label="Sections">
+            <button type="button" role="tab" data-tab="board" aria-selected="true"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="2" width="3.6" height="12" rx="1"/><rect x="6.2" y="2" width="3.6" height="8" rx="1"/><rect x="10.9" y="2" width="3.6" height="10" rx="1"/></svg><span>Board</span><em class="ap-badge" id="apNavNeeds">0</em></button>
+            <button type="button" role="tab" data-tab="plan" aria-selected="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.2"/><circle cx="2.6" cy="3.4" r="1.4"/><circle cx="13.4" cy="3.6" r="1.4"/><circle cx="3" cy="12.8" r="1.4"/><circle cx="13" cy="12.6" r="1.4"/><path d="M6.3 6.6 3.7 4.3M9.8 6.7l2.5-2.2M6.4 9.5l-2.4 2.3M9.7 9.4l2.3 2.2"/></svg><span>Plan</span></button>
+            <button type="button" role="tab" data-tab="flows" aria-selected="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="1.2" y="5.6" width="4" height="4.8" rx="1"/><rect x="10.8" y="5.6" width="4" height="4.8" rx="1"/><path d="M5.2 8h5.6M8.6 6l2.2 2-2.2 2"/></svg><span>Workflows</span></button>
+            <button type="button" role="tab" data-tab="money" aria-selected="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 13.5h13M3 11l3.2-3.4 2.6 2.2L13.5 4.5"/><path d="M10.6 4.5h2.9v2.9"/></svg><span>Money</span></button>
+            <button type="button" role="tab" data-tab="people" aria-selected="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="6" cy="5.4" r="2.4"/><path d="M1.6 13.6c.6-2.6 2.3-4 4.4-4s3.8 1.4 4.4 4"/><circle cx="11.6" cy="6.2" r="1.8"/><path d="M11.4 9.6c1.6.1 2.7 1.2 3.1 3"/></svg><span>People</span></button>
+          </nav>
+          <div class="ap-foot">
+            <button type="button" class="ap-mode" id="apMode" aria-pressed="true" title="How much it does without you"><i aria-hidden="true"></i><span id="apModeT">Fully-Autonomous</span></button>
+            <span class="ap-you"><span class="ap-av ap-av-you" aria-hidden="true">You</span><span class="ap-you-t"><b>You</b><small>Owner</small></span></span>
+          </div>
+        </aside>
+        <div class="ap-main">
+          <header class="ap-top">
+            <div class="ap-top-t"><h3 id="apTitle">Board</h3><p id="apSub">Everything your business is working on this week.</p></div>
+            <div class="ap-tools" id="apTools"></div>
+          </header>
+          <div class="ap-view" id="apView" role="tabpanel" aria-labelledby="apTitle"></div>
+          <div class="ap-drawer" id="apDrawer" aria-hidden="true"><div class="ap-drawer-in" id="apDrawerIn"></div></div>
+          <div class="ap-toasts" id="apToasts" aria-live="polite"></div>
+        </div>
+      </div>
+      <p class="ap-note">An example business. Every name, partner and number in it is illustrative.</p>
+    </div>
+  </div>
+</section>

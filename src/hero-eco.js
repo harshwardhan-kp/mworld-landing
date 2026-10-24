@@ -79,7 +79,7 @@
   let sIdx = 0, sprint = SPRINTS[0], step = 0, stepT = 0, stepDur = 4, time = 0, userTyped = false, typing = null, fullAuto = true, paused = false, glow = 0;
   function setChips(i) { document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i))); }
   // the How it works cards follow the chosen example
-  function syncHow() { if (typeof loadBoard === 'function') loadBoard(sprint); }
+  function syncHow() {}
   // once the visitor types their own idea, the diagram tells the story of their business
   const OWN = { story: { ai: ['STR', 'Strategy turns your idea into a plan.'], ppl: ['', 'When a job needs a human, it hires one.'],
                          biz: [[], 'It finds the suppliers and partners your idea needs.'], profit: 'Customers start paying.' } };
@@ -159,7 +159,7 @@
   const setMode = full => {
     fullAuto = full; $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full));
     $('ecoYouSub').textContent = full ? 'Own it. Approve the plan once.' : 'Own it. Approve every big decision.';
-    if ($('bMode')) $('bMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous';
+    document.dispatchEvent(new CustomEvent('mw:mode', { detail: full }));
     if (step === 0) $('ecoCapT').textContent = STEPS[0].cap(cur());
   };
   $('modeFull').addEventListener('click', () => setMode(true));

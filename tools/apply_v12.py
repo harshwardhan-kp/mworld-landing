@@ -28,15 +28,15 @@ page = sub1("   ASCII only where it carries the idea: the core sphere, the org c
 # ---------- How it works → the board ----------
 a = page.index('<!-- HOW IT WORKS:')
 b = page.index('</section>', a) + len('</section>')
-page = page[:a] + (src / 'board.html').read_text().rstrip('\n') + page[b:]
-page = sub1('/* ---------- autonomous organisation + video ---------- */', (src / 'board.css').read_text() + '\n/* ---------- you stay in charge + video ---------- */', page)
+page = page[:a] + (src / 'app.html').read_text().rstrip('\n') + page[b:]
+page = sub1('/* ---------- autonomous organisation + video ---------- */', (src / 'app.css').read_text() + '\n/* ---------- you stay in charge + video ---------- */', page)
 page = sub1('/* ---------- you stay in charge + video ---------- */', '.brand { white-space: nowrap; }\n@media (max-width: 440px) { .brand { font-size: 18px; gap: 8px; } .nav .cell { gap: 12px; } .nav .btn-sm { padding: 0 14px; font-size: 14px; } }\n\n/* ---------- you stay in charge + video ---------- */', page)
 a = page.index('  // ================= HOW: prompt')
 b = page.index('  // org chart + department tabs')
 page = page[:a] + page[b:]
 page = sub1('layoutWires(); drawSphere(); treeGeo(); });', 'layoutWires(); drawSphere(); });', page)
-page = sub1('  onResize(map, () => { layoutWires(); });', (src / 'board.js').read_text() + '  onResize(map, () => { layoutWires(); });', page)
-page = page.replace("const groups = ['.head .cell', '.actor .cell',", "const groups = ['.head .cell', '.bkey',")
+page = sub1('  onResize(map, () => { layoutWires(); });', (src / 'app.js').read_text() + '  onResize(map, () => { layoutWires(); });', page)
+page = page.replace("const groups = ['.head .cell', '.actor .cell',", "const groups = ['.head .cell',")
 
 # ---------- Departments: one chart, one line, one control ----------
 page = sub1('  <canvas class="edge" id="edge" aria-hidden="true"></canvas>\n', '', page)
