@@ -13,12 +13,12 @@ def sub1(old, new, s, count=1):
         raise SystemExit(f'missing: {old[:70]!r}')
     return s.replace(old, new, count)
 
-# ---------- fonts: Archivo (width + weight axes) and Martian Mono for the ASCII art ----------
+# ---------- fonts: Archivo (width + weight axes) and JetBrains Mono for the ASCII art (it carries the box-drawing glyphs) ----------
 page = sub1('family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap',
-            'family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,300..600&display=swap', page)
+            'family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400..600&display=swap', page)
 page = sub1('--font-sans: "Geist", ui-sans-serif', '--font-sans: "Archivo", ui-sans-serif', page)
-page = sub1('--font-mono: "Geist Mono", ui-monospace', '--font-mono: "Martian Mono", ui-monospace', page)
-page = sub1("const MONO = '\"Geist Mono\", ui-monospace, Menlo, monospace';", "const MONO = '\"Martian Mono\", ui-monospace, Menlo, monospace';", page)
+page = sub1('--font-mono: "Geist Mono", ui-monospace', '--font-mono: "JetBrains Mono", ui-monospace', page)
+page = sub1("const MONO = '\"Geist Mono\", ui-monospace, Menlo, monospace';", "const MONO = '\"JetBrains Mono\", ui-monospace, Menlo, monospace';", page)
 page = page.replace('`600 100px Geist, sans-serif`', '`expanded 600 100px Archivo, sans-serif`')
 page = page.replace('`600 ${fs}px Geist, sans-serif`', '`expanded 600 ${fs}px Archivo, sans-serif`')
 
@@ -53,7 +53,7 @@ page = sub1('.lede b { font-weight: 500; color: var(--fg); }', '.lede b { font-w
 
 # ---------- hero copy: say what M-World is in plain words ----------
 page = re.sub(r'<p class="text lede">.*?</p>',
-              '<p class="text lede"><b>You own it. AI runs it. People do what only people can.</b> Describe your idea and M-World turns it into a working business. An AI team runs it every day, hires people when a job needs a human, and trades with other businesses on the network.</p>',
+              '<p class="text lede"><b>You own it. AI runs it. People do what only people can.</b> Describe your idea and M-World turns it into a business that runs itself, connected to every other business on M-World.</p>',
               page, count=1, flags=re.S)
 
 # ---------- hero centrepiece: the orbit becomes the ecosystem story ----------

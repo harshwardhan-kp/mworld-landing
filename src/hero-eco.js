@@ -5,6 +5,7 @@
     { name: 'Pet products', prompt: 'Build me a premium pet-products business.',
       story: { ai: ['MKT', 'Marketing is writing the launch emails.'], ppl: ['photographer', 'It books a photographer for the product shots.'],
                biz: [['supplier', 'packaging', 'payments'], 'It orders treats and branded packaging, and sets up card payments.'], profit: 'The first orders ship.' },
+      approve: { k: 'ai', w: 'MKT', t: 'Approve the launch emails' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Size the premium pet-treat market' },
       { k: 'ai', w: 'TEC', t: 'Build the storefront and checkout' },
@@ -16,6 +17,7 @@
     { name: 'Coffee subscription', prompt: 'Start a monthly single-origin coffee subscription.',
       story: { ai: ['TEC', 'Technology is building the subscription sign-up.'], ppl: ['designer', 'It briefs a designer for the bag labels.'],
                biz: [['roaster', 'packaging', 'courier'], 'It buys beans from a partner roaster and books a courier for delivery.'], profit: 'The first subscribers pay for month one.' },
+      approve: { k: 'biz', w: 'roaster', t: 'Approve the first order of beans' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Pick a niche: home pour-over brewers' },
       { k: 'chain', w: ['roaster', 'packaging'], t: 'Source beans from a partner roaster' },
@@ -27,6 +29,7 @@
     { name: 'Tutoring app', prompt: 'Launch a maths tutoring app for high-school students.',
       story: { ai: ['TEC', 'Technology is shipping the app.'], ppl: ['tutor', 'It recruits five maths tutors to teach.'],
                biz: [['print shop'], 'It orders flyers from a print shop for local schools.'], profit: 'The first families sign up.' },
+      approve: { k: 'ppl', w: 'lawyer', t: 'Approve the terms for parents' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Map the syllabus and competitors' },
       { k: 'ai', w: 'TEC', t: 'Ship the mobile app beta' },
@@ -39,7 +42,7 @@
     { title: 'You bring the idea', cap: () => fullAuto ? 'Describe it in one sentence, then approve the plan and the budget. After that it runs itself.' : 'Describe it in one sentence, then approve the plan, the budget and every big decision.' },
     { title: 'AI runs the business', cap: s => s.story.ai[1] + ' Six AI departments work on it around the clock.' },
     { title: 'People do the human work', cap: s => s.story.ppl[1] + ' Your business hires people only for work that needs a human.' },
-    { title: 'It deals with other businesses', cap: s => s.story.biz[1] + ' Businesses on M-World are connected, so they can trade with each other directly.' },
+    { title: 'It deals with other businesses', cap: s => s.story.biz[1] + ' M-World is built so businesses can trade with each other directly.' },
     { title: 'You keep the profit', cap: s => s.story.profit + ' You own the business, so the profit goes to you.' }
   ];
   const eco = $('eco'), map = $('ecoMap'), wires = $('ecoWires'), sph = $('ecoSphere');
@@ -76,17 +79,17 @@
   let sIdx = 0, sprint = SPRINTS[0], step = 0, stepT = 0, stepDur = 4, time = 0, userTyped = false, typing = null, fullAuto = true, paused = false, glow = 0;
   function setChips(i) { document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i))); }
   // the How it works cards follow the chosen example
-  function syncHow() {
-    $('howPrompt').textContent = sprint.prompt;
-    const pick = k => sprint.tasks.find(t => k === 'biz' ? (t.k === 'biz' || t.k === 'chain') : t.k === k);
-    const ai = sprint.tasks.filter(t => t.k === 'ai')[1] || pick('ai'), p = pick('ppl'), b = pick('biz');
-    $('dAI').textContent = ai ? ai.t : ''; $('dPPL').textContent = p ? p.t : ''; $('dBIZ').textContent = b ? b.t : '';
-  }
+  function syncHow() { if (typeof loadBoard === 'function') loadBoard(sprint); }
+  // once the visitor types their own idea, the diagram tells the story of their business
+  const OWN = { story: { ai: ['STR', 'Strategy turns your idea into a plan.'], ppl: ['', 'When a job needs a human, it hires one.'],
+                         biz: [[], 'It finds the suppliers and partners your idea needs.'], profit: 'Customers start paying.' } };
+  const cur = () => userTyped ? OWN : sprint;
+  const ownName = () => { const t = promptEl.value.trim().replace(/\s+/g, ' '); return t.length > 34 ? t.slice(0, 32).replace(/\s+\S*$/, '') + '…' : t; };
   function setStep(i) {
     step = i; stepT = time;
     stepDur = i === 0 ? (typing ? typing.text.length / typing.cps + 1.6 : 3.4) : 4.2;
     stepBtns.forEach((b, j) => { b.setAttribute('aria-pressed', String(j === i)); b.style.setProperty('--p', reduce ? 1 : 0); });
-    const st = sprint.story;
+    const st = cur().story;
     nYou.classList.toggle('on', i === 0 || i === 4);
     nCore.classList.toggle('on', i === 1);
     nPpl.classList.toggle('on', i === 2);
@@ -97,13 +100,13 @@
     for (const k in W) { const on = ACTIVE[i].includes(k); W[k].path.classList.toggle('on', on); W[k].text.classList.toggle('on', on); W[k].dot.setAttribute('opacity', 0); }
     if (i === 1) glow = 1;
     document.querySelector('#ecoCap .mt').textContent = STEPS[i].title + '.';
-    $('ecoCapT').textContent = STEPS[i].cap(sprint);
+    $('ecoCapT').textContent = STEPS[i].cap(cur());
     replay($('ecoCap'));
     drawSphere();
   }
   function loadSprint(i, instant) {
     sIdx = i % SPRINTS.length; sprint = SPRINTS[sIdx];
-    $('ecoName').textContent = sprint.name; replay($('ecoName'));
+    $('ecoName').textContent = userTyped ? ownName() : sprint.name; replay($('ecoName'));
     setChips(sIdx); syncHow();
     typing = null;
     if (!userTyped) {
@@ -137,7 +140,7 @@
     }
     drawSphere();
     if (paused) { stepT += dt; return; }
-    if (u >= 1) step < STEPS.length - 1 ? setStep(step + 1) : loadSprint(sIdx + 1);
+    if (u >= 1) step < STEPS.length - 1 ? setStep(step + 1) : userTyped ? setStep(0) : loadSprint(sIdx + 1);
   }
   stepBtns.forEach(b => b.addEventListener('click', () => setStep(+b.dataset.s)));
   // hovering or focusing the diagram holds the current step so it can be read
@@ -145,14 +148,19 @@
   eco.addEventListener('pointerleave', () => { paused = false; });
   eco.addEventListener('focusin', () => { paused = true; });
   eco.addEventListener('focusout', e => { if (!eco.contains(e.relatedTarget)) paused = false; });
-  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; nudgeGlyph(); });
+  promptEl.addEventListener('input', () => {
+    const was = userTyped; userTyped = promptEl.value.trim().length > 0; typing = null; nudgeGlyph();
+    $('ecoName').textContent = userTyped ? ownName() : sprint.name;
+    if (userTyped && !was) { setChips(-1); setStep(0); } else if (!userTyped && was) { setChips(sIdx); setStep(0); }
+  });
   let glyphT = 0; const glyph = document.querySelector('.prompt .glyph');
   function nudgeGlyph() { glyph.classList.add('tick'); clearTimeout(glyphT); glyphT = setTimeout(() => glyph.classList.remove('tick'), 140); }
   document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => { userTyped = false; loadSprint(+c.dataset.i, true); }));
   const setMode = full => {
     fullAuto = full; $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full));
     $('ecoYouSub').textContent = full ? 'Own it. Approve the plan once.' : 'Own it. Approve every big decision.';
-    if (step === 0) $('ecoCapT').textContent = STEPS[0].cap(sprint);
+    if ($('bMode')) $('bMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous';
+    if (step === 0) $('ecoCapT').textContent = STEPS[0].cap(cur());
   };
   $('modeFull').addEventListener('click', () => setMode(true));
   $('modeSemi').addEventListener('click', () => setMode(false));

@@ -10,11 +10,11 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wdth,wght@75..112.5,300..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400..600&display=swap">
 <style>
 /* The frame is a blueprint: one 1240px column between two rails, full-bleed hairlines, a crosshair where they meet.
    Three actors, three colours, everywhere: AI departments (blue), people (amber), businesses (ink).
-   ASCII only where it carries the idea: the core sphere, the org chart, the blue field's edges, the sunrise, the wordmark. */
+   ASCII only where it carries the idea: the core sphere, the org chart, the globe of businesses, the wordmark. */
 :root {
   --bg: #F5F0E6;
   --panel: #FBF8F2;
@@ -60,7 +60,7 @@
   --human-2: #F3A24A;
   --human-deep: #B4570A;
   --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Martian Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --rail: 1240px;
   --pad: clamp(20px, 3.2vw, 44px);
   color-scheme: light;
@@ -377,13 +377,79 @@ svg.iso { width: 100%; height: 280px; max-width: 420px; display: block; overflow
 .dpanel p { font-size: 20px; line-height: 1.45; color: var(--on-block); }
 .dpanel small { font: 500 13px/1.4 var(--font-sans); font-stretch: 88%; color: var(--on-block-2); }
 
-/* ---------- autonomous organisation + video ---------- */
+/* ---------- the board: a calm product view, one sheet of paper with four columns ---------- */
+.board-row .cell { padding: 8px var(--pad) clamp(56px, 6vw, 80px); display: grid; gap: 28px; }
+.board { background: var(--panel); border-radius: 16px; box-shadow: inset 0 0 0 1px var(--line-2), 0 1px 2px var(--shadow), 0 24px 48px -32px var(--shadow-2); overflow: hidden; }
+.bbar { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 16px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.bname { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bname .logo { width: 18px; height: 18px; flex: none; }
+.bname b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bsprint { color: var(--muted); white-space: nowrap; }
+.btabs { display: inline-flex; gap: 2px; padding: 3px; background: var(--sunk); border-radius: 9px; }
+.btabs span { padding: 6px 12px; border-radius: 7px; color: var(--muted); font-size: 13px; }
+.btabs .on { background: var(--panel); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
+.bmeta { display: flex; justify-content: flex-end; gap: 14px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.bmode { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+.bmode::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.bcols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 14px; min-height: 380px; background: color-mix(in srgb, var(--sunk) 45%, var(--panel)); }
+.bcol { display: grid; grid-template-rows: auto 1fr; gap: 10px; min-width: 0; }
+.bh { display: flex; align-items: center; gap: 8px; padding: 4px 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.bh .n { font-weight: 500; color: var(--faint); font-variant-numeric: tabular-nums; }
+.bcol[data-c="you"] .bh::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.bcol ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; align-content: start; }
+.card { position: relative; background: var(--panel); border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line), 0 1px 2px var(--shadow); padding: 12px 12px 12px 13px; display: grid; gap: 8px; }
+.card .ct { font-size: 14.5px; line-height: 1.35; color: var(--fg); font-weight: 500; }
+.card .cm { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--muted); min-width: 0; }
+.card .cm i { width: 7px; height: 7px; flex: none; background: var(--accent); border-radius: 2px; }
+.card.k-ppl .cm i { background: var(--human); border-radius: 50%; }
+.card.k-biz .cm i { background: var(--fg); border-radius: 1px; }
+.card .cw { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .cs { margin-left: auto; white-space: nowrap; }
+.card .cp { height: 3px; border-radius: 3px; background: var(--sunk); overflow: hidden; display: none; }
+.card .cp i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+.card.k-ppl .cp i { background: var(--human); }
+.card.k-biz .cp i { background: var(--fg); }
+.card[data-col="doing"] .cp { display: block; }
+.card[data-col="done"] { padding: 9px 12px; gap: 0; box-shadow: inset 0 0 0 1px var(--line); background: color-mix(in srgb, var(--panel) 70%, transparent); }
+.card[data-col="done"] .ct { color: var(--muted); font-size: 13.5px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: 18px; position: relative; }
+.card[data-col="done"] .ct::before { content: "\2713"; position: absolute; left: 0; color: var(--accent-ink); }
+.card[data-col="done"] .cm { display: none; }
+.card[data-col="you"] { box-shadow: inset 0 0 0 1.5px var(--accent), 0 0 0 4px var(--accent-soft); }
+.card[data-col="you"] .cs { color: var(--accent-ink); }
+.cact { display: flex; gap: 6px; }
+.cact button { appearance: none; border: 0; cursor: pointer; font: 500 13px/1 var(--font-sans); border-radius: 999px; padding: 8px 12px; }
+.cact .ok { background: var(--block); color: var(--on-block); }
+.cact .ok:hover { background: var(--accent-ink); }
+.cact .no { background: var(--sunk); color: var(--ink-2); }
+.bkey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 32px; }
+.bkey li { position: relative; padding-left: 22px; font-size: 16px; line-height: 1.45; color: var(--muted); max-width: 34ch; }
+.bkey li::before { content: ""; position: absolute; left: 0; top: .5em; width: 9px; height: 9px; background: var(--accent); border-radius: 2px; }
+.bkey li.p::before { background: var(--human); border-radius: 50%; }
+.bkey li.b::before { background: var(--fg); border-radius: 1px; }
+.bkey b { color: var(--fg); font-weight: 600; }
+@media (max-width: 860px) {
+  .bbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .btabs { display: none; }
+  .bmode { display: none; }
+  .bcols { grid-template-columns: repeat(4, minmax(232px, 82%)); overflow-x: auto; scroll-snap-type: x mandatory; min-height: 380px; }
+  .bcol { scroll-snap-align: start; }
+  .bkey { grid-template-columns: 1fr; }
+}
+
+.brand { white-space: nowrap; }
+@media (max-width: 440px) { .brand { font-size: 18px; gap: 8px; } .nav .cell { gap: 12px; } .nav .btn-sm { padding: 0 14px; font-size: 14px; } }
+
+/* ---------- you stay in charge + video ---------- */
 .ao .cell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .ao .cell > * + * { border-left: 1px solid var(--line); }
 .ao .cell > div { padding: clamp(56px, 6vw, 80px) var(--pad); display: grid; gap: 22px; align-content: start; }
 .ao .cell > div:last-child { align-content: center; }
 .ao .h2 { font-size: clamp(28px, 3.4vw, 46px); letter-spacing: -0.04em; }
 .ao .text b { color: var(--fg); font-weight: 500; }
+.trust { list-style: none; margin: 8px 0 0; padding: 0; display: grid; }
+.trust li { padding: 22px 0; border-top: 1px solid var(--line); font-size: 17px; line-height: 1.5; color: var(--muted); max-width: 46ch; }
+.trust li:last-child { border-bottom: 1px solid var(--line); }
+.trust b { display: block; margin-bottom: 4px; font-size: 22px; line-height: 1.2; font-weight: 450; font-stretch: 112%; letter-spacing: -0.03em; color: var(--fg); }
 .cmp { width: 100%; border-collapse: collapse; font-size: 15px; background: var(--panel); border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); }
 .cmp th, .cmp td { text-align: left; padding: 11px 14px; vertical-align: top; border-top: 1px solid var(--line); }
 .cmp tr:first-child th { border-top: 0; }
@@ -621,7 +687,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     </ul>
     <div class="right">
       <a class="txt" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Log in</a>
-      <a class="btn btn-primary btn-sm" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Start building</a>
+      <a class="btn btn-primary btn-sm" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=nav" target="_blank" rel="noopener">Build your business</a>
     </div>
   </div>
 </header>
@@ -633,7 +699,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     <div class="cell">
       <div class="hero-l">
         <h1 class="h1" id="hero-title"><span class="hl">Describe a</span> <span class="hl">business.</span></h1>
-        <p class="text lede"><b>You own it. AI runs it. People do what only people can.</b> Describe your idea and M-World turns it into a working business. An AI team runs it every day, hires people when a job needs a human, and trades with other businesses on the network.</p>
+        <p class="text lede"><b>You own it. AI runs it. People do what only people can.</b> Describe your idea and M-World turns it into a business that runs itself, connected to every other business on M-World.</p>
         <div class="prompt" data-ui>
             <label class="sr" for="promptInput">Describe the business you want to build</label>
             <svg class="glyph" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 4.5l3.5 3.5L3 11.5M8.5 12H13"/></svg>
@@ -646,7 +712,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
               <label class="attach" title="Add photos and media"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2"/><circle cx="6" cy="7" r="1.3"/><path d="M14 11l-3.5-3.5L4 13"/></svg><input id="fileMedia" type="file" accept="image/*,video/*" multiple aria-label="Add photos and media"></label>
               <label class="attach" title="Add documents"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 1.8h5.5L12.5 5v9.2H4z"/><path d="M9.3 2v3.2h3"/></svg><input id="fileDocs" type="file" accept=".pdf,.doc,.docx,.txt,.md,.ppt,.pptx,.xls,.xlsx,.csv" multiple aria-label="Add documents"></label>
               <span class="files" id="fileNames"></span>
-              <a class="go" id="buildBtn" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=hero" target="_blank" rel="noopener" aria-label="Build my organisation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+              <a class="go" id="buildBtn" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=hero" target="_blank" rel="noopener" aria-label="Build my business"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
             </div>
           </div>
         <div class="tries" role="group" aria-label="Example prompts">
@@ -698,87 +764,59 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
   </div>
 </section>
 
-<!-- HOW IT WORKS: one prompt in, the core, three kinds of worker out -->
+<!-- THE BOARD: the whole business on one board -->
 <section id="how" aria-labelledby="how-title">
   <div class="row head">
     <div class="cell">
-      <h2 class="h2" id="how-title">Who does the work</h2>
-      <p class="text">Six AI departments do the screen work. When a job needs hands, a signature or a delivery, your organisation books a person or orders from a business, and every result comes back to one dashboard.</p>
+      <h2 class="h2" id="how-title">Your whole business on one board</h2>
+      <p class="text">Every task your business takes on, who is doing it, and what is waiting for your OK.</p>
     </div>
   </div>
-  <div class="row tree">
-    <div class="cell" id="treeCell">
-      <canvas id="tree" aria-hidden="true"></canvas>
-      <div class="tcard" data-ui id="youCard"><span class="label"><span>Your prompt</span><span>You</span></span><q id="howPrompt">Build me a premium pet-products business.</q></div>
-      <div class="core-slot" aria-hidden="true"></div>
-      <div class="tcard" data-ui id="dashCard"><span class="label"><span>Your dashboard</span><span>Sprint 1</span></span>
-        <div class="drow"><i></i><span class="t" id="dAI">Build the storefront and checkout</span><span class="s">Shipped</span></div>
-        <div class="drow"><i class="p"></i><span class="t" id="dPPL">Book a photographer</span><span class="s">Booked</span></div>
-        <div class="drow"><i class="b"></i><span class="t" id="dBIZ">Order treats and packaging</span><span class="s">In transit</span></div>
-      </div>
-    </div>
-  </div>
-  <div class="row actor">
-    <div class="cell grid g3 ruled">
-      <div class="a">
-        <div class="ill" aria-hidden="true">
-          <svg class="iso" id="isoAI" viewBox="0 0 340 250"></svg>
+  <div class="row board-row">
+    <div class="cell">
+      <div class="board" id="board" role="region" aria-label="Example board for a business on M-World">
+        <div class="bbar">
+          <span class="bname"><svg class="logo" viewBox="0 0 176 170" aria-hidden="true"><use href="#mwLogo"/></svg><b id="bName">Pet products</b><span class="bsprint">Sprint 1</span></span>
+          <span class="btabs" aria-hidden="true"><span class="on">Board</span><span>Plan</span><span>Money</span><span>People</span></span>
+          <span class="bmeta"><span class="bmode" id="bMode">Fully-Autonomous</span><span class="bdone" id="bDone">2 of 7 done</span></span>
         </div>
-        <div class="txt">
-          <h3>AI departments</h3>
-          <p class="text">Research, code, design, writing, numbers and outreach run on AI, around the clock.</p>
+        <div class="bcols">
+          <div class="bcol" data-c="todo"><div class="bh">To do <span class="n">0</span></div><ol></ol></div>
+          <div class="bcol" data-c="doing"><div class="bh">In progress <span class="n">0</span></div><ol></ol></div>
+          <div class="bcol" data-c="you"><div class="bh">Needs you <span class="n">0</span></div><ol></ol></div>
+          <div class="bcol" data-c="done"><div class="bh">Done <span class="n">0</span></div><ol></ol></div>
         </div>
       </div>
-      <div class="p">
-        <div class="ill" aria-hidden="true">
-          <svg class="iso" id="isoPPL" viewBox="0 0 340 250"></svg>
-        </div>
-        <div class="txt">
-          <h3>People in the loop</h3>
-          <p class="text">When a task needs hands or judgment, like a photographer, an accountant or a lawyer, your organisation briefs them, books them and brings the result back into the plan.</p>
-        </div>
-      </div>
-      <div class="b">
-        <div class="ill" aria-hidden="true">
-          <svg class="iso" id="isoBIZ" viewBox="0 0 340 250"></svg>
-        </div>
-        <div class="txt">
-          <h3>Businesses on the network</h3>
-          <p class="text">Your organisation orders from suppliers, payment providers and couriers, and they hand work on to each other. Other M-World organisations can be your suppliers, or your customers.</p>
-        </div>
-      </div>
+      <ul class="bkey">
+        <li class="a"><b>AI departments</b> do the screen work, around the clock.</li>
+        <li class="p"><b>People</b> are hired for the jobs that need a human.</li>
+        <li class="b"><b>Other businesses</b> supply what your business needs.</li>
+      </ul>
     </div>
   </div>
 </section>
 
 <!-- DEPARTMENTS: the blue field -->
 <section class="row block" id="departments" aria-labelledby="dept-title">
-  <canvas class="edge" id="edge" aria-hidden="true"></canvas>
   <div class="cell">
     <h2 class="h2" id="dept-title">A full company, staffed by AI</h2>
-    <p class="text">Every organisation gets the same six departments, working every hour you're not. Each owns its part of the business and hands work to the others.</p>
+    <p class="text">Your business gets six departments that work every hour you're not, each on its own part of your idea.</p>
     <div class="org"><pre class="wide" id="orgWide" aria-hidden="true"></pre><pre class="narrow" id="orgNarrow" aria-hidden="true"></pre></div>
     <div class="dtabs" role="tablist" aria-label="Departments" id="dtabs"></div>
-    <div class="dpanel" role="tabpanel" id="dpanel" aria-live="polite"><p id="dRole"></p><small id="dOut"></small></div>
-    <a class="btn btn-white" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=departments" target="_blank" rel="noopener">Start building</a>
+    <div class="dpanel" role="tabpanel" id="dpanel" aria-live="polite"><p id="dRole"></p></div>
   </div>
 </section>
 
-<!-- WHAT IS AN AO + VIDEO -->
+<!-- YOU STAY IN CHARGE + VIDEO -->
 <section class="row ao" aria-labelledby="ao-title">
   <div class="cell">
     <div>
-      <h2 class="h2" id="ao-title">What is an Autonomous Organisation?</h2>
-      <p class="text"><b>A company run by coordinated AI agents.</b> You set the goals. Its departments plan, build, market and sell, bring in people and businesses when needed, and report back in one dashboard.</p>
-      <table class="cmp">
-        <thead><tr><th scope="col"><span class="sr">Compare</span></th><th scope="col">AI agent</th><th scope="col" class="us">Autonomous Organisation</th></tr></thead>
-        <tbody>
-          <tr><th scope="row">Scope</th><td>One task</td><td class="us">The whole business</td></tr>
-          <tr><th scope="row">Directed by</th><td>A prompt each time</td><td class="us">Goals you set</td></tr>
-          <tr><th scope="row">Real world</th><td>Stays on screen</td><td class="us">Books people, orders from businesses</td></tr>
-          <tr><th scope="row">Works</th><td>When you ask</td><td class="us">In sprints, around the clock</td></tr>
-        </tbody>
-      </table>
+      <h2 class="h2" id="ao-title">You stay in charge</h2>
+      <ul class="trust">
+        <li><b>You approve the plan and the budget.</b> Nothing starts until you say yes. On Semi-Autonomous it also asks before every big decision.</li>
+        <li><b>You see everything it does.</b> Every task, booking, order and payment shows up on your board.</li>
+        <li><b>Your business stays yours.</b> You own it and keep the profit. No other owner can see inside it.</li>
+      </ul>
     </div>
     <div>
       <a class="video" href="https://www.youtube.com/watch?v=b7bmx9AORWU" target="_blank" rel="noopener" aria-label="Watch Introducing M-World on YouTube, one minute">
@@ -796,7 +834,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
   <div class="row head">
     <div class="cell">
       <h2 class="h2" id="pricing-title">Choose how much it does without you</h2>
-      <p class="text">Every plan gives you an Autonomous Organisation. The difference is who decides when it works. Prices in USD; credits pay for the work your departments do.</p>
+      <p class="text">Every plan gives you your own business, and M-World takes no cut of your sales. The difference is who decides when it works. Prices in USD.</p>
     </div>
   </div>
   <div class="row">
@@ -808,7 +846,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
         <p class="tag">See how it works. No card, no commitment.</p>
         <a class="btn btn-soft" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=pricingStarter" target="_blank" rel="noopener">Get started free</a>
         <ul>
-          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Your organisation's full dashboard</li>
+          <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Your business on one board</li>
           <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Explore every department</li>
           <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Build your first mobile app, free</li>
           <li><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M2.5 7.5l3 3 6-7"/></svg>Community support</li>
@@ -861,12 +899,12 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
       </div>
     </div>
     <div class="faq-r">
-      <details open><summary>How does an Autonomous Organisation work?</summary><p class="a">M-World reads your prompt and any files you add, then sets up Strategy, Management, Technology, Finance, Marketing and Sales. Management breaks the plan into sprints and hands each department its tasks. You follow every task, booking, order and credit in the dashboard.</p></details>
-      <details><summary>What happens when a task needs a real person?</summary><p class="a">Your organisation recognises work that needs hands or judgment, like a product shoot, a contract review or a tax check. It writes the brief, books a suitable person, tracks the job and pulls the result back into the plan. Every booking shows up in your dashboard.</p></details>
-      <details><summary>How do businesses on the network work together?</summary><p class="a">Your organisation can order from suppliers, payment providers, couriers and other services, and those businesses can hand work to each other, for example a supplier passing an order to a packaging partner and then to a courier. Other organisations on M-World can become your suppliers or your customers.</p></details>
-      <details><summary>What is the difference between Semi- and Fully-Autonomous?</summary><p class="a">On Semi-Autonomous you decide when each department works: marketing today, sales tomorrow. On Fully-Autonomous the organisation runs continuously in sprints, planning and executing across every department without waiting for your instruction.</p></details>
+      <details open><summary>How does M-World run my business?</summary><p class="a">M-World reads your prompt and any files you add, then sets up Strategy, Management, Technology, Finance, Marketing and Sales. Management breaks the plan into sprints and hands each department its tasks. You follow every task, booking, order and credit on your board.</p></details>
+      <details><summary>What happens when a task needs a real person?</summary><p class="a">Your business recognises work that needs hands or judgment, like a product shoot, a contract review or a tax check. It writes the brief, books a suitable person, tracks the job and pulls the result back into the plan. Every booking shows up on your board.</p></details>
+      <details><summary>How do businesses on the network work together?</summary><p class="a">Your business can order from suppliers, payment providers, couriers and other services, and those businesses can hand work to each other, for example a supplier passing an order to a packaging partner and then to a courier. Other businesses on M-World can become your suppliers or your customers.</p></details>
+      <details><summary>What is the difference between Semi- and Fully-Autonomous?</summary><p class="a">On Semi-Autonomous you decide when each department works: marketing today, sales tomorrow. On Fully-Autonomous your business runs continuously in sprints, planning and executing across every department without waiting for your instruction.</p></details>
       <details><summary>What are credits?</summary><p class="a">Credits pay for the work your departments do. Semi-Autonomous includes 200 credits per billing cycle and Fully-Autonomous includes 600.</p></details>
-      <details><summary>Do I need a credit card to start?</summary><p class="a">No. The Starter plan is free and needs no card. A sentence describing your business is enough to create your organisation, explore every department and build your first app.</p></details>
+      <details><summary>Do I need a credit card to start?</summary><p class="a">No. The Starter plan is free and needs no card. A sentence describing your business is enough to create your business, explore every department and build your first app.</p></details>
     </div>
   </div>
 </section>
@@ -875,10 +913,10 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 <section class="row closing" aria-labelledby="close-title">
   <div class="cell">
     <canvas id="sunrise" aria-hidden="true"></canvas>
-    <h2 class="h2" id="close-title">The co-founder you never got to hire</h2>
+    <h2 class="h2" id="close-title">Your business, connected to every other</h2>
     <div class="cta">
-      <p class="text">You own the vision. Your organisation runs the execution.</p>
-      <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=finalCTA" target="_blank" rel="noopener">Create your organisation</a>
+      <p class="text">Every business on M-World can buy from and sell to every other. The more businesses join, the more each one can do.</p>
+      <a class="btn btn-primary" href="https://builder.mworld.tech/?utm_source=landing&amp;utm_medium=finalCTA" target="_blank" rel="noopener">Build your business</a>
       <p class="small">Free to start. No credit card needed.</p>
     </div>
   </div>
@@ -931,7 +969,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 (() => {
   const $ = id => document.getElementById(id);
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const MONO = '"Martian Mono", ui-monospace, Menlo, monospace';
+  const MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
   let C = {};
   function readColors() {
     const cs = getComputedStyle(document.documentElement), g = n => cs.getPropertyValue(n).trim();
@@ -1026,6 +1064,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     { name: 'Pet products', prompt: 'Build me a premium pet-products business.',
       story: { ai: ['MKT', 'Marketing is writing the launch emails.'], ppl: ['photographer', 'It books a photographer for the product shots.'],
                biz: [['supplier', 'packaging', 'payments'], 'It orders treats and branded packaging, and sets up card payments.'], profit: 'The first orders ship.' },
+      approve: { k: 'ai', w: 'MKT', t: 'Approve the launch emails' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Size the premium pet-treat market' },
       { k: 'ai', w: 'TEC', t: 'Build the storefront and checkout' },
@@ -1037,6 +1076,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     { name: 'Coffee subscription', prompt: 'Start a monthly single-origin coffee subscription.',
       story: { ai: ['TEC', 'Technology is building the subscription sign-up.'], ppl: ['designer', 'It briefs a designer for the bag labels.'],
                biz: [['roaster', 'packaging', 'courier'], 'It buys beans from a partner roaster and books a courier for delivery.'], profit: 'The first subscribers pay for month one.' },
+      approve: { k: 'biz', w: 'roaster', t: 'Approve the first order of beans' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Pick a niche: home pour-over brewers' },
       { k: 'chain', w: ['roaster', 'packaging'], t: 'Source beans from a partner roaster' },
@@ -1048,6 +1088,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     { name: 'Tutoring app', prompt: 'Launch a maths tutoring app for high-school students.',
       story: { ai: ['TEC', 'Technology is shipping the app.'], ppl: ['tutor', 'It recruits five maths tutors to teach.'],
                biz: [['print shop'], 'It orders flyers from a print shop for local schools.'], profit: 'The first families sign up.' },
+      approve: { k: 'ppl', w: 'lawyer', t: 'Approve the terms for parents' },
       tasks: [
       { k: 'ai', w: 'STR', t: 'Map the syllabus and competitors' },
       { k: 'ai', w: 'TEC', t: 'Ship the mobile app beta' },
@@ -1060,7 +1101,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     { title: 'You bring the idea', cap: () => fullAuto ? 'Describe it in one sentence, then approve the plan and the budget. After that it runs itself.' : 'Describe it in one sentence, then approve the plan, the budget and every big decision.' },
     { title: 'AI runs the business', cap: s => s.story.ai[1] + ' Six AI departments work on it around the clock.' },
     { title: 'People do the human work', cap: s => s.story.ppl[1] + ' Your business hires people only for work that needs a human.' },
-    { title: 'It deals with other businesses', cap: s => s.story.biz[1] + ' Businesses on M-World are connected, so they can trade with each other directly.' },
+    { title: 'It deals with other businesses', cap: s => s.story.biz[1] + ' M-World is built so businesses can trade with each other directly.' },
     { title: 'You keep the profit', cap: s => s.story.profit + ' You own the business, so the profit goes to you.' }
   ];
   const eco = $('eco'), map = $('ecoMap'), wires = $('ecoWires'), sph = $('ecoSphere');
@@ -1097,17 +1138,17 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
   let sIdx = 0, sprint = SPRINTS[0], step = 0, stepT = 0, stepDur = 4, time = 0, userTyped = false, typing = null, fullAuto = true, paused = false, glow = 0;
   function setChips(i) { document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i))); }
   // the How it works cards follow the chosen example
-  function syncHow() {
-    $('howPrompt').textContent = sprint.prompt;
-    const pick = k => sprint.tasks.find(t => k === 'biz' ? (t.k === 'biz' || t.k === 'chain') : t.k === k);
-    const ai = sprint.tasks.filter(t => t.k === 'ai')[1] || pick('ai'), p = pick('ppl'), b = pick('biz');
-    $('dAI').textContent = ai ? ai.t : ''; $('dPPL').textContent = p ? p.t : ''; $('dBIZ').textContent = b ? b.t : '';
-  }
+  function syncHow() { if (typeof loadBoard === 'function') loadBoard(sprint); }
+  // once the visitor types their own idea, the diagram tells the story of their business
+  const OWN = { story: { ai: ['STR', 'Strategy turns your idea into a plan.'], ppl: ['', 'When a job needs a human, it hires one.'],
+                         biz: [[], 'It finds the suppliers and partners your idea needs.'], profit: 'Customers start paying.' } };
+  const cur = () => userTyped ? OWN : sprint;
+  const ownName = () => { const t = promptEl.value.trim().replace(/\s+/g, ' '); return t.length > 34 ? t.slice(0, 32).replace(/\s+\S*$/, '') + '…' : t; };
   function setStep(i) {
     step = i; stepT = time;
     stepDur = i === 0 ? (typing ? typing.text.length / typing.cps + 1.6 : 3.4) : 4.2;
     stepBtns.forEach((b, j) => { b.setAttribute('aria-pressed', String(j === i)); b.style.setProperty('--p', reduce ? 1 : 0); });
-    const st = sprint.story;
+    const st = cur().story;
     nYou.classList.toggle('on', i === 0 || i === 4);
     nCore.classList.toggle('on', i === 1);
     nPpl.classList.toggle('on', i === 2);
@@ -1118,13 +1159,13 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     for (const k in W) { const on = ACTIVE[i].includes(k); W[k].path.classList.toggle('on', on); W[k].text.classList.toggle('on', on); W[k].dot.setAttribute('opacity', 0); }
     if (i === 1) glow = 1;
     document.querySelector('#ecoCap .mt').textContent = STEPS[i].title + '.';
-    $('ecoCapT').textContent = STEPS[i].cap(sprint);
+    $('ecoCapT').textContent = STEPS[i].cap(cur());
     replay($('ecoCap'));
     drawSphere();
   }
   function loadSprint(i, instant) {
     sIdx = i % SPRINTS.length; sprint = SPRINTS[sIdx];
-    $('ecoName').textContent = sprint.name; replay($('ecoName'));
+    $('ecoName').textContent = userTyped ? ownName() : sprint.name; replay($('ecoName'));
     setChips(sIdx); syncHow();
     typing = null;
     if (!userTyped) {
@@ -1158,7 +1199,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     }
     drawSphere();
     if (paused) { stepT += dt; return; }
-    if (u >= 1) step < STEPS.length - 1 ? setStep(step + 1) : loadSprint(sIdx + 1);
+    if (u >= 1) step < STEPS.length - 1 ? setStep(step + 1) : userTyped ? setStep(0) : loadSprint(sIdx + 1);
   }
   stepBtns.forEach(b => b.addEventListener('click', () => setStep(+b.dataset.s)));
   // hovering or focusing the diagram holds the current step so it can be read
@@ -1166,320 +1207,126 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
   eco.addEventListener('pointerleave', () => { paused = false; });
   eco.addEventListener('focusin', () => { paused = true; });
   eco.addEventListener('focusout', e => { if (!eco.contains(e.relatedTarget)) paused = false; });
-  promptEl.addEventListener('input', () => { userTyped = promptEl.value.trim().length > 0; typing = null; nudgeGlyph(); });
+  promptEl.addEventListener('input', () => {
+    const was = userTyped; userTyped = promptEl.value.trim().length > 0; typing = null; nudgeGlyph();
+    $('ecoName').textContent = userTyped ? ownName() : sprint.name;
+    if (userTyped && !was) { setChips(-1); setStep(0); } else if (!userTyped && was) { setChips(sIdx); setStep(0); }
+  });
   let glyphT = 0; const glyph = document.querySelector('.prompt .glyph');
   function nudgeGlyph() { glyph.classList.add('tick'); clearTimeout(glyphT); glyphT = setTimeout(() => glyph.classList.remove('tick'), 140); }
   document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => { userTyped = false; loadSprint(+c.dataset.i, true); }));
   const setMode = full => {
     fullAuto = full; $('modeFull').setAttribute('aria-pressed', String(full)); $('modeSemi').setAttribute('aria-pressed', String(!full));
     $('ecoYouSub').textContent = full ? 'Own it. Approve the plan once.' : 'Own it. Approve every big decision.';
-    if (step === 0) $('ecoCapT').textContent = STEPS[0].cap(sprint);
+    if ($('bMode')) $('bMode').textContent = full ? 'Fully-Autonomous' : 'Semi-Autonomous';
+    if (step === 0) $('ecoCapT').textContent = STEPS[0].cap(cur());
   };
   $('modeFull').addEventListener('click', () => setMode(true));
   $('modeSemi').addEventListener('click', () => setMode(false));
   const showFiles = () => { const f = [...$('fileMedia').files, ...$('fileDocs').files]; $('fileNames').textContent = f.length ? (f.length === 1 ? f[0].name : f.length + ' files') : ''; replay($('fileNames')); };
   $('fileMedia').addEventListener('change', showFiles); $('fileDocs').addEventListener('change', showFiles);
+  // ================= THE BOARD: the whole business on one board =================
+  // To do → In progress → Done, with one column that waits for the owner. Cards follow the hero's example;
+  // each names who does the work: an AI department (blue), a person (amber) or a business (ink).
+  const board = $('board');
+  const DEPT = { STR: 'Strategy', MGT: 'Management', TEC: 'Technology', FIN: 'Finance', MKT: 'Marketing', SAL: 'Sales' };
+  const cap1 = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const who = t => t.k === 'ai' ? DEPT[t.w] : t.k === 'chain' ? cap1(t.w[0]) + ' → ' + t.w[1] : cap1(t.w);
+  const kind = t => t.k === 'chain' ? 'biz' : t.k;
+  const STATUS = {
+    todo: () => 'Queued',
+    doing: t => kind(t) === 'ai' ? 'Working' : kind(t) === 'ppl' ? 'Booked, on the job' : 'Ordered',
+    you: () => 'Waiting for your OK',
+    done: () => 'Done'
+  };
+  const bcol = c => board && board.querySelector(`.bcol[data-c="${c}"] ol`);
+  let bState = null, bAcc = 0, bWait = 0, bSeq = 0;
+  // move cards with a FLIP: measure, move, then slide every card from where it was
+  function flip(change) {
+    const cards = [...board.querySelectorAll('.card')], before = new Map(cards.map(c => [c, c.getBoundingClientRect()]));
+    change();
+    if (reduce) return;
+    for (const c of board.querySelectorAll('.card')) {
+      const a = before.get(c), b = c.getBoundingClientRect();
+      if (!a) { c.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 360, easing: 'cubic-bezier(.2,.8,.2,1)' }); continue; }
+      const dx = a.left - b.left, dy = a.top - b.top;
+      if (dx || dy) c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], { duration: 560, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    }
+  }
+  function cardEl(t) {
+    const li = document.createElement('li');
+    li.className = 'card k-' + kind(t); li.dataset.id = t.id;
+    li.innerHTML = `<span class="ct"></span><span class="cm"><i aria-hidden="true"></i><span class="cw"></span><span class="cs"></span></span><span class="cp" aria-hidden="true"><i></i></span>`;
+    li.querySelector('.ct').textContent = t.t; li.querySelector('.cw').textContent = who(t);
+    if (t.ask) {
+      const act = document.createElement('span'); act.className = 'cact';
+      act.innerHTML = '<button type="button" class="ok">Approve</button><button type="button" class="no">Edit</button>';
+      li.appendChild(act);
+    }
+    return li;
+  }
+  function paint(li, t, col) {
+    li.dataset.col = col;
+    li.querySelector('.cs').textContent = STATUS[col](t);
+    li.querySelector('.cp i').style.width = Math.round((col === 'done' ? 1 : t.p) * 100) + '%';
+  }
+  function counts() {
+    for (const c of ['todo', 'doing', 'you', 'done']) board.querySelector(`.bcol[data-c="${c}"] .n`).textContent = bcol(c).children.length;
+    const all = board.querySelectorAll('.card').length, done = bcol('done').children.length;
+    $('bDone').textContent = done + ' of ' + all + ' done';
+  }
+  function place(t, col, top) {
+    let li = board.querySelector(`.card[data-id="${t.id}"]`) || cardEl(t);
+    const list = bcol(col);
+    top ? list.prepend(li) : list.append(li);
+    paint(li, t, col);
+  }
+  function loadBoard(s) {
+    if (!board) return;
+    $('bName').textContent = s.name;
+    bSeq++;
+    const tasks = s.tasks.map((t, i) => ({ ...t, id: bSeq + '-' + i, p: 0 }));
+    const ask = { ...s.approve, id: bSeq + '-ask', p: 0, ask: true };
+    bState = { s, tasks, ask, col: new Map() };
+    flip(() => {
+      for (const l of board.querySelectorAll('.bcol ol')) l.innerHTML = '';
+      tasks.forEach((t, i) => { const c = i < 2 ? 'done' : i < 4 ? 'doing' : 'todo'; if (c === 'doing') t.p = i === 2 ? .55 : .2; bState.col.set(t, c); });
+      for (const c of ['done', 'doing', 'todo']) tasks.filter(t => bState.col.get(t) === c).forEach(t => place(t, c));
+      bState.col.set(ask, 'you'); place(ask, 'you');
+    });
+    counts(); bWait = 0;
+  }
+  // one beat: work moves forward; the card in Needs you waits until the owner approves it
+  function boardBeat() {
+    if (!bState) return;
+    const { tasks, col } = bState, inCol = c => [...col].filter(([, v]) => v === c).map(([t]) => t);
+    const doing = inCol('doing'), todo = inCol('todo');
+    if (!doing.length && !todo.length) { if (++bWait > 1) loadBoard(bState.s); return; }
+    flip(() => {
+      for (const t of doing) { t.p = Math.min(1, t.p + .35); paint(board.querySelector(`.card[data-id="${t.id}"]`), t, 'doing'); }
+      const fin = doing.find(t => t.p >= 1);
+      if (fin) { col.set(fin, 'done'); place(fin, 'done', true); }
+      if (inCol('doing').length < 2 && todo.length) { const n = todo[0]; n.p = .12; col.set(n, 'doing'); place(n, 'doing'); }
+    });
+    counts();
+  }
+  if (board) {
+    board.addEventListener('click', e => {
+      const ok = e.target.closest('.ok'), no = e.target.closest('.no'); if (!ok && !no || !bState) return;
+      const t = bState.ask, li = board.querySelector(`.card[data-id="${t.id}"]`);
+      if (no) { li.querySelector('.cs').textContent = 'Opened for your edits'; replay(li.querySelector('.cs')); return; }
+      li.querySelector('.cact').remove(); t.ask = false; t.p = .15;
+      flip(() => { bState.col.set(t, 'doing'); place(t, 'doing', true); });
+      counts(); bAcc = 0;
+    });
+    if (!reduce) animate(board, dt => { if ((bAcc += dt) > 2.4) { bAcc = 0; boardBeat(); } });
+  }
+
   onResize(map, () => { layoutWires(); });
   onResize(sph, sizeSphere);
   loadSprint(0);
   if (document.fonts) document.fonts.ready.then(() => { layoutWires(); drawSphere(); });
   if (!reduce) animate(eco, frame);
-
-  // ================= HOW: prompt → core → three kinds of worker =================
-  const tree = $('tree'), treeCell = $('treeCell'), youCard = $('youCard'), dashCard = $('dashCard');
-  let TR = null, geo = null, tt = 0, nextTF = 0; const tfl = [];
-  function treeGeo() {
-    TR = fit(tree); const o = tree.getBoundingClientRect(), a = youCard.getBoundingClientRect(), b = dashCard.getBoundingClientRect();
-    const st = TR.W < 700;
-    const core = st ? { x: TR.W / 2, y: (a.bottom + b.top) / 2 - o.top } : { x: TR.W / 2, y: (a.top + a.bottom) / 2 - o.top };
-    geo = { st, core, r: st ? 58 : 76,
-      you: st ? [a.left + a.width / 2 - o.left, a.bottom - o.top] : [a.right - o.left, (a.top + a.bottom) / 2 - o.top],
-      dash: st ? [b.left + b.width / 2 - o.left, b.top - o.top] : [b.left - o.left, (b.top + b.bottom) / 2 - o.top] };
-    drawTree();
-  }
-  function curve(c, p0, p1, p2, p3) { c.beginPath(); c.moveTo(...p0); c.bezierCurveTo(...p1, ...p2, ...p3); c.stroke(); }
-  function onCurve(p0, p1, p2, p3, u) { const v = 1 - u; return [0, 1].map(k => v * v * v * p0[k] + 3 * v * v * u * p1[k] + 3 * v * u * u * p2[k] + u * u * u * p3[k]); }
-  function drawTree() {
-    if (!TR || !geo) return;
-    const { ctx: c, W: w, H: h } = TR, { core, r } = geo; c.clearRect(0, 0, w, h);
-    const paths = [];
-    if (geo.st) {
-      paths.push({ p: [geo.you, [geo.you[0], geo.you[1] + 20], [core.x, core.y - r - 20], [core.x, core.y - r * 1.12]], col: C.fg });
-      paths.push({ p: [[core.x, core.y + r * 1.12], [core.x, core.y + r + 20], [geo.dash[0], geo.dash[1] - 20], geo.dash], col: C.accent });
-    } else {
-      paths.push({ p: [geo.you, [geo.you[0] + 60, geo.you[1]], [core.x - r - 60, core.y], [core.x - r * 1.15, core.y]], col: C.fg });
-      paths.push({ p: [[core.x + r * 1.15, core.y], [core.x + r + 60, core.y], [geo.dash[0] - 60, geo.dash[1]], geo.dash], col: C.accent });
-      const y0 = core.y + r * 1.15, my = (y0 + h) / 2;
-      [[w / 6, C.accent], [w / 2, C.human], [w * 5 / 6, C.fg]].forEach(([x, col]) => paths.push({ p: [[core.x, y0], [core.x, my], [x, my], [x, h]], col }));
-    }
-    c.lineWidth = 1; c.setLineDash([3, 5]); c.strokeStyle = C.line2;
-    for (const q of paths) curve(c, ...q.p);
-    c.setLineDash([]);
-    paths.forEach((q, i) => {
-      const u = ((tt * .42) + i * .23) % 1, [x, y] = onCurve(...q.p, u), fade = Math.min(1, u * 6, (1 - u) * 6);
-      c.globalAlpha = .16 * fade; c.fillStyle = q.col; c.beginPath(); c.arc(x, y, 7, 0, Math.PI * 2); c.fill();
-      c.globalAlpha = fade; c.beginPath(); c.arc(x, y, 3.2, 0, Math.PI * 2); c.fill();
-    });
-    c.globalAlpha = 1;
-    const g = c.createRadialGradient(core.x, core.y, r * .5, core.x, core.y, r * 1.9);
-    g.addColorStop(0, C.accentSoft); g.addColorStop(1, clear(C.accentSoft));
-    c.fillStyle = g; c.beginPath(); c.arc(core.x, core.y, r * 1.9, 0, Math.PI * 2); c.fill();
-    sphere(c, core.x, core.y, r, tt, { flares: tfl });
-    // AO, small, in the heart of the globe: the Autonomous Organisation
-    c.save(); c.font = `600 ${Math.round(r * .3)}px ${MONO}`; c.textAlign = 'center'; c.textBaseline = 'middle';
-    if ('letterSpacing' in c) c.letterSpacing = (r * .05).toFixed(1) + 'px';
-    c.lineJoin = 'round'; c.lineWidth = 5; c.strokeStyle = C.bg; c.globalAlpha = .82; c.strokeText('AO', core.x + r * .025, core.y + 1);
-    c.globalAlpha = .88; c.fillStyle = C.fg; c.fillText('AO', core.x + r * .025, core.y + 1); c.restore();
-    c.save(); c.strokeStyle = C.muted; c.globalAlpha = .35; c.setLineDash([1, 5]); c.lineDashOffset = -tt * 6; c.beginPath(); c.arc(core.x, core.y, r * 1.15, 0, Math.PI * 2); c.stroke(); c.restore();
-  }
-  onResize(treeCell, treeGeo);
-  animate(treeCell, dt => {
-    tt += dt;
-    if (tt > nextTF) { tfl.push({ ang: [Math.PI / 2, Math.PI / 2 + .6, Math.PI / 2 - .6, 0][Math.floor(Math.random() * 4)], t0: tt, col: [C.accent, C.human, C.fg, C.accent][Math.floor(Math.random() * 4)] }); nextTF = tt + 1.1; }
-    for (let i = tfl.length - 1; i >= 0; i--) if (tt - tfl[i].t0 > (tfl[i].life || 1)) tfl.splice(i, 1);
-    drawTree();
-  });
-  // ================= ISO MINIATURES: the three actor panels =================
-  // Each panel is a small isometric world drawn in SVG: the tower (AI), the handoff (people), the district (businesses).
-  const NS = 'http://www.w3.org/2000/svg';
-  const sv = (tag, at, parent) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (parent) parent.appendChild(e); return e; };
-  const pts = a => a.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-  const ez = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-  const c01 = v => Math.max(0, Math.min(1, v));
-  const lerp = (a, b, u) => a + (b - a) * u;
-  const isoP = (s, ox, oy) => (x, y, z = 0) => [ox + (x - y) * s * .866, oy + (x + y) * s * .5 - z * s];
-  function hull(ps) {
-    ps = ps.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-    const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]), lo = [], up = [];
-    for (const p of ps) { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
-    for (const p of ps.reverse()) { while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
-    return lo.slice(0, -1).concat(up.slice(0, -1));
-  }
-  function ibox(parent, P, cls) {
-    const g = sv('g', { class: 'ibox ' + cls }, parent);
-    const fl = sv('polygon', { class: 'fl' }, g), fr = sv('polygon', { class: 'fr' }, g), ft = sv('polygon', { class: 'ft' }, g);
-    g.set = (x, y, z, w, d, h) => {
-      fl.setAttribute('points', pts([P(x, y + d, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x, y + d, z + h)]));
-      fr.setAttribute('points', pts([P(x + w, y, z), P(x + w, y + d, z), P(x + w, y + d, z + h), P(x + w, y, z + h)]));
-      ft.setAttribute('points', pts([P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)]));
-      g.depth = x + w / 2 + y + d / 2;
-    };
-    return g;
-  }
-  function ishadow(parent, P, x, y, w, d, h) {
-    const sx = h * .55, sy = -h * .14, c = [[x, y], [x + w, y], [x + w, y + d], [x, y + d]];
-    sv('polygon', { class: 'ishadow', points: pts(hull(c.concat(c.map(([a, b]) => [a + sx, b + sy])).map(([a, b]) => P(a, b, 0)))) }, parent);
-  }
-  function lattice(svg, P, n, id, cx, cy, rx, ry) {
-    const defs = sv('defs', {}, svg);
-    const rg = sv('radialGradient', { id: id + 'g', cx: cx, cy: cy, r: '0.62', gradientUnits: 'objectBoundingBox' }, defs);
-    sv('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '1' }, rg);
-    sv('stop', { offset: '1', 'stop-color': '#fff', 'stop-opacity': '0' }, rg);
-    const m = sv('mask', { id: id + 'm', maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: 340, height: 250 }, defs);
-    sv('rect', { x: 0, y: 0, width: 340, height: 250, fill: `url(#${id}g)` }, m);
-    const g = sv('g', { class: 'lattice', mask: `url(#${id}m)` }, svg);
-    for (let i = -n; i <= n; i++) {
-      let a = P(i + rx, -n + ry), b = P(i + rx, n + ry); sv('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, g);
-      a = P(-n + rx, i + ry); b = P(n + rx, i + ry); sv('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, g);
-    }
-  }
-  function ringAt(parent, cls) { return sv('ellipse', { class: 'ring ' + cls, rx: 0, ry: 0, opacity: 0 }, parent); }
-  function pulseRing(r, P, x, y, z, u, s) {
-    if (u < 0 || u > 1) { r.setAttribute('opacity', 0); return; }
-    const [X, Y] = P(x, y, z), k = ez(u);
-    r.setAttribute('cx', X); r.setAttribute('cy', Y); r.setAttribute('rx', (.6 + k * 1.6) * s); r.setAttribute('ry', (.6 + k * 1.6) * s * .5); r.setAttribute('opacity', (1 - u) * .9);
-  }
-  function runIso(svg, frame, still) {
-    let t = 0; frame(still);
-    animate(svg, dt => { t += dt; frame(t); });
-  }
-
-  // ---- AI: the tower. Six glass floors; the working one slides out like a drawer and names its task.
-  (function tower() {
-    const svg = $('isoAI'), s = 21, P = isoP(s, 170, 178);
-    lattice(svg, P, 7, 'la', .5, .62, 0, 0);
-    const W = 4.8, x0 = -W / 2, y0 = -W / 2, GAP = .86, H = .56;
-    const ground = sv('g', {}, svg); ishadow(ground, P, x0, y0, W, W, 5 * GAP + H);
-    const world = sv('g', {}, svg);
-    const F = [['STR', 'STRATEGY', 'Sizing the market'], ['MGT', 'MANAGEMENT', 'Planning the sprint'], ['TEC', 'TECHNOLOGY', 'Building the checkout'],
-               ['FIN', 'FINANCE', 'Modelling margins'], ['MKT', 'MARKETING', 'Writing launch emails'], ['SAL', 'SALES', 'Finding 40 boutiques']];
-    const floors = F.map((f, i) => { const g = ibox(world, P, 'slab'), t = sv('text', { class: 'face' }, g); t.textContent = f[0] + ' · ' + f[1]; return { g, t, i }; });
-    const callG = sv('g', {}, svg), line = sv('polyline', { class: 'call' }, callG), dot = sv('circle', { class: 'call-dot', r: 2.4 }, callG);
-    const ct = sv('text', { class: 'call-t' }, callG), cc = sv('tspan', {}, ct), cx_ = sv('tspan', { dx: 5 }, ct);
-    const sparks = Array.from({ length: 9 }, (_, j) => { const e = sv('text', { class: 'spk' }, svg); e.textContent = '+*·:#+·*='[j]; return e; });
-    const PER = 2.2;
-    function frame(t) {
-      const k = Math.floor(t / PER) % 6, u = (t % PER) / PER;
-      const o = u < .22 ? ez(u / .22) : u > .82 ? ez((1 - u) / .18) : 1;
-      floors.forEach(f => {
-        const z = f.i * GAP, dy = f.i === k ? o * 1.35 : 0;
-        f.g.set(x0, y0 + dy, z, W, W, H); f.g.classList.toggle('on', f.i === k && o > .35);
-        const [X, Y] = P(x0 + .32, y0 + W + dy, z + .15); f.t.setAttribute('transform', `matrix(.866 .5 0 1 ${X.toFixed(1)} ${Y.toFixed(1)})`);
-      });
-      const z = k * GAP, a = P(x0 + W, y0 + W + o * 1.35, z + H * .5), ex = 334, ey = Math.min(236, a[1] + 28);
-      line.setAttribute('points', pts([a, [a[0] + 18, ey], [ex, ey]])); dot.setAttribute('cx', a[0]); dot.setAttribute('cy', a[1]);
-      ct.setAttribute('x', ex); ct.setAttribute('y', ey - 6); cc.textContent = F[k][0]; cx_.textContent = F[k][2];
-      callG.setAttribute('opacity', c01((o - .3) / .5));
-      sparks.forEach((e, j) => {
-        const ph = ((t * .55 + j / sparks.length) % 1), sx = x0 + .6 + (j * 1.37 % 1) * (W - 1.2), sy = y0 + W + o * 1.35 - .35;
-        const [X, Y] = P(sx, sy, z + H + ph * 2.2);
-        e.setAttribute('x', X.toFixed(1)); e.setAttribute('y', Y.toFixed(1)); e.setAttribute('opacity', (o * Math.sin(Math.PI * ph) * .9).toFixed(2));
-      });
-    }
-    runIso(svg, frame, PER * 4 + PER * .5);
-  })();
-
-  // ---- People: the handoff. A brief leaves your organisation, a person accepts it, does the job, and it comes back stamped.
-  (function handoff() {
-    const svg = $('isoPPL'), s = 17, P = isoP(s, 178, 124);
-    lattice(svg, P, 8, 'lp', .5, .55, 0, 0);
-    const ground = sv('g', {}, svg), world = sv('g', {}, svg), top = sv('g', {}, svg);
-    const ORG = [-4.6, 1.6, 1.7, 1.7, 3.3];
-    ishadow(ground, P, ...ORG.slice(0, 4), ORG[4]);
-    const org = ibox(world, P, 'ink'); org.set(ORG[0], ORG[1], 0, ORG[2], ORG[3], ORG[4]);
-    for (let k = 1; k <= 3; k++) { const a = P(ORG[0] + .3, ORG[1] + ORG[3], k * .85), b = P(ORG[0] + ORG[2] - .3, ORG[1] + ORG[3], k * .85); sv('line', { class: 'win', x1: a[0], y1: a[1], x2: b[0], y2: b[1] }, world); }
-    const cap = ibox(world, P, 'cap'); cap.set(ORG[0] + .2, ORG[1] + .2, ORG[4], ORG[2] - .4, ORG[3] - .4, .14);
-    const ol = sv('text', { class: 'lbl you' }, top); const op = P(ORG[0] + ORG[2] / 2, ORG[1] + ORG[3] / 2, ORG[4]), oq = P(ORG[0], ORG[1], ORG[4]); ol.setAttribute('x', op[0]); ol.setAttribute('y', oq[1] - 7); ol.textContent = 'your org';
-    const ROLES = [['photographer', 1.55, -4.25], ['accountant', 6.9, 1.1], ['lawyer', 1.4, 4.2]];
-    const people = ROLES.map(([name, x, y]) => {
-      ishadow(ground, P, x - 1.15, y - 1.15, 2.3, 2.3, .22);
-      const tile = ibox(world, P, 'tile'); tile.set(x - 1.15, y - 1.15, 0, 2.3, 2.3, .22);
-      const [X, Y] = P(x, y, .22), g = sv('g', {}, world);
-      const q = 1.28;
-      sv('ellipse', { class: 'psh', cx: X + 2.5, cy: Y + 1, rx: 8 * q, ry: 3.6 * q }, g);
-      const body = sv('g', {}, g);
-      sv('rect', { class: 'pb2', x: X - 5.6 * q, y: Y - 17 * q, width: 11.2 * q, height: 17 * q, rx: 5.6 * q }, body);
-      sv('rect', { class: 'pb', x: X - 5.6 * q, y: Y - 17 * q, width: 7.4 * q, height: 17 * q, rx: 5.6 * q }, body);
-      sv('circle', { class: 'ph', cx: X, cy: Y - 23 * q, r: 5.2 * q }, body);
-      const lb = sv('text', { class: 'lbl ppl', x: X, y: Y - 44 }, top); lb.textContent = name;
-      const o0 = [ORG[0] + ORG[2] / 2, ORG[1] + ORG[3] + .25], mid = [x, o0[1]];
-      const route = sv('path', { class: 'route', d: 'M' + [o0, mid, [x, y]].map(([a, b]) => P(a, b, 0).map(v => v.toFixed(1)).join(' ')).join(' L') }, ground);
-      return { name, x, y, tile, body, route, ring: ringAt(top, 'a') };
-    });
-    const card = sv('g', {}, top), sheet = sv('polygon', { class: 'card' }, card), l1 = sv('line', { class: 'card-l' }, card), l2 = sv('line', { class: 'card-l' }, card), chk = sv('text', { class: 'chk' }, card); chk.textContent = '✓';
-    const tag = sv('g', { class: 'tag' }, top), tr = sv('rect', { rx: 6, height: 19 }, tag), tc = sv('circle', { r: 2.6 }, tag), tt = sv('text', {}, tag);
-    const PER = 6.4;
-    function placeCard(x, y, z, done) {
-      const c = [[x - .55, y - .38], [x + .55, y - .38], [x + .55, y + .38], [x - .55, y + .38]].map(([a, b]) => P(a, b, z));
-      sheet.setAttribute('points', pts(c));
-      const m1 = P(x - .35, y - .1, z), m2 = P(x + .25, y - .1, z), m3 = P(x - .35, y + .12, z), m4 = P(x + .1, y + .12, z);
-      l1.setAttribute('x1', m1[0]); l1.setAttribute('y1', m1[1]); l1.setAttribute('x2', m2[0]); l1.setAttribute('y2', m2[1]);
-      l2.setAttribute('x1', m3[0]); l2.setAttribute('y1', m3[1]); l2.setAttribute('x2', m4[0]); l2.setAttribute('y2', m4[1]);
-      const cp = P(x + .3, y + .05, z); chk.setAttribute('x', cp[0]); chk.setAttribute('y', cp[1] - 2); chk.setAttribute('opacity', done);
-    }
-    function frame(t) {
-      const idx = Math.floor(t / PER) % 3, u = (t % PER) / PER, p = people[idx];
-      const A = [ORG[0] + ORG[2] / 2, ORG[1] + ORG[3] / 2, ORG[4] + .5], B = [p.x + .15, p.y + 1.5, .3];
-      let cxy, done = 0;
-      if (u < .22) { const k = ez(u / .22); cxy = [lerp(A[0], B[0], k), lerp(A[1], B[1], k), lerp(A[2], B[2], k) + Math.sin(Math.PI * k) * 2.6]; }
-      else if (u < .62) { cxy = B; done = c01((u - .52) / .06); }
-      else if (u < .84) { const k = ez((u - .62) / .22); cxy = [lerp(B[0], A[0], k), lerp(B[1], A[1], k), lerp(B[2], A[2], k) + Math.sin(Math.PI * k) * 2.6]; done = 1; }
-      else cxy = A;
-      placeCard(cxy[0], cxy[1], cxy[2], done);
-      card.setAttribute('opacity', u > .86 ? c01((.94 - u) / .08) : 1);
-      cap.classList.toggle('on', u > .82 && u < .97);
-      people.forEach((q, i) => {
-        const on = i === idx && u > .22 && u < .62;
-        q.tile.classList.toggle('on', on); q.route.classList.toggle('on', i === idx && u < .84);
-        const bob = on && u > .32 ? Math.sin((u - .32) * 60) * 1.2 : 0;
-        q.body.setAttribute('transform', `translate(0 ${bob.toFixed(2)})`);
-        pulseRing(q.ring, P, q.x, q.y, .22, i === idx ? (u - .22) / .2 : -1, s);
-      });
-      const label = u < .22 ? 'Brief sent' : u < .32 ? 'Booked' : u < .52 ? 'On the job' : u < .84 ? 'Delivered' : 'Back in the plan';
-      tt.textContent = p.name + ' · ' + label;
-      const w = Math.max(150, (tt.getComputedTextLength ? tt.getComputedTextLength() : 150) + 26), tx = 12, ty = 222;
-      tr.setAttribute('x', tx); tr.setAttribute('y', ty); tr.setAttribute('width', w);
-      tc.setAttribute('cx', tx + 10); tc.setAttribute('cy', ty + 9.5); tt.setAttribute('x', tx + w / 2 + 6); tt.setAttribute('y', ty + 13);
-      tag.setAttribute('opacity', u < .04 ? u / .04 : 1);
-    }
-    runIso(svg, frame, PER * .4);
-  })();
-
-  // ---- Businesses: the district. Parcels move supplier → packaging → courier → your org; another M-World org ships in too.
-  (function district() {
-    const svg = $('isoBIZ'), s = 15.5, P = isoP(s, 162, 112);
-    lattice(svg, P, 9, 'lb', .5, .55, 1.5, 1);
-    const ground = sv('g', {}, svg), roads = sv('g', {}, svg), world = sv('g', {}, svg), top = sv('g', {}, svg);
-    const B = {
-      you:      { x: 0,    y: 0,    w: 2.2, d: 2.2, h: 4.6, cls: 'ink',  label: 'your org', lc: 'you' },
-      supplier: { x: 4.6,  y: -3.4, w: 2.2, d: 1.7, h: 2.3, cls: 'bld',  label: 'supplier' },
-      packaging:{ x: 5.6,  y: 1.4,  w: 2.6, d: 1.7, h: 1.3, cls: 'bld',  label: 'packaging' },
-      courier:  { x: 2.6,  y: 4.6,  w: 2.2, d: 1.7, h: 1.7, cls: 'bld',  label: 'courier' },
-      other:    { x: -4.2, y: 3.0,  w: 1.9, d: 1.9, h: 3.2, cls: 'blue', label: 'another org', lc: 'org' }
-    };
-    // a few unnamed low blocks give the district its texture
-    const filler = [[8.6, -1.6, 1.1, 1.1, .6], [6.6, 4.8, 1.2, 1.2, .5]];
-    const road = (pp) => { const d = 'M' + pp.map(([x, y]) => P(x, y, 0).map(v => v.toFixed(1)).join(' ')).join(' L'); sv('path', { class: 'road', d }, roads); sv('path', { class: 'road-c', d }, roads); };
-    const R = {
-      sp: [[5.7, -1.5], [5.7, .6], [6.9, .6], [6.9, 1.2]],
-      pc: [[6.9, 1.2], [6.9, .6], [3.6, .6], [3.6, 4.4]],
-      cy: [[3.6, 4.4], [3.6, 2.9], [1.1, 2.9], [1.1, 2.3]],
-      oy: [[-2.1, 3.9], [-.7, 3.9], [-.7, 2.9], [.5, 2.9], [.5, 2.3]]
-    };
-    Object.values(R).forEach(road);
-    for (const k in B) { const b = B[k]; ishadow(ground, P, b.x, b.y, b.w, b.d, b.h); b.g = ibox(world, P, b.cls); b.g.set(b.x, b.y, 0, b.w, b.d, b.h); }
-    filler.forEach(([x, y, w, d, h]) => { ishadow(ground, P, x, y, w, d, h); const g = ibox(world, P, 'bld'); g.set(x, y, 0, w, d, h); g.style.opacity = .55; });
-    const winOn = (b, n, cls) => { for (let k = 1; k <= n; k++) { const z = k * b.h / (n + 1), a = P(b.x + .3, b.y + b.d, z), c = P(b.x + b.w - .3, b.y + b.d, z); sv('line', { class: 'win ' + cls, x1: a[0], y1: a[1], x2: c[0], y2: c[1] }, b.g); } };
-    winOn(B.you, 4, ''); winOn(B.other, 3, 'w');
-    const door = (b, x1, x2, h) => sv('polygon', { class: 'door', points: pts([P(b.x + x1, b.y + b.d, 0), P(b.x + x2, b.y + b.d, 0), P(b.x + x2, b.y + b.d, h), P(b.x + x1, b.y + b.d, h)]) }, b.g);
-    door(B.courier, .5, 1.6, 1.05); door(B.packaging, .9, 1.9, .8); door(B.supplier, .6, 1.4, .9);
-    const cap = ibox(world, P, 'cap'); cap.set(B.you.x + .25, B.you.y + .25, B.you.h, B.you.w - .5, B.you.d - .5, .14); cap.depth = B.you.g.depth + .01;
-    for (const k in B) {
-      // tall buildings carry their name above the roof; low ones carry it under their front corner, clear of the towers
-      const b = B[k], tall = b.h > 2.2, [X] = P(b.x + b.w / 2, b.y + b.d / 2, b.h);
-      const Y = tall ? P(b.x, b.y, b.h)[1] - 7 : P(b.x + b.w, b.y + b.d, 0)[1] + 14;
-      const t = sv('text', { class: 'lbl ' + (b.lc || ''), x: tall ? X : P(b.x + b.w, b.y + b.d, 0)[0], y: Y }, top); t.textContent = b.label;
-    }
-    const trips = [
-      { r: R.sp, start: 0,   dur: 1.7, cls: '',      size: .5,  to: 'packaging', txt: ['supplier', 'packaging'] },
-      { r: R.pc, start: 2.3, dur: 2.5, cls: 'boxed', size: .62, to: 'courier',   txt: ['packaging', 'courier'] },
-      { r: R.cy, start: 5.2, dur: 1.8, cls: 'boxed', size: .62, to: 'you',       txt: ['courier', 'your org'] },
-      { r: R.oy, start: 1.0, dur: 2.6, cls: 'bp',    size: .55, to: 'you',       txt: ['another org', 'your org'] }
-    ];
-    trips.forEach(tp => {
-      tp.g = ibox(world, P, 'parcel ' + tp.cls); tp.ring = ringAt(top, tp.cls === 'bp' ? 'b' : 'k');
-      tp.len = [0]; for (let i = 1; i < tp.r.length; i++) tp.len.push(tp.len[i - 1] + Math.hypot(tp.r[i][0] - tp.r[i - 1][0], tp.r[i][1] - tp.r[i - 1][1]));
-    });
-    const capT = sv('text', { class: 'cap-t', x: 12, y: 238 }, svg), c1 = sv('tspan', {}, capT), c2 = sv('tspan', { dx: 4 }, capT); c2.style.fill = 'var(--muted)';
-    const PER = 8.2, kids = () => [...world.children];
-    function at(tp, k) {
-      const L = tp.len[tp.len.length - 1] * k; let i = 1; while (i < tp.len.length - 1 && tp.len[i] < L) i++;
-      const a = tp.r[i - 1], b = tp.r[i], seg = tp.len[i] - tp.len[i - 1] || 1, f = (L - tp.len[i - 1]) / seg;
-      return [lerp(a[0], b[0], f), lerp(a[1], b[1], f)];
-    }
-    function frame(t) {
-      const u = t % PER; let latest = null, arriving = false;
-      trips.forEach(tp => {
-        const k = (u - tp.start) / tp.dur;
-        if (k >= 0 && k <= 1) {
-          const [x, y] = at(tp, ez(k)), h = tp.size;
-          tp.g.style.display = ''; tp.g.set(x - h / 2, y - h / 2, .02 + Math.abs(Math.sin(k * Math.PI * 6)) * .05, h, h, h * .85);
-          if (!latest || tp.start > latest.start) latest = tp;
-        } else tp.g.style.display = 'none';
-        const end = tp.r[tp.r.length - 1], rk = (u - tp.start - tp.dur) / .9;
-        pulseRing(tp.ring, P, end[0], end[1], 0, rk, s);
-        if (tp.to === 'you' && rk >= 0 && rk <= 1) arriving = true;
-      });
-      cap.classList.toggle('on', arriving);
-      // painter's order: sort the world by depth so parcels pass in front of and behind buildings correctly
-      const ord = kids().filter(n => n.depth != null).sort((a, b) => a.depth - b.depth);
-      ord.forEach(n => world.appendChild(n));
-      if (latest) { c1.textContent = latest.txt[0] + ' → ' + latest.txt[1]; c2.textContent = latest.cls === 'bp' ? '· M-World to M-World' : '· business to business'; }
-    }
-    runIso(svg, frame, 3.2);
-  })();
-
-  // ================= BLUE FIELD: sphere edges =================
-  const edge = $('edge'); let E, et = 0;
-  const drawEdge = () => {
-    if (!E) return; const { ctx, W, H } = E; ctx.clearRect(0, 0, W, H);
-    const WHITE = { base: C.white, shade: C.bShade, s1: C.bS1, s2: C.white, flare: C.white };
-    const r = Math.min(H * .52, 380), a = W < 760 ? .18 : .42;
-    sphere(ctx, -r * .12, H * .46, r, et, { pal: WHITE, res: 30, cellMin: 6, alpha: a, clipW: W });
-    sphere(ctx, W + r * .12, H * .58, r * .92, et + 7, { pal: WHITE, res: 28, cellMin: 6, alpha: a, clipW: W });
-  };
-  onResize(edge, () => { E = fit(edge); drawEdge(); });
-  animate(edge, dt => { et += dt * .7; drawEdge(); });
 
   // org chart + department tabs
   const DINFO = [
@@ -1498,8 +1345,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     const put = (row, x, s, o) => { for (let i = 0; i < s.length; i++) row[x + i] = { c: s[i], o }; };
     const centers = NAMES.map((_, i) => i * (BW + GAP) + Math.floor(BW / 2)), RW = 34, rx = Math.floor((Wd - RW) / 2), mid = Math.floor(Wd / 2);
     let r = blank(); put(r, rx, '┌' + '─'.repeat(RW - 2) + '┐', 'rt'); rows.push(r);
-    r = blank(); put(r, rx, '│ ' + 'YOUR AUTONOMOUS ORGANISATION'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
-    r = blank(); put(r, rx, '│ ' + 'goal: first 100 customers'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
+    r = blank(); put(r, rx, '│ ' + 'YOUR BUSINESS'.padEnd(RW - 4) + ' │', 'rt'); rows.push(r);
     r = blank(); put(r, rx, '└' + '─'.repeat(RW - 2) + '┘', 'rt'); r[mid] = { c: '┬', o: 'rt' }; rows.push(r);
     r = blank(); r[mid] = { c: '│', o: 'L*' }; rows.push(r);
     r = blank();
@@ -1520,19 +1366,16 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
       put(b[3], x, '└' + '─'.repeat(BW - 2) + '┘', 'B' + i);
     });
     rows.push(...b);
-    r = blank(); rows.push(r);
-    r = blank(); put(r, 2, '· · · people booked for real-world work · · · · · · · · · partner businesses on the network · · ·', 'X'); rows.push(r);
     return rows;
   }
   function buildNarrow() {
     const rows = [], line = segs => rows.push(segs.flatMap(([s, o]) => [...s].map(c => ({ c, o }))));
-    line([['YOUR AUTONOMOUS ORGANISATION', 'rt']]); line([['│', 'L*']]);
+    line([['YOUR BUSINESS', 'rt']]); line([['│', 'L*']]);
     NAMES.forEach((nm, i) => {
       const last = i === 5;
       line([[last ? '└── ' : '├── ', 'L' + i], [nm.padEnd(11), 'N' + i], [' › ' + ROLES[i], 'B' + i]]);
       if (!last) line([['│', 'L' + [0, 1, 2, 3, 4, 5].filter(k => k > i).join(',')]]);
     });
-    line([['', '']]); line([['+ people and partner businesses', 'X']]);
     return rows;
   }
   function renderOrg(rows) {
@@ -1559,7 +1402,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     activeDept = i;
     tabEls.forEach((el, k) => { el.setAttribute('aria-selected', String(k === i)); el.tabIndex = k === i ? 0 : -1; });
     $('dpanel').setAttribute('aria-labelledby', 'dt' + i);
-    $('dRole').textContent = DINFO[i][2]; $('dOut').textContent = DINFO[i][3]; replay($('dRole')); replay($('dOut'));
+    $('dRole').textContent = DINFO[i][2]; replay($('dRole'));
     document.querySelectorAll('.org .bx').forEach(el => el.classList.toggle('on', +el.dataset.d === i));
     document.querySelectorAll('.org .ln').forEach(el => { const p = el.dataset.p; el.classList.toggle('on', p === '*' || p.split(',').includes(String(i))); });
   }
@@ -1587,6 +1430,10 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
 
   // ================= SUNRISE =================
   const sun = $('sunrise'); let SN, st = 0, nextF = 0; const sfl = [];
+  const PLACES = [{ lon: -1.05, lat: .78, name: 'Pet products' }, { lon: -.45, lat: 1.08 }, { lon: .2, lat: .72, name: 'Coffee subscription' }, { lon: .75, lat: 1.12 },
+    { lon: 1.15, lat: .62, name: 'Tutoring app' }, { lon: -.25, lat: .56 }, { lon: 1.8, lat: .9 }, { lon: -1.75, lat: .95 },
+    { lon: 2.5, lat: .72 }, { lon: -2.45, lat: .66, name: 'Courier' }, { lon: 3.05, lat: 1.0, name: 'Bakery' }, { lon: -2.9, lat: .8 }];
+  const PLINKS = [[0, 1], [0, 5], [1, 3], [2, 5], [2, 3], [3, 4], [4, 6], [6, 8], [8, 10], [10, 11], [11, 9], [9, 7], [7, 0], [2, 4], [1, 7]];
   const drawSun = () => {
     if (!SN) return; const { ctx, W, H } = SN; ctx.clearRect(0, 0, W, H);
     const r = W < 860 ? W * .56 : Math.min(W * .4, 500), x = W < 860 ? W / 2 : W * .62, y = H + r * .42;
@@ -1595,12 +1442,39 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     ctx.setLineDash([]); ctx.globalAlpha = 1;
     const g = ctx.createRadialGradient(x, y, r * .7, x, y, r * 1.4); g.addColorStop(0, C.accentSoft); g.addColorStop(1, clear(C.accentSoft));
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r * 1.4, 0, Math.PI * 2); ctx.fill();
-    sphere(ctx, x, y, r, st, { flares: sfl, res: 36, cellMin: 6, clipH: H, alpha: .75 });
+    sphere(ctx, x, y, r, st, { flares: sfl, res: 36, cellMin: 6, clipH: H, alpha: .34 });
+    // businesses placed on the globe, each linked to its neighbours: the network the page ends on
+    const spin = st * .07;
+    const pts = PLACES.map(p => { const lon = p.lon + spin, cl = Math.cos(p.lat); return { ...p, px: x + r * cl * Math.sin(lon), py: y - r * Math.sin(p.lat), z: cl * Math.cos(lon) }; });
+    const vis = p => p.z > .12 && p.py < H - 8;
+    ctx.save(); ctx.setLineDash([3, 4]); ctx.lineWidth = 1.4; ctx.strokeStyle = C.accent;
+    for (const [i, j] of PLINKS) {
+      const a = pts[i], b = pts[j]; if (!vis(a) || !vis(b)) continue;
+      const mx = (a.px + b.px) / 2, my = (a.py + b.py) / 2, ox = mx - x, oy = my - y, ol = Math.hypot(ox, oy) || 1;
+      ctx.globalAlpha = .8 * Math.min(1, Math.min(a.z, b.z) * 3);
+      ctx.beginPath(); ctx.moveTo(a.px, a.py); ctx.quadraticCurveTo(mx + ox / ol * 26, my + oy / ol * 26, b.px, b.py); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    ctx.font = `500 12.5px ${getComputedStyle(document.body).fontFamily}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    for (const p of pts) {
+      if (!vis(p)) continue;
+      const al = Math.min(1, p.z * 3), s = 5 + p.z * 3;
+      ctx.globalAlpha = al; ctx.fillStyle = C.panel; ctx.strokeStyle = C.fg; ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.rect(p.px - s, p.py - s, s * 2, s * 2); ctx.fill(); ctx.stroke();
+      if (p.name && W >= 560) {
+        const tw = ctx.measureText(p.name).width;
+        const left = p.px + s + tw + 40 > W, lx = left ? p.px - s - 8 - tw - 20 : p.px + s + 8;
+        ctx.beginPath(); ctx.roundRect(lx, p.py - 12, tw + 20, 24, 12);
+        ctx.fillStyle = C.panel; ctx.fill(); ctx.strokeStyle = C.line2; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = C.fg; ctx.fillText(p.name, lx + 10, p.py + 1);
+      }
+    }
+    ctx.restore();
   };
   onResize(sun, () => { SN = fit(sun); drawSun(); });
   animate(sun, dt => {
     st += dt;
-    if (st > nextF) { sfl.push({ ang: -Math.PI / 2 + (Math.random() - .5) * 1.6, t0: st, life: 3.4, col: sfl.length % 2 ? C.human : C.accent }); nextF = st + 2.4 + Math.random() * .8; }
+    if (st > nextF) { sfl.push({ ang: -Math.PI / 2 + (Math.random() - .5) * 1.6, t0: st, life: 3.4, col: C.accent }); nextF = st + 3.2 + Math.random() * .8; }
     for (let i = sfl.length - 1; i >= 0; i--) if (st - sfl[i].t0 > sfl[i].life) sfl.splice(i, 1);
     drawSun();
   });
@@ -1721,7 +1595,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     if (reduce) drawWM();
   });
   onResize(wm, buildMask);
-  if (document.fonts) document.fonts.ready.then(() => { fitH1(); readColors(); buildMask(); layoutWires(); drawSphere(); treeGeo(); });
+  if (document.fonts) document.fonts.ready.then(() => { fitH1(); readColors(); buildMask(); layoutWires(); drawSphere(); });
   animate(wm, dt => { wt += dt; wmStep(dt); drawWM(); });
 
 
@@ -1841,7 +1715,7 @@ body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-event
     });
     // sections settle in once, a beat apart within each group
     if ('IntersectionObserver' in window) {
-      const groups = ['.head .cell', '.actor .cell', '#pricing .grid', '.faq-r', '.contact .cell', '.closing .cta', '.ao .cell'];
+      const groups = ['.head .cell', '.bkey', '#pricing .grid', '.faq-r', '.contact .cell', '.closing .cta', '.ao .cell'];
       const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
       groups.forEach(g => document.querySelectorAll(g).forEach(box => [...box.children].forEach((el, i) => {
         if (el.tagName === 'CANVAS' || el.matches('.btn')) return;
